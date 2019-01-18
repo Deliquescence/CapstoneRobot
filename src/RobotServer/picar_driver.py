@@ -3,8 +3,8 @@ import picar
 import cv2
 from concurrent import futures
 import time
-import picarserver
-import picarhelper
+import picar_server
+import picar_helper
 import socket
 import grpc
 import picar_pb2
@@ -16,7 +16,7 @@ rear_wheels_enabled = True
 front_wheels_enabled = True
 
 fw = front_wheels.Front_Wheels()
-fw_default = picarhelper.getDefaultAngle(socket.gethostname())
+fw_default = picar_helper.getDefaultAngle(socket.gethostname())
 
 FW_ANGLE_MAX = fw_default+30
 FW_ANGLE_MIN = fw_default-30
@@ -58,13 +58,13 @@ def main():
     global maxTagDisplacement, frame, hasBaseCorners
 
     #start the server
-    server = picarserver.getServer()
+    server = picar_server.getServer()
     server.start()
 
     print "Server Started on "+socket.gethostname()+"\n"
     print "Press Ctrl-C to quit"
 
-    picarhelper.move(0.0,0.0)
+    picar_helper.move(0.0,0.0)
 
     # loop unless break occurs
     while True:
@@ -77,14 +77,14 @@ def main():
             break
 
         # get reference to current mode
-        mode = picarserver.mode
+        mode = picar_server.mode
         #get the current frame
         (grabbed, frame) = camera.read()
 
         if mode == 1:
             # leader mode
             #print "picar set to LEADER"
-            picarhelper.move((picarserver.throttle/2), picarserver.direction)
+            picar_helper.move((picar_server.throttle/2), picar_server.direction)
         elif mode == 2:
             # follower mode
             #if no base corners, get corners
@@ -93,11 +93,11 @@ def main():
             #if we have base corners, now enter follower
             if hasBaseCorners:
                 throttle, direction = tagID()
-                picarhelper.move(throttle, direction)
+                picar_helper.move(throttle, direction)
             else:
                 print "Base Tag Corners Not Detected!"
         else:
-            picarhelper.move(0.0, 0.0)
+            picar_helper.move(0.0, 0.0)
             baseTopLeft = None
             baseTopRight = None
             baseBottomRight = None
@@ -118,7 +118,7 @@ def main():
 
 
         #set frame to send to desktop
-        picarserver.setFrame(frame)
+        picar_server.setFrame(frame)
         time.sleep(1/30)
 
     #cleanup
@@ -209,7 +209,7 @@ def getBaseCorners():
 
 
 def destroy():
-    picarhelper.stop()
+    picar_helper.stop()
     camera.release()
     cv2.destroyAllWindows()
 
