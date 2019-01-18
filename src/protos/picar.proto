@@ -1,0 +1,83 @@
+syntax = "proto3";
+package SeniorProjectRobot;
+
+option csharp_namespace = "RobotClient";
+
+
+//Interface exported by the server
+service PiCar {
+
+	//Handshake between PiCar and desktop application
+	rpc ReceiveConnection(ConnectRequest) returns (ConnectAck) {}
+	
+	//Changes the operating mode of the PiCar
+	rpc SwitchMode(ModeRequest) returns (ModeAck) {}
+	
+	//Receive control data from desktop application
+	rpc RemoteControl(SetMotion) returns (Empty) {}
+	
+	//Begin video streaming
+	rpc VideoStream(StartVideoStream) returns (stream ImageCapture) {}
+	
+	//End video streaming
+	rpc StopStream(EndVideoStream) returns (Empty) {}
+}
+
+//An empty message
+message Empty {}
+
+//Sent from the desktop application to confirm a working connection
+message ConnectRequest {
+	string message = 1;
+}
+
+//Sent from the PiCar once a ConnectRequest has been received
+message ConnectAck {
+	//Boolean, returns True for working connection, False if not accepted for some reason
+	bool success = 1;
+}
+
+//Sent from application to set the operation mode of the PiCar
+message ModeRequest {
+	//Sets the operation mode for the 
+	enum Mode {
+		IDLE = 0;
+		LEAD = 1;
+		FOLLOW = 2;
+	}
+	Mode mode = 1;
+}
+
+//Sent from the PiCar once a ModeRequest has been received
+message ModeAck {
+	//Boolean, returns True for success, False if not accepted for some reason
+	bool success = 1;
+}
+
+//Sent from application to control the movements of the lead PiCar
+message SetMotion {
+	//Contains the throttle speed
+	//	1.0 denotes max forward speed
+	//	-1.0 denotes max backward speed
+	double throttle = 1;
+	
+	//Contains direction wheels should turn to
+	//	0.0 denotes forward
+	//	1.0 denotes max right
+	//	-1.0 denotes max left
+	double direction = 2;
+}
+
+message StartVideoStream {
+	//Message to indicate to begin streaming video
+}
+
+message ImageCapture {
+	//A bytestring containing the image data
+	bytes image = 1;
+}
+
+message EndVideoStream {
+	//Message to indiciate to stop streaming video
+}
+
