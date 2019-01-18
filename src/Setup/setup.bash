@@ -39,7 +39,7 @@ virtualenv --python=python3 -v grpc-net
 cd grpc-net
 source ./bin/activate
 sudo python -m pip install grpcio
-sudo python -m pip install grcpio-tools googleapis-common-protos
+sudo python -m pip install grpcio-tools googleapis-common-protos
 
 # Reboot system to finish all installations
 sudo reboot
