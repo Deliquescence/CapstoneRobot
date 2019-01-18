@@ -25,8 +25,8 @@ sudo apt-get install libjpeg8-dev
 # Link Git
 cd $homedir 
 sudo apt-get install git
-git clone --recursive https://github.com/sramocki/SeniorProjectRobot.git
-cd SeniorProjectRobot
+git clone --recursive git@github.com:Deliquescence/CapstoneRobot.git
+cd CapstoneRobot
 git pull
 
 # VirtualEnv
