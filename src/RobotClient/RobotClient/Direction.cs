@@ -28,8 +28,8 @@ namespace RobotClient
          */
         public static List<Direction> ParseLog(string fullLogString)
         {
-            var split = Regex.Split(fullLogString, Environment.NewLine);
-            return split.Select(line => ParseDirection(line)).ToList();
+            var split = Regex.Split(fullLogString, "\n");
+            return split.Where(line => line.Contains("@")).Select(line => ParseDirection(line)).ToList();
         }
 
         /**

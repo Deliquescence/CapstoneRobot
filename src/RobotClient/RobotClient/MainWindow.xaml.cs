@@ -182,6 +182,8 @@ namespace RobotClient
                 var result = dlg.ShowDialog();
                 if (result != true) return;
                 LogField.Text = File.ReadAllText(dlg.FileName);
+                var res = Direction.ParseLog(LogField.Text);
+                LogField.AppendText("Loaded log with length " + res.Count);
             }
             catch(IOException exception)
             {
