@@ -246,30 +246,9 @@ namespace RobotClient
 
             }
 
-            string[] throttleStrings = { "Moving backwards", "In Neutral", "Moving forwards" };
-            string[] directionStrings = { "and left", "", "and right" };
-            int temp1 = 1;
-            int temp2 = 1;
-            if (_throttleController > 0)
-            {
-                temp1 = (int)Math.Ceiling(_throttleController) + 1;
-            }
-            else if (_throttleController < 0)
-            {
-                temp1 = (int)Math.Floor(_throttleController) + 1;
-            }
+            string output = Direction.EncodeDirection(_throttleController, _directionController);
 
-            if (_directionController > 0)
-            {
-                temp2 = (int)Math.Ceiling(_directionController) + 1;
-            }
-            else if (_directionController < 0)
-            {
-                temp2 = (int)Math.Floor(_directionController) + 1;
-            }
-
-            LogField.AppendText(DateTime.Now + ":\t" + throttleStrings[temp1] + " " +
-                                directionStrings[temp2] + "\n");
+            LogField.AppendText(output);
             LogField.ScrollToEnd();
             MoveVehicle(_throttleController, _directionController);
             _previousState = state;
@@ -299,9 +278,8 @@ namespace RobotClient
 
             if (Keyboard.IsKeyDown(Key.D) || Keyboard.IsKeyDown(Key.Right)) directionMotor++;
 
-            LogField.AppendText(DateTime.Now + ":\t" + throttleStrings[(int)throttleMotor + 1] + " " +
-                                directionStrings[(int)directionMotor + 1] + "\n");
- 
+            string output = Direction.EncodeDirection(throttleMotor, directionMotor);
+            LogField.AppendText(output);
             MoveVehicle(throttleMotor, directionMotor);
             LogField.ScrollToEnd();
         }
@@ -317,9 +295,6 @@ namespace RobotClient
             var directionMotor = 0.0;
             var throttleMotor = 0.0;
 
-            string[] throttleStrings = { "Now Moving backwards", "Now In Neutral", "Now Moving forwards" };
-            string[] directionString = { "and left", "", "and right" };
-
             if (Keyboard.IsKeyUp(Key.W) && Keyboard.IsKeyUp(Key.Up)) throttleMotor--;
 
             if (Keyboard.IsKeyUp(Key.S) && Keyboard.IsKeyUp(Key.Down)) throttleMotor++;
@@ -328,8 +303,9 @@ namespace RobotClient
 
             if (Keyboard.IsKeyUp(Key.D) && Keyboard.IsKeyUp(Key.Right)) directionMotor--;
 
-            LogField.AppendText(DateTime.Now + ":\t" + throttleStrings[(int)throttleMotor + 1] + " " +
-                                directionString[(int)directionMotor + 1] + "\n");
+            string output = Direction.EncodeDirection(throttleMotor, directionMotor);
+
+            LogField.AppendText(output);
             MoveVehicle(throttleMotor, directionMotor);
             LogField.ScrollToEnd();
         }
