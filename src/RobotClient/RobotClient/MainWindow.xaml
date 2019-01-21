@@ -45,6 +45,7 @@
             <MenuItem Header="_Options">
                 <MenuItem Header="_Default Control Mode" Name="DefaultHeader" IsEnabled="False" Click="ModeChanger_Click"/>
                 <MenuItem Header="_Alternative Control Mode" Name="AlternativeHeader" IsEnabled="True" Click="ModeChanger_Click"/>
+                <MenuItem Header="_Mirroring Mode" Name="MirroringHeader" IsEnabled="True" Click="ModeChanger_Click"/>
             </MenuItem>
             <MenuItem Header="_Help" Height="31">
                 <MenuItem Header="_About" Click="About_Click" />
