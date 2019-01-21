@@ -246,7 +246,7 @@ namespace RobotClient
 
             }
 
-            string output = Direction.EncodeDirection(_throttleController, _directionController);
+            string output = Direction.EncodeDirection(DateTime.Now, _throttleController, _directionController);
 
             LogField.AppendText(output);
             LogField.ScrollToEnd();
@@ -278,7 +278,7 @@ namespace RobotClient
 
             if (Keyboard.IsKeyDown(Key.D) || Keyboard.IsKeyDown(Key.Right)) directionMotor++;
 
-            string output = Direction.EncodeDirection(throttleMotor, directionMotor);
+            string output = Direction.EncodeDirection(DateTime.Now, throttleMotor, directionMotor);
             LogField.AppendText(output);
             MoveVehicle(throttleMotor, directionMotor);
             LogField.ScrollToEnd();
@@ -303,7 +303,7 @@ namespace RobotClient
 
             if (Keyboard.IsKeyUp(Key.D) && Keyboard.IsKeyUp(Key.Right)) directionMotor--;
 
-            string output = Direction.EncodeDirection(throttleMotor, directionMotor);
+            string output = Direction.EncodeDirection(DateTime.Now, throttleMotor, directionMotor);
 
             LogField.AppendText(output);
             MoveVehicle(throttleMotor, directionMotor);
