@@ -10,7 +10,7 @@ namespace RobotClient
     {
         private PiCarConnection piCar;
         private Thread replayThread;
-        private List<Direction> savedInputs;
+        private List<Tuple<TimeSpan, Direction>> savedOffsetInputs;
 
 
         /**
@@ -33,30 +33,29 @@ namespace RobotClient
         /**
          * Create a replay which will send the SavedInputs to the piCar after .Start() is called.
          */
-        public Replay(PiCarConnection piCarConnection, List<Direction> SavedInputs)
+        public Replay(PiCarConnection piCarConnection, List<Direction> savedInputs)
         {
             this.piCar = piCarConnection;
-            this.savedInputs = SavedInputs;
+
+            // Map Direction -> <Offset to next instruction, Direction>
+            var priorTime = savedInputs[0].time;
+            this.savedOffsetInputs = savedInputs.Select(x =>
+            {
+                var t = Tuple.Create(x.time - priorTime, x);
+                priorTime = x.time;
+                return t;
+            }).ToList();
             this.replayThread = new Thread(DoReplay);
         }
 
         private void DoReplay()
         {
-            var logBeginTime = savedInputs[0].time;
-            var replayBeginTime = DateTime.Now;
-
             try
             {
-                while (savedInputs.Any())
+                foreach (var x in savedOffsetInputs)
                 {
-                    var logElapsed = savedInputs[0].time - logBeginTime;
-                    var replayElapsed = DateTime.Now - replayBeginTime;
-
-                    if (logElapsed <= replayElapsed)
-                    {
-                        piCar.SetMotion(savedInputs[0].throttle, savedInputs[0].direction);
-                        savedInputs.RemoveAt(0);
-                    }
+                    Thread.Sleep(x.Item1);
+                    piCar.SetMotion(x.Item2.throttle, x.Item2.direction);
                 }
             }
             catch (ThreadAbortException)
