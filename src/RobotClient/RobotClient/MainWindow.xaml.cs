@@ -35,6 +35,7 @@ namespace RobotClient
 
         //true is the default simulator style mode, false is RC mode
         private bool _controlMode;
+	private bool _mirrorMode;
 
         /**
          * Method that runs when the main window launches
@@ -55,6 +56,7 @@ namespace RobotClient
             CommandBindings.Add(new CommandBinding(newKeybind, Register_Click));
 
             _controlMode = true;
+	    _mirrorMode = false;
 
             //Checks if a controller is plugged into the current OS
             _controller = new Controller(UserIndex.One);
@@ -122,6 +124,7 @@ namespace RobotClient
                 _controlMode = false;
                 DefaultHeader.IsEnabled = true;
                 AlternativeHeader.IsEnabled = false;
+		MirroringHeader.isEnabled = true;
                 LogField.AppendText(DateTime.Now + ":\tUsing RC control mode\n");
             }
             else
@@ -129,8 +132,19 @@ namespace RobotClient
                 _controlMode = true;
                 DefaultHeader.IsEnabled = false;
                 AlternativeHeader.IsEnabled = true;
+		MirroringHeader.isEnabled = true;
                 LogField.AppendText(DateTime.Now + ":\tUsing simulator control mode\n");
             }
+            LogField.ScrollToEnd();
+        }
+	    
+private void Mirror_Click(object sender, RoutedEventArgs e)
+        {
+            _mirrorMode = true;
+	DefaultHeader.IsEnabled = true;
+        AlternativeHeader.IsEnabled = true;
+	MirroringHeader.isEnabled = false;
+	LogField.AppendText(DateTime.Now + ":\tUsing mirroring mode\n");
             LogField.ScrollToEnd();
         }
 
