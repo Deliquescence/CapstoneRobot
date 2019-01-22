@@ -30,7 +30,9 @@ namespace RobotClient
             return Tuple.Create(firstReplay, secondReplay);
         }
 
-
+        /**
+         * Create a replay which will send the SavedInputs to the piCar after .Start() is called.
+         */
         public Replay(PiCarConnection piCarConnection, List<Direction> SavedInputs)
         {
             this.piCar = piCarConnection;
@@ -63,11 +65,18 @@ namespace RobotClient
             }
         }
 
+        /**
+         * Begin sending the saved inputs to the car.
+         */
         public void Start()
         {
             this.replayThread.Start();
         }
 
+        /**
+         * Stop sending inputs to the car.
+         * The replay cannot be restarted after doing this.
+         */
         public void Stop()
         {
             this.replayThread.Abort();
