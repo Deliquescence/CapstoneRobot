@@ -16,7 +16,7 @@ namespace RobotClient
         private readonly static string[] ThrottleStrings = { "Moving backwards", "In Neutral", "Moving forwards" };
         private readonly static string[] DirectionStrings = { "and left", "", "and right" };
 
-        private Direction(DateTime time, double throttle, double direction)
+        public Direction(DateTime time, double throttle, double direction)
         {
             this.time = time;
             this.throttle = throttle;
