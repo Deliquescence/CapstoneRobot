@@ -16,6 +16,7 @@ class PiCarServicer(picar_pb2_grpc.PiCarServicer):
     def __init__(self, driver):
         self.driver = driver
         self.streaming = False
+        self.follower_streaming = False
 
     def ReceiveConnection(self, request, context):
         """Handshake between PiCar and desktop application"""
@@ -66,6 +67,36 @@ class PiCarServicer(picar_pb2_grpc.PiCarServicer):
         """Stop the sending of a video stream"""
         self.streaming = False
         print('Stopping video stream')
+        return picar_pb2.Empty()
+
+    def FollowerStream(self, request, context):
+        """Send video feed and follower actions.
+
+        If we are not a follower, the stream is empty."""
+        # Empty the follower queue
+        self.driver.clear_follower_queue()
+
+        # And start streaming
+        self.follower_streaming = True
+        print 'Starting follower stream'
+        while self.follower_streaming:
+            follower_data = self.driver.follower_queue.get()
+            image = cv2.resize(follower_data.frame, (320, 240))
+            _, b = cv2.imencode('.jpg', image)
+            b = b.tobytes()
+
+            image_message = picar_pb2.ImageCapture(image=b)
+            action = picar_pb2.SetMotion(throttle=follower_data.throttle,
+                                         direction=follower_data.direction)
+            message = picar_pb2.FollowerData(image=image_message,
+                                             action=action)
+            yield message
+
+    def StopFollowerStream(self, request, context):
+        """Stop the sending of the follower stream"""
+
+        self.follower_streaming = False
+        print('Stopping follower stream')
         return picar_pb2.Empty()
 
 

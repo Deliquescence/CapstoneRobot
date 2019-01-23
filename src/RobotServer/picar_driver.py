@@ -3,6 +3,7 @@ import cv2
 import time
 import picar_server
 import picar_helper
+from Queue import Queue
 import socket
 import numpy as np
 
@@ -39,12 +40,18 @@ class PiCarDriver(object):
         self.mode = 0
         self.frame = cv2.imread('init.jpg')
         self.next_throttle_and_dir = (0.0, 0.0)
+        self.follower_queue = Queue(maxsize=20)
+        self._prev_throttle = 0.0
+        self._prev_direction = 0.0
 
     def set_throttle_and_dir(self, throttle, direction):
         self.next_throttle_and_dir = (throttle, direction)
 
+    def clear_follower_queue(self):
+        self.follower_queue = Queue(maxsize=20)
+
     def run(self):
-        picar_helper.move(0.0, 0.0)
+        self._move(0.0, 0.0)
 
         # loop unless break occurs
         while True:
@@ -60,21 +67,38 @@ class PiCarDriver(object):
 
             if self.mode == 1:
                 # leader mode
-                picar_helper.move(self.next_throttle_and_dir[0] / 2,
-                                  self.next_throttle_and_dir[1])
+                self._move(self.next_throttle_and_dir[0] / 2,
+                           self.next_throttle_and_dir[1])
             elif self.mode == 2:
                 # follower mode
                 # if no base corners, get corners
                 bc = getBaseCorners(self.frame)
                 if bc is not None:
                     throttle, direction = tagID(self.frame, bc)
-                    picar_helper.move(throttle, direction)
+                    self._move(throttle, direction)
                 else:
                     print "Base Tag Corners Not Detected!"
+
+                # Add frame, and move vector to follower queue
+                self.follower_queue.put(
+                    FollowerData(self.frame, self._prev_throttle,
+                                 self._prev_direction))
             else:
-                picar_helper.move(0.0, 0.0)
+                self._move(0.0, 0.0)
 
             time.sleep(1 / 30)
+
+    def _move(self, throttle, direction):
+        self._prev_throttle = throttle
+        self._prev_direction = direction
+        picar_helper.move(throttle, direction)
+
+
+class FollowerData(object):
+    def __init__(self, frame, throttle, direction):
+        self.frame = frame
+        self.throttle = throttle
+        self.direction = direction
 
 
 class BaseCorners(object):
