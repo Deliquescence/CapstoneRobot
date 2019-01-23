@@ -17,10 +17,10 @@ namespace RobotClient
          * Given two different car connections and a list of inputs,
          * start replaying to the first car and then replay to the second car after a delay.
          */
-        public static Tuple<Replay, Replay> StartTwoWithDelay(PiCarConnection first, PiCarConnection second, List<Direction> SavedInputs, TimeSpan delay)
+        public static Tuple<Replay, Replay> StartTwoWithDelay(PiCarConnection first, PiCarConnection second, List<Direction> savedInputs, TimeSpan delay)
         {
-            var firstReplay = new Replay(first, SavedInputs);
-            var secondReplay = new Replay(second, SavedInputs);
+            var firstReplay = new Replay(first, savedInputs);
+            var secondReplay = new Replay(second, savedInputs);
 
             firstReplay.Start();
 
