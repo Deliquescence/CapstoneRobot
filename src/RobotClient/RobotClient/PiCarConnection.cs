@@ -89,13 +89,14 @@ namespace RobotClient
                             var imageBytes = responseStream.Current.Image.ToByteArray();
                             //Convert it to ImageSource type
                             var img = (ImageSource)new ImageSourceConverter().ConvertFrom(imageBytes);
+                            //save to file
                             var bmp = (BitmapSource)img;
-                            using (var fileStream = new FileStream("filename", FileMode.Create))
-    {
-        BitmapEncoder encoder = new PngBitmapEncoder();
-        encoder.Frames.Add(BitmapFrame.Create(bmp));
-        encoder.Save(fileStream);
-    }
+                            using (var fileStream = new FileStream("filename", System.IO.FileMode.Create))
+                            {
+                                BitmapEncoder encoder = new PngBitmapEncoder();
+                                encoder.Frames.Add(BitmapFrame.Create(bmp));
+                                encoder.Save(fileStream);
+                            }
                             //Call update UI
                             _mainWindow.UpdateStream(img);
                         }
