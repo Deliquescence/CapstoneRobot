@@ -91,7 +91,7 @@ namespace RobotClient
                             var img = (ImageSource)new ImageSourceConverter().ConvertFrom(imageBytes);
                             //save to file
                             var bmp = (BitmapSource)img;
-                            using (var fileStream = new FileStream("filename", System.IO.FileMode.Create))
+                            using (var fileStream = new System.IO.FileStream("filename", System.IO.FileMode.Create))
                             {
                                 BitmapEncoder encoder = new PngBitmapEncoder();
                                 encoder.Frames.Add(BitmapFrame.Create(bmp));
