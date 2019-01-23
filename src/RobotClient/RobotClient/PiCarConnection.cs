@@ -83,19 +83,25 @@ namespace RobotClient
                     {
                         var responseStream = call.ResponseStream;
 
+                        var save_dir_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\PiCarImages";
+                        var session_prefix = "a";
+                        bool save_to_disk = true;
+                        int frame_count = 0;
+
                         while (await responseStream.MoveNext())
                         {
                             //Get a Byte[] array from the message
                             var imageBytes = responseStream.Current.Image.ToByteArray();
                             //Convert it to ImageSource type
                             var img = (ImageSource)new ImageSourceConverter().ConvertFrom(imageBytes);
-                            //save to file
-                            var bmp = (BitmapSource)img;
-                            using (var fileStream = new System.IO.FileStream("filename", System.IO.FileMode.Create))
+
+                            if (save_to_disk)
                             {
-                                BitmapEncoder encoder = new PngBitmapEncoder();
-                                encoder.Frames.Add(BitmapFrame.Create(bmp));
-                                encoder.Save(fileStream);
+                                frame_count += 1;
+                                using (var fileStream = new System.IO.FileStream($"{save_dir_path}\\{session_prefix}_{frame_count}.jpg", System.IO.FileMode.Create))
+                                {
+                                    await fileStream.WriteAsync(imageBytes, 0, imageBytes.Length);
+                                }
                             }
                             //Call update UI
                             _mainWindow.UpdateStream(img);
