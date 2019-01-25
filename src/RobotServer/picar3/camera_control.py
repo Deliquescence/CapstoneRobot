@@ -8,7 +8,7 @@
 * Update      :  
 **********************************************************************
 '''
-from SunFounder_PCA9685 import Servo
+from picar3.SunFounder_PCA9685_3 import Servo
 
 class Camera_Control(object):
 	CAMERA_PAN_CHANNEL = 1

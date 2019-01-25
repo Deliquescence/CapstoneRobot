@@ -26,7 +26,7 @@ class PiCarServicer(picar_pb2_grpc.PiCarServicer):
 
 	def ReceiveConnection(self, request, context):
 		"""Handshake between PiCar and desktop application"""
-		print('Received connection request from %s' % request.message)
+		print(f'Received connection request from {request.message}')
 		#Send a ConnectAck message showing success
 		return picar_pb2.ConnectAck(success=True)
 
@@ -35,12 +35,12 @@ class PiCarServicer(picar_pb2_grpc.PiCarServicer):
 		global mode
 		if (mode != request.mode):
 			#If the request is for a different mode, send a success ack
-			print('Switching mode from %s to %s' % (mode, request.mode))
+			print(f'Switching mode from {mode} to {request.mode}')
 			mode = request.mode
 			return picar_pb2.ModeAck(success=True)
 		else:
 			#If the request is for the mode already in, send a failure ack
-			print('Request received for mode %s, but already in that mode!' % (request.mode))
+			print(f'Request received for mode {request.mode}, but already in that mode!')
 			return picar_pb2.ModeAck(success=False)
 
 	def RemoteControl(self, request, context):
@@ -50,7 +50,7 @@ class PiCarServicer(picar_pb2_grpc.PiCarServicer):
 		global direction
 		throttle = max(-1, min(request.throttle, 1))
 		direction = max(-1, min(request.direction, 1))
-		print('Setting wheels to %f throttle and %f steering' % (throttle, direction))
+		print(f'Setting wheels to {throttle} throttle and {direction} steering')
 		return picar_pb2.Empty()
 		
 	def VideoStream(self, request, context):
@@ -74,6 +74,7 @@ class PiCarServicer(picar_pb2_grpc.PiCarServicer):
 		self.streaming = False
 		print('Stopping video stream')
 		return picar_pb2.Empty()
+	
 		
 def getServer():
 	server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

@@ -61,8 +61,8 @@ def main():
     server = picar_server.getServer()
     server.start()
 
-    print "Server Started on "+socket.gethostname()+"\n"
-    print "Press Ctrl-C to quit"
+    print(f'Server Started on {socket.gethostname()}\n')
+    print(Press Ctrl-C to quit)
 
     picar_helper.move(0.0,0.0)
 
@@ -95,7 +95,7 @@ def main():
                 throttle, direction = tagID()
                 picar_helper.move(throttle, direction)
             else:
-                print "Base Tag Corners Not Detected!"
+                print("Base Tag Corners Not Detected!")
         else:
             picar_helper.move(0.0, 0.0)
             baseTopLeft = None
