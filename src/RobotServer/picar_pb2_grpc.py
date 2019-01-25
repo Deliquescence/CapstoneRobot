@@ -39,9 +39,15 @@ class PiCarStub(object):
         request_serializer=picar__pb2.EndVideoStream.SerializeToString,
         response_deserializer=picar__pb2.Empty.FromString,
         )
-    self.CameraControl = channel.unary_unary(
-        '/CapstoneRobot.PiCar/CameraControl',
-        request_serializer=picar__pb2.MoveCamera.SerializeToString,
+
+    self.FollowerStream = channel.unary_stream(
+        '/SeniorProjectRobot.PiCar/FollowerStream',
+        request_serializer=picar__pb2.Empty.SerializeToString,
+        response_deserializer=picar__pb2.FollowerData.FromString,
+        )
+    self.StopFollowerStream = channel.unary_unary(
+        '/SeniorProjectRobot.PiCar/StopFollowerStream',
+        request_serializer=picar__pb2.Empty.SerializeToString,
         response_deserializer=picar__pb2.Empty.FromString,
         )
 
@@ -85,8 +91,16 @@ class PiCarServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
-  def CameraControl(self, request, context):
-    """Control camera tilt and pan
+
+  def FollowerStream(self, request, context):
+    """Start follower stream
+    """
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def StopFollowerStream(self, request, context):
+    """End follower stream
     """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
@@ -120,9 +134,14 @@ def add_PiCarServicer_to_server(servicer, server):
           request_deserializer=picar__pb2.EndVideoStream.FromString,
           response_serializer=picar__pb2.Empty.SerializeToString,
       ),
-      'CameraControl': grpc.unary_unary_rpc_method_handler(
-          servicer.CameraControl,
-          request_deserializer=picar__pb2.MoveCamera.FromString,
+      'FollowerStream': grpc.unary_stream_rpc_method_handler(
+          servicer.FollowerStream,
+          request_deserializer=picar__pb2.Empty.FromString,
+          response_serializer=picar__pb2.FollowerData.SerializeToString,
+      ),
+      'StopFollowerStream': grpc.unary_unary_rpc_method_handler(
+          servicer.StopFollowerStream,
+          request_deserializer=picar__pb2.Empty.FromString,
           response_serializer=picar__pb2.Empty.SerializeToString,
       ),
   }

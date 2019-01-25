@@ -21,6 +21,12 @@ service PiCar {
 	
 	//End video streaming
 	rpc StopStream(EndVideoStream) returns (Empty) {}
+
+	//Start follower stream
+	rpc FollowerStream(Empty) returns (stream FollowerData) {}
+
+	//End follower stream
+	rpc StopFollowerStream(Empty) returns (Empty) {}
 }
 
 //An empty message
@@ -81,3 +87,7 @@ message EndVideoStream {
 	//Message to indiciate to stop streaming video
 }
 
+message FollowerData {
+	ImageCapture image = 1;
+	SetMotion action = 2;
+}
