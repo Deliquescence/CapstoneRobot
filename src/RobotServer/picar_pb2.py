@@ -19,8 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='CapstoneRobot',
   syntax='proto3',
   serialized_options=_b('\252\002\013RobotClient'),
-
-  serialized_pb=_b('\n\x0bpicar.proto\x12\x12SeniorProjectRobot\"\x07\n\x05\x45mpty\"!\n\x0e\x43onnectRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\"\x1d\n\nConnectAck\x12\x0f\n\x07success\x18\x01 \x01(\x08\"i\n\x0bModeRequest\x12\x32\n\x04mode\x18\x01 \x01(\x0e\x32$.SeniorProjectRobot.ModeRequest.Mode\"&\n\x04Mode\x12\x08\n\x04IDLE\x10\x00\x12\x08\n\x04LEAD\x10\x01\x12\n\n\x06\x46OLLOW\x10\x02\"\x1a\n\x07ModeAck\x12\x0f\n\x07success\x18\x01 \x01(\x08\"0\n\tSetMotion\x12\x10\n\x08throttle\x18\x01 \x01(\x01\x12\x11\n\tdirection\x18\x02 \x01(\x01\"\x12\n\x10StartVideoStream\"\x1d\n\x0cImageCapture\x12\r\n\x05image\x18\x01 \x01(\x0c\"\x10\n\x0e\x45ndVideoStream\"n\n\x0c\x46ollowerData\x12/\n\x05image\x18\x01 \x01(\x0b\x32 .SeniorProjectRobot.ImageCapture\x12-\n\x06\x61\x63tion\x18\x02 \x01(\x0b\x32\x1d.SeniorProjectRobot.SetMotion2\xc8\x04\n\x05PiCar\x12Y\n\x11ReceiveConnection\x12\".SeniorProjectRobot.ConnectRequest\x1a\x1e.SeniorProjectRobot.ConnectAck\"\x00\x12L\n\nSwitchMode\x12\x1f.SeniorProjectRobot.ModeRequest\x1a\x1b.SeniorProjectRobot.ModeAck\"\x00\x12K\n\rRemoteControl\x12\x1d.SeniorProjectRobot.SetMotion\x1a\x19.SeniorProjectRobot.Empty\"\x00\x12Y\n\x0bVideoStream\x12$.SeniorProjectRobot.StartVideoStream\x1a .SeniorProjectRobot.ImageCapture\"\x00\x30\x01\x12M\n\nStopStream\x12\".SeniorProjectRobot.EndVideoStream\x1a\x19.SeniorProjectRobot.Empty\"\x00\x12Q\n\x0e\x46ollowerStream\x12\x19.SeniorProjectRobot.Empty\x1a .SeniorProjectRobot.FollowerData\"\x00\x30\x01\x12L\n\x12StopFollowerStream\x12\x19.SeniorProjectRobot.Empty\x1a\x19.SeniorProjectRobot.Empty\"\x00\x42\x0e\xaa\x02\x0bRobotClientb\x06proto3')
+  serialized_pb=_b('\n\x0bpicar.proto\x12\rCapstoneRobot\"\x07\n\x05\x45mpty\"!\n\x0e\x43onnectRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\"\x1d\n\nConnectAck\x12\x0f\n\x07success\x18\x01 \x01(\x08\"d\n\x0bModeRequest\x12-\n\x04mode\x18\x01 \x01(\x0e\x32\x1f.CapstoneRobot.ModeRequest.Mode\"&\n\x04Mode\x12\x08\n\x04IDLE\x10\x00\x12\x08\n\x04LEAD\x10\x01\x12\n\n\x06\x46OLLOW\x10\x02\"\x1a\n\x07ModeAck\x12\x0f\n\x07success\x18\x01 \x01(\x08\"0\n\tSetMotion\x12\x10\n\x08throttle\x18\x01 \x01(\x01\x12\x11\n\tdirection\x18\x02 \x01(\x01\"\x12\n\x10StartVideoStream\"\x1d\n\x0cImageCapture\x12\r\n\x05image\x18\x01 \x01(\x0c\"\x10\n\x0e\x45ndVideoStream\"d\n\x0c\x46ollowerData\x12*\n\x05image\x18\x01 \x01(\x0b\x32\x1b.CapstoneRobot.ImageCapture\x12(\n\x06\x61\x63tion\x18\x02 \x01(\x0b\x32\x18.CapstoneRobot.SetMotion2\x82\x04\n\x05PiCar\x12O\n\x11ReceiveConnection\x12\x1d.CapstoneRobot.ConnectRequest\x1a\x19.CapstoneRobot.ConnectAck\"\x00\x12\x42\n\nSwitchMode\x12\x1a.CapstoneRobot.ModeRequest\x1a\x16.CapstoneRobot.ModeAck\"\x00\x12\x41\n\rRemoteControl\x12\x18.CapstoneRobot.SetMotion\x1a\x14.CapstoneRobot.Empty\"\x00\x12O\n\x0bVideoStream\x12\x1f.CapstoneRobot.StartVideoStream\x1a\x1b.CapstoneRobot.ImageCapture\"\x00\x30\x01\x12\x43\n\nStopStream\x12\x1d.CapstoneRobot.EndVideoStream\x1a\x14.CapstoneRobot.Empty\"\x00\x12G\n\x0e\x46ollowerStream\x12\x14.CapstoneRobot.Empty\x1a\x1b.CapstoneRobot.FollowerData\"\x00\x30\x01\x12\x42\n\x12StopFollowerStream\x12\x14.CapstoneRobot.Empty\x1a\x14.CapstoneRobot.Empty\"\x00\x42\x0e\xaa\x02\x0bRobotClientb\x06proto3')
 )
 
 
@@ -318,60 +317,22 @@ _ENDVIDEOSTREAM = _descriptor.Descriptor(
 )
 
 
-_MOVECAMERA = _descriptor.Descriptor(
-  name='MoveCamera',
-  full_name='CapstoneRobot.MoveCamera',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='horizontal_angle', full_name='CapstoneRobot.MoveCamera.horizontal_angle', index=0,
-      number=1, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='vertical_angle', full_name='CapstoneRobot.MoveCamera.vertical_angle', index=1,
-      number=2, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=354,
-  serialized_end=416,
-)
-
-
 _FOLLOWERDATA = _descriptor.Descriptor(
   name='FollowerData',
-  full_name='SeniorProjectRobot.FollowerData',
+  full_name='CapstoneRobot.FollowerData',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='image', full_name='SeniorProjectRobot.FollowerData.image', index=0,
+      name='image', full_name='CapstoneRobot.FollowerData.image', index=0,
       number=1, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='action', full_name='SeniorProjectRobot.FollowerData.action', index=1,
+      name='action', full_name='CapstoneRobot.FollowerData.action', index=1,
       number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -389,8 +350,8 @@ _FOLLOWERDATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=364,
-  serialized_end=474,
+  serialized_start=354,
+  serialized_end=454,
 )
 
 _MODEREQUEST.fields_by_name['mode'].enum_type = _MODEREQUEST_MODE
@@ -475,10 +436,9 @@ _sym_db.RegisterMessage(EndVideoStream)
 FollowerData = _reflection.GeneratedProtocolMessageType('FollowerData', (_message.Message,), dict(
   DESCRIPTOR = _FOLLOWERDATA,
   __module__ = 'picar_pb2'
-  # @@protoc_insertion_point(class_scope:SeniorProjectRobot.FollowerData)
+  # @@protoc_insertion_point(class_scope:CapstoneRobot.FollowerData)
   ))
 _sym_db.RegisterMessage(FollowerData)
-
 
 
 DESCRIPTOR._options = None
@@ -489,8 +449,8 @@ _PICAR = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=477,
-  serialized_end=1061,
+  serialized_start=457,
+  serialized_end=971,
   methods=[
   _descriptor.MethodDescriptor(
     name='ReceiveConnection',
@@ -539,7 +499,7 @@ _PICAR = _descriptor.ServiceDescriptor(
   ),
   _descriptor.MethodDescriptor(
     name='FollowerStream',
-    full_name='SeniorProjectRobot.PiCar.FollowerStream',
+    full_name='CapstoneRobot.PiCar.FollowerStream',
     index=5,
     containing_service=None,
     input_type=_EMPTY,
@@ -548,7 +508,7 @@ _PICAR = _descriptor.ServiceDescriptor(
   ),
   _descriptor.MethodDescriptor(
     name='StopFollowerStream',
-    full_name='SeniorProjectRobot.PiCar.StopFollowerStream',
+    full_name='CapstoneRobot.PiCar.StopFollowerStream',
     index=6,
     containing_service=None,
     input_type=_EMPTY,

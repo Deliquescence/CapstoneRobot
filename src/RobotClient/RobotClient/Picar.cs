@@ -24,25 +24,29 @@ namespace RobotClient {
     static PicarReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "CgtwaWNhci5wcm90bxISU2VuaW9yUHJvamVjdFJvYm90IgcKBUVtcHR5IiEK",
-            "DkNvbm5lY3RSZXF1ZXN0Eg8KB21lc3NhZ2UYASABKAkiHQoKQ29ubmVjdEFj",
-            "axIPCgdzdWNjZXNzGAEgASgIImkKC01vZGVSZXF1ZXN0EjIKBG1vZGUYASAB",
-            "KA4yJC5TZW5pb3JQcm9qZWN0Um9ib3QuTW9kZVJlcXVlc3QuTW9kZSImCgRN",
-            "b2RlEggKBElETEUQABIICgRMRUFEEAESCgoGRk9MTE9XEAIiGgoHTW9kZUFj",
-            "axIPCgdzdWNjZXNzGAEgASgIIjAKCVNldE1vdGlvbhIQCgh0aHJvdHRsZRgB",
-            "IAEoARIRCglkaXJlY3Rpb24YAiABKAEiEgoQU3RhcnRWaWRlb1N0cmVhbSId",
-            "CgxJbWFnZUNhcHR1cmUSDQoFaW1hZ2UYASABKAwiEAoORW5kVmlkZW9TdHJl",
-            "YW0ypwMKBVBpQ2FyElkKEVJlY2VpdmVDb25uZWN0aW9uEiIuU2VuaW9yUHJv",
-            "amVjdFJvYm90LkNvbm5lY3RSZXF1ZXN0Gh4uU2VuaW9yUHJvamVjdFJvYm90",
-            "LkNvbm5lY3RBY2siABJMCgpTd2l0Y2hNb2RlEh8uU2VuaW9yUHJvamVjdFJv",
-            "Ym90Lk1vZGVSZXF1ZXN0GhsuU2VuaW9yUHJvamVjdFJvYm90Lk1vZGVBY2si",
-            "ABJLCg1SZW1vdGVDb250cm9sEh0uU2VuaW9yUHJvamVjdFJvYm90LlNldE1v",
-            "dGlvbhoZLlNlbmlvclByb2plY3RSb2JvdC5FbXB0eSIAElkKC1ZpZGVvU3Ry",
-            "ZWFtEiQuU2VuaW9yUHJvamVjdFJvYm90LlN0YXJ0VmlkZW9TdHJlYW0aIC5T",
-            "ZW5pb3JQcm9qZWN0Um9ib3QuSW1hZ2VDYXB0dXJlIgAwARJNCgpTdG9wU3Ry",
-            "ZWFtEiIuU2VuaW9yUHJvamVjdFJvYm90LkVuZFZpZGVvU3RyZWFtGhkuU2Vu",
-            "aW9yUHJvamVjdFJvYm90LkVtcHR5IgBCDqoCC1JvYm90Q2xpZW50YgZwcm90",
-            "bzM="));
+            "CgtwaWNhci5wcm90bxINQ2Fwc3RvbmVSb2JvdCIHCgVFbXB0eSIhCg5Db25u",
+            "ZWN0UmVxdWVzdBIPCgdtZXNzYWdlGAEgASgJIh0KCkNvbm5lY3RBY2sSDwoH",
+            "c3VjY2VzcxgBIAEoCCJkCgtNb2RlUmVxdWVzdBItCgRtb2RlGAEgASgOMh8u",
+            "Q2Fwc3RvbmVSb2JvdC5Nb2RlUmVxdWVzdC5Nb2RlIiYKBE1vZGUSCAoESURM",
+            "RRAAEggKBExFQUQQARIKCgZGT0xMT1cQAiIaCgdNb2RlQWNrEg8KB3N1Y2Nl",
+            "c3MYASABKAgiMAoJU2V0TW90aW9uEhAKCHRocm90dGxlGAEgASgBEhEKCWRp",
+            "cmVjdGlvbhgCIAEoASISChBTdGFydFZpZGVvU3RyZWFtIh0KDEltYWdlQ2Fw",
+            "dHVyZRINCgVpbWFnZRgBIAEoDCIQCg5FbmRWaWRlb1N0cmVhbSJkCgxGb2xs",
+            "b3dlckRhdGESKgoFaW1hZ2UYASABKAsyGy5DYXBzdG9uZVJvYm90LkltYWdl",
+            "Q2FwdHVyZRIoCgZhY3Rpb24YAiABKAsyGC5DYXBzdG9uZVJvYm90LlNldE1v",
+            "dGlvbjKCBAoFUGlDYXISTwoRUmVjZWl2ZUNvbm5lY3Rpb24SHS5DYXBzdG9u",
+            "ZVJvYm90LkNvbm5lY3RSZXF1ZXN0GhkuQ2Fwc3RvbmVSb2JvdC5Db25uZWN0",
+            "QWNrIgASQgoKU3dpdGNoTW9kZRIaLkNhcHN0b25lUm9ib3QuTW9kZVJlcXVl",
+            "c3QaFi5DYXBzdG9uZVJvYm90Lk1vZGVBY2siABJBCg1SZW1vdGVDb250cm9s",
+            "EhguQ2Fwc3RvbmVSb2JvdC5TZXRNb3Rpb24aFC5DYXBzdG9uZVJvYm90LkVt",
+            "cHR5IgASTwoLVmlkZW9TdHJlYW0SHy5DYXBzdG9uZVJvYm90LlN0YXJ0Vmlk",
+            "ZW9TdHJlYW0aGy5DYXBzdG9uZVJvYm90LkltYWdlQ2FwdHVyZSIAMAESQwoK",
+            "U3RvcFN0cmVhbRIdLkNhcHN0b25lUm9ib3QuRW5kVmlkZW9TdHJlYW0aFC5D",
+            "YXBzdG9uZVJvYm90LkVtcHR5IgASRwoORm9sbG93ZXJTdHJlYW0SFC5DYXBz",
+            "dG9uZVJvYm90LkVtcHR5GhsuQ2Fwc3RvbmVSb2JvdC5Gb2xsb3dlckRhdGEi",
+            "ADABEkIKElN0b3BGb2xsb3dlclN0cmVhbRIULkNhcHN0b25lUm9ib3QuRW1w",
+            "dHkaFC5DYXBzdG9uZVJvYm90LkVtcHR5IgBCDqoCC1JvYm90Q2xpZW50YgZw",
+            "cm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
@@ -54,7 +58,8 @@ namespace RobotClient {
             new pbr::GeneratedClrTypeInfo(typeof(global::RobotClient.SetMotion), global::RobotClient.SetMotion.Parser, new[]{ "Throttle", "Direction" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::RobotClient.StartVideoStream), global::RobotClient.StartVideoStream.Parser, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::RobotClient.ImageCapture), global::RobotClient.ImageCapture.Parser, new[]{ "Image" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::RobotClient.EndVideoStream), global::RobotClient.EndVideoStream.Parser, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::RobotClient.EndVideoStream), global::RobotClient.EndVideoStream.Parser, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::RobotClient.FollowerData), global::RobotClient.FollowerData.Parser, new[]{ "Image", "Action" }, null, null, null)
           }));
     }
     #endregion
@@ -1220,6 +1225,175 @@ namespace RobotClient {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class FollowerData : pb::IMessage<FollowerData> {
+    private static readonly pb::MessageParser<FollowerData> _parser = new pb::MessageParser<FollowerData>(() => new FollowerData());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<FollowerData> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[9]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public FollowerData() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public FollowerData(FollowerData other) : this() {
+      image_ = other.image_ != null ? other.image_.Clone() : null;
+      action_ = other.action_ != null ? other.action_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public FollowerData Clone() {
+      return new FollowerData(this);
+    }
+
+    /// <summary>Field number for the "image" field.</summary>
+    public const int ImageFieldNumber = 1;
+    private global::RobotClient.ImageCapture image_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::RobotClient.ImageCapture Image {
+      get { return image_; }
+      set {
+        image_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "action" field.</summary>
+    public const int ActionFieldNumber = 2;
+    private global::RobotClient.SetMotion action_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::RobotClient.SetMotion Action {
+      get { return action_; }
+      set {
+        action_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as FollowerData);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(FollowerData other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(Image, other.Image)) return false;
+      if (!object.Equals(Action, other.Action)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (image_ != null) hash ^= Image.GetHashCode();
+      if (action_ != null) hash ^= Action.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (image_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Image);
+      }
+      if (action_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Action);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (image_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Image);
+      }
+      if (action_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Action);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(FollowerData other) {
+      if (other == null) {
+        return;
+      }
+      if (other.image_ != null) {
+        if (image_ == null) {
+          image_ = new global::RobotClient.ImageCapture();
+        }
+        Image.MergeFrom(other.Image);
+      }
+      if (other.action_ != null) {
+        if (action_ == null) {
+          action_ = new global::RobotClient.SetMotion();
+        }
+        Action.MergeFrom(other.Action);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (image_ == null) {
+              image_ = new global::RobotClient.ImageCapture();
+            }
+            input.ReadMessage(image_);
+            break;
+          }
+          case 18: {
+            if (action_ == null) {
+              action_ = new global::RobotClient.SetMotion();
+            }
+            input.ReadMessage(action_);
+            break;
+          }
         }
       }
     }

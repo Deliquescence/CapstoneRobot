@@ -1,5 +1,5 @@
 syntax = "proto3";
-package SeniorProjectRobot;
+package CapstoneRobot;
 
 option csharp_namespace = "RobotClient";
 

@@ -39,14 +39,13 @@ class PiCarStub(object):
         request_serializer=picar__pb2.EndVideoStream.SerializeToString,
         response_deserializer=picar__pb2.Empty.FromString,
         )
-
     self.FollowerStream = channel.unary_stream(
-        '/SeniorProjectRobot.PiCar/FollowerStream',
+        '/CapstoneRobot.PiCar/FollowerStream',
         request_serializer=picar__pb2.Empty.SerializeToString,
         response_deserializer=picar__pb2.FollowerData.FromString,
         )
     self.StopFollowerStream = channel.unary_unary(
-        '/SeniorProjectRobot.PiCar/StopFollowerStream',
+        '/CapstoneRobot.PiCar/StopFollowerStream',
         request_serializer=picar__pb2.Empty.SerializeToString,
         response_deserializer=picar__pb2.Empty.FromString,
         )
@@ -90,7 +89,6 @@ class PiCarServicer(object):
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
-
 
   def FollowerStream(self, request, context):
     """Start follower stream
