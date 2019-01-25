@@ -158,7 +158,8 @@ class Camera_Control(object):
     
       
 def test():
-	import time
+	import picar
+	picar.setup()
 	
 	camera = Camera_Control(debug = True)
 	try:
