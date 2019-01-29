@@ -426,8 +426,6 @@ namespace RobotClient
          */
         private void About_Click(object sender, RoutedEventArgs e)
         {
-            HandleImageStream(null);
-
             //TODO rewrite for tutorial information/team
             MessageBox.Show(
                 "Created by Team Robot Follower, of Capstone Project Class 4999 of Fall 2018 \nThe Team consists of:\nEric Ramocki and Sean Ramocki on Desktop Application Developer\nAlex Alwardt and Scott Dudley on Network/Desktop Application Developer \nChristian Nickolaou and Anton Cantoldo on Vehicle Application/Systems Developer",
