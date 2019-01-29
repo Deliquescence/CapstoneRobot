@@ -35,10 +35,9 @@ namespace RobotClient
          * start replaying to the first car and then replay to the second car after giving an initial forward acceleration.
          * This is done in order to catch up to the starting position of the first car.
          */
-        public static Tuple<Replay, Replay> StartTwoWithCatchup(PiCarConnection first, PiCarConnection second, List<Direction> savedInputs)
+        public static Tuple<Replay, Replay> StartTwoWithCatchup(PiCarConnection first, PiCarConnection second, List<Direction> savedInputs, double catchupDistance)
         {
-            //todo tweak this
-            TimeSpan CatchupDuration = TimeSpan.FromSeconds(1);
+            TimeSpan CatchupDuration = TimeSpan.FromSeconds(catchupDistance / PiCarConnection.SPEED_AT_MAX_THROTTLE);
 
             var secondInputs = new List<Direction>(savedInputs);
             Direction catchupInput = new Direction(secondInputs[0].time - CatchupDuration, 1.0, 0.0);

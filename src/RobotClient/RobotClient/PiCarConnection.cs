@@ -10,6 +10,9 @@ namespace RobotClient
 {
     public class PiCarConnection
     {
+        //TODO figure this out
+        public const double SPEED_AT_MAX_THROTTLE = 1.0;
+
         private class PiCarClient
         {
             private readonly PiCar.PiCarClient _client;
