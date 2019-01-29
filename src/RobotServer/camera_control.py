@@ -124,7 +124,7 @@ class Camera_Control(object):
 	def tilting_max(self):
 		return self._tilting_max
 		
-	@panning_max.setter
+	@tilting_max.setter
 	def tilting_max(self, angle):
 		self._tilting_max = angle
 		self._min_tilt_angle = self._straight_tilt_angle - angle
