@@ -45,7 +45,7 @@ namespace RobotClient
             secondInputs.Insert(0, catchupInput);
 
             var firstReplay = new Replay(first, savedInputs);
-            var secondReplay = new Replay(second, savedInputs);
+            var secondReplay = new Replay(second, secondInputs);
 
             firstReplay.Start();
             secondReplay.Start();
