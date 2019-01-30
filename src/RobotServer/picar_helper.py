@@ -1,4 +1,4 @@
-from picar3 import front_wheels, back_wheels
+from picar import front_wheels, back_wheels
 import socket
 
 bw = back_wheels.Back_Wheels()

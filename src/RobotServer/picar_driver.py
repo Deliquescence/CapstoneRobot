@@ -3,7 +3,7 @@ import cv2
 import time
 import picar_server
 import picar_helper
-from Queue import Queue
+from queue import Queue
 import socket
 import numpy as np
 
@@ -26,8 +26,8 @@ def main():
     server.start()
 
 
-    print(f'Server Started on {socket.gethostname()}\n')
-    print(Press Ctrl-C to quit)
+    print('Server Started on' + socket.gethostname() + '\n')
+    print('Press Ctrl-C to quit')
 
 
     # start the driver
@@ -88,7 +88,7 @@ class PiCarDriver(object):
                     throttle, direction = tagID(self.frame, bc)
                     self._move(throttle, direction)
                 else:
-                    print "Base Tag Corners Not Detected!"
+                    print("Base Tag Corners Not Detected!")
 
                 # Add frame, and move vector to follower queue
                 if self.is_follower_streaming():

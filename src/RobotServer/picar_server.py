@@ -19,7 +19,7 @@ class PiCarServicer(picar_pb2_grpc.PiCarServicer):
 
     def ReceiveConnection(self, request, context):
         """Handshake between PiCar and desktop application"""
-        print(f'Received connection request from {request.message}')
+        print('Received connection request from %s' % request.message)
         # Send a ConnectAck message showing success
         return picar_pb2.ConnectAck(success=True)
 
@@ -27,12 +27,12 @@ class PiCarServicer(picar_pb2_grpc.PiCarServicer):
         """Changes the operating mode of the PiCar"""
         if self.driver.mode != request.mode:
             # If the request is for a different mode, send a success ack
-            print(f'Switching mode from {self.driver.mode} to {request.mode}')
+            print('Switching mode from %s to %s' % (self.driver.mode, request.mode))
             self.driver.mode = request.mode
             return picar_pb2.ModeAck(success=True)
         else:
             # If the request is for the mode already in, send a failure ack
-            print(f'Request received for mode {request.mode}, but already in that mode!')
+            print('Request received for mode %s, but already in that mode!' % request.mode)
             return picar_pb2.ModeAck(success=False)
 
     def RemoteControl(self, request, context):
@@ -40,7 +40,7 @@ class PiCarServicer(picar_pb2_grpc.PiCarServicer):
         # Clamp the input throttle and direction to [-1, 1]
         throttle = max(-1, min(request.throttle, 1))
         direction = max(-1, min(request.direction, 1))
-        print(f'Setting wheels to {throttle} throttle and {direction} steering')
+        print('Setting wheels to %f throttle and %f steering' % (throttle, direction))
         self.driver.set_throttle_and_dir(throttle, direction)
         return picar_pb2.Empty()
 
