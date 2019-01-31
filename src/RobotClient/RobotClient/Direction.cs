@@ -9,6 +9,8 @@ namespace RobotClient
 {
     public class Direction
     {
+        public const string Separator = "@%@";
+
         public readonly DateTime time;
         public readonly double throttle;
         public readonly double direction;
@@ -29,7 +31,7 @@ namespace RobotClient
         public static List<Direction> ParseLog(string fullLogString)
         {
             var split = Regex.Split(fullLogString, "\n");
-            return split.Where(line => line.Contains("@")).Select(line => ParseDirection(line)).ToList();
+            return split.Where(line => line.Contains(Separator)).Select(line => ParseDirection(line)).ToList();
         }
 
         /**
@@ -70,7 +72,7 @@ namespace RobotClient
                 directionIndex = (int)Math.Floor(directionController) + 1;
             }
             var dt = time.ToString("MM/dd/yyyy hh:mm:ss.fff tt");
-            return $"{dt}\t{ThrottleStrings[throttleIndex]} {DirectionStrings[directionIndex]}@{throttleController} {directionController} \n";
+            return $"{dt}\t{ThrottleStrings[throttleIndex]} {DirectionStrings[directionIndex]} {Separator}{throttleController} {directionController} \n";
         }
     }
 }
