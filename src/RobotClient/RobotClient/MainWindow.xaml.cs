@@ -18,8 +18,6 @@ namespace RobotClient
     {
         public Window Register;
         public List<PiCarConnection> deviceListMain = new List<PiCarConnection>();
-        public string LeaderIp { set; get; }
-        public string FollowerIP { set; get; }
 
         private readonly SynchronizationContext synchronizationContext;
         private DispatcherTimer _timer;
@@ -46,7 +44,6 @@ namespace RobotClient
             //Setup sync context
             synchronizationContext = SynchronizationContext.Current;
             
-            LeaderIp = "Empty";
             Title = "Welcome " + Environment.UserName;
 
             //Adds shortcut to open the registration window with Ctrl + R
