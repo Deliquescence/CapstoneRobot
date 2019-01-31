@@ -39,7 +39,7 @@ namespace RobotClient
          */
         public static Direction ParseDirection(string logString)
         {
-            var split = logString.Split('@');
+            var split = Regex.Split(logString, Separator);
             split = split[1].Split(' ');
             var throttle = double.Parse(split[0]);
             var direction = double.Parse(split[1]);
