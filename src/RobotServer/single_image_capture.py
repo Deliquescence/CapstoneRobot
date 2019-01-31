@@ -36,10 +36,10 @@ def main():
         cv2.imshow('img', frame)
         if cv2.waitKey(1) & 0xFF == ord('y'):
             
-            print("Top Left: %f, %f" % (tLeft[0], tLeft[1]))
-            print("Top Right: %f, %f" % (tRight[0], tRight[1]))
-            print("Bottom Right: %f, %f" % (bRight[0], bRight[1]))
-            print("Bottom Left: %f, %f" % (bLeft[0], bLeft[1]))
+            print(f'Top Left: {tLeft[0]}, {tLeft[1]}')
+            print(f'Top Right: {tRight[0]}, {tRight[1]}')
+            print(f'Bottom Right: {bRight[0]}, {bRight[1]}')
+            print(f'Bottom Left: {bLeft[0]}, {bLeft[1]}')
             cv2.imwrite(filePath, frame)
             cv2.destroyAllWindows()
             break

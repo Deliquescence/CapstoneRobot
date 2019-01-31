@@ -15,37 +15,37 @@ class PiCarStub(object):
       channel: A grpc.Channel.
     """
     self.ReceiveConnection = channel.unary_unary(
-        '/SeniorProjectRobot.PiCar/ReceiveConnection',
+        '/CapstoneRobot.PiCar/ReceiveConnection',
         request_serializer=picar__pb2.ConnectRequest.SerializeToString,
         response_deserializer=picar__pb2.ConnectAck.FromString,
         )
     self.SwitchMode = channel.unary_unary(
-        '/SeniorProjectRobot.PiCar/SwitchMode',
+        '/CapstoneRobot.PiCar/SwitchMode',
         request_serializer=picar__pb2.ModeRequest.SerializeToString,
         response_deserializer=picar__pb2.ModeAck.FromString,
         )
     self.RemoteControl = channel.unary_unary(
-        '/SeniorProjectRobot.PiCar/RemoteControl',
+        '/CapstoneRobot.PiCar/RemoteControl',
         request_serializer=picar__pb2.SetMotion.SerializeToString,
         response_deserializer=picar__pb2.Empty.FromString,
         )
     self.VideoStream = channel.unary_stream(
-        '/SeniorProjectRobot.PiCar/VideoStream',
+        '/CapstoneRobot.PiCar/VideoStream',
         request_serializer=picar__pb2.StartVideoStream.SerializeToString,
         response_deserializer=picar__pb2.ImageCapture.FromString,
         )
     self.StopStream = channel.unary_unary(
-        '/SeniorProjectRobot.PiCar/StopStream',
+        '/CapstoneRobot.PiCar/StopStream',
         request_serializer=picar__pb2.EndVideoStream.SerializeToString,
         response_deserializer=picar__pb2.Empty.FromString,
         )
     self.FollowerStream = channel.unary_stream(
-        '/SeniorProjectRobot.PiCar/FollowerStream',
+        '/CapstoneRobot.PiCar/FollowerStream',
         request_serializer=picar__pb2.Empty.SerializeToString,
         response_deserializer=picar__pb2.FollowerData.FromString,
         )
     self.StopFollowerStream = channel.unary_unary(
-        '/SeniorProjectRobot.PiCar/StopFollowerStream',
+        '/CapstoneRobot.PiCar/StopFollowerStream',
         request_serializer=picar__pb2.Empty.SerializeToString,
         response_deserializer=picar__pb2.Empty.FromString,
         )
@@ -144,5 +144,5 @@ def add_PiCarServicer_to_server(servicer, server):
       ),
   }
   generic_handler = grpc.method_handlers_generic_handler(
-      'SeniorProjectRobot.PiCar', rpc_method_handlers)
+      'CapstoneRobot.PiCar', rpc_method_handlers)
   server.add_generic_rpc_handlers((generic_handler,))

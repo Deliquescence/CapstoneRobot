@@ -27,14 +27,12 @@ class PiCarServicer(picar_pb2_grpc.PiCarServicer):
         """Changes the operating mode of the PiCar"""
         if self.driver.mode != request.mode:
             # If the request is for a different mode, send a success ack
-            print('Switching mode from %s to %s' % (
-                self.driver.mode, request.mode))
+            print('Switching mode from %s to %s' % (self.driver.mode, request.mode))
             self.driver.mode = request.mode
             return picar_pb2.ModeAck(success=True)
         else:
             # If the request is for the mode already in, send a failure ack
-            print(
-                    'Request received for mode %s, but already in that mode!' % request.mode)
+            print('Request received for mode %s, but already in that mode!' % request.mode)
             return picar_pb2.ModeAck(success=False)
 
     def RemoteControl(self, request, context):
@@ -42,8 +40,7 @@ class PiCarServicer(picar_pb2_grpc.PiCarServicer):
         # Clamp the input throttle and direction to [-1, 1]
         throttle = max(-1, min(request.throttle, 1))
         direction = max(-1, min(request.direction, 1))
-        print('Setting wheels to %f throttle and %f steering' % (
-            throttle, direction))
+        print('Setting wheels to %f throttle and %f steering' % (throttle, direction))
         self.driver.set_throttle_and_dir(throttle, direction)
         return picar_pb2.Empty()
 
@@ -75,7 +72,7 @@ class PiCarServicer(picar_pb2_grpc.PiCarServicer):
 
         # Empty the follower queue and start streaming
         self.driver.start_follower_streaming()
-        print 'Starting follower stream'
+        print('Starting follower stream')
         while self.driver.is_follower_streaming():
             follower_data = self.driver.follower_queue.get()
             image = cv2.resize(follower_data.frame, (320, 240))

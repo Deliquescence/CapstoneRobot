@@ -13,52 +13,67 @@ namespace RobotClient {
   /// </summary>
   public static partial class PiCar
   {
-    static readonly string __ServiceName = "SeniorProjectRobot.PiCar";
+    static readonly string __ServiceName = "CapstoneRobot.PiCar";
 
-    static readonly grpc::Marshaller<global::RobotClient.ConnectRequest> __Marshaller_SeniorProjectRobot_ConnectRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::RobotClient.ConnectRequest.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::RobotClient.ConnectAck> __Marshaller_SeniorProjectRobot_ConnectAck = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::RobotClient.ConnectAck.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::RobotClient.ModeRequest> __Marshaller_SeniorProjectRobot_ModeRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::RobotClient.ModeRequest.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::RobotClient.ModeAck> __Marshaller_SeniorProjectRobot_ModeAck = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::RobotClient.ModeAck.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::RobotClient.SetMotion> __Marshaller_SeniorProjectRobot_SetMotion = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::RobotClient.SetMotion.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::RobotClient.Empty> __Marshaller_SeniorProjectRobot_Empty = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::RobotClient.Empty.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::RobotClient.StartVideoStream> __Marshaller_SeniorProjectRobot_StartVideoStream = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::RobotClient.StartVideoStream.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::RobotClient.ImageCapture> __Marshaller_SeniorProjectRobot_ImageCapture = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::RobotClient.ImageCapture.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::RobotClient.EndVideoStream> __Marshaller_SeniorProjectRobot_EndVideoStream = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::RobotClient.EndVideoStream.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::RobotClient.ConnectRequest> __Marshaller_CapstoneRobot_ConnectRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::RobotClient.ConnectRequest.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::RobotClient.ConnectAck> __Marshaller_CapstoneRobot_ConnectAck = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::RobotClient.ConnectAck.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::RobotClient.ModeRequest> __Marshaller_CapstoneRobot_ModeRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::RobotClient.ModeRequest.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::RobotClient.ModeAck> __Marshaller_CapstoneRobot_ModeAck = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::RobotClient.ModeAck.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::RobotClient.SetMotion> __Marshaller_CapstoneRobot_SetMotion = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::RobotClient.SetMotion.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::RobotClient.Empty> __Marshaller_CapstoneRobot_Empty = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::RobotClient.Empty.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::RobotClient.StartVideoStream> __Marshaller_CapstoneRobot_StartVideoStream = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::RobotClient.StartVideoStream.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::RobotClient.ImageCapture> __Marshaller_CapstoneRobot_ImageCapture = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::RobotClient.ImageCapture.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::RobotClient.EndVideoStream> __Marshaller_CapstoneRobot_EndVideoStream = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::RobotClient.EndVideoStream.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::RobotClient.FollowerData> __Marshaller_CapstoneRobot_FollowerData = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::RobotClient.FollowerData.Parser.ParseFrom);
 
     static readonly grpc::Method<global::RobotClient.ConnectRequest, global::RobotClient.ConnectAck> __Method_ReceiveConnection = new grpc::Method<global::RobotClient.ConnectRequest, global::RobotClient.ConnectAck>(
         grpc::MethodType.Unary,
         __ServiceName,
         "ReceiveConnection",
-        __Marshaller_SeniorProjectRobot_ConnectRequest,
-        __Marshaller_SeniorProjectRobot_ConnectAck);
+        __Marshaller_CapstoneRobot_ConnectRequest,
+        __Marshaller_CapstoneRobot_ConnectAck);
 
     static readonly grpc::Method<global::RobotClient.ModeRequest, global::RobotClient.ModeAck> __Method_SwitchMode = new grpc::Method<global::RobotClient.ModeRequest, global::RobotClient.ModeAck>(
         grpc::MethodType.Unary,
         __ServiceName,
         "SwitchMode",
-        __Marshaller_SeniorProjectRobot_ModeRequest,
-        __Marshaller_SeniorProjectRobot_ModeAck);
+        __Marshaller_CapstoneRobot_ModeRequest,
+        __Marshaller_CapstoneRobot_ModeAck);
 
     static readonly grpc::Method<global::RobotClient.SetMotion, global::RobotClient.Empty> __Method_RemoteControl = new grpc::Method<global::RobotClient.SetMotion, global::RobotClient.Empty>(
         grpc::MethodType.Unary,
         __ServiceName,
         "RemoteControl",
-        __Marshaller_SeniorProjectRobot_SetMotion,
-        __Marshaller_SeniorProjectRobot_Empty);
+        __Marshaller_CapstoneRobot_SetMotion,
+        __Marshaller_CapstoneRobot_Empty);
 
     static readonly grpc::Method<global::RobotClient.StartVideoStream, global::RobotClient.ImageCapture> __Method_VideoStream = new grpc::Method<global::RobotClient.StartVideoStream, global::RobotClient.ImageCapture>(
         grpc::MethodType.ServerStreaming,
         __ServiceName,
         "VideoStream",
-        __Marshaller_SeniorProjectRobot_StartVideoStream,
-        __Marshaller_SeniorProjectRobot_ImageCapture);
+        __Marshaller_CapstoneRobot_StartVideoStream,
+        __Marshaller_CapstoneRobot_ImageCapture);
 
     static readonly grpc::Method<global::RobotClient.EndVideoStream, global::RobotClient.Empty> __Method_StopStream = new grpc::Method<global::RobotClient.EndVideoStream, global::RobotClient.Empty>(
         grpc::MethodType.Unary,
         __ServiceName,
         "StopStream",
-        __Marshaller_SeniorProjectRobot_EndVideoStream,
-        __Marshaller_SeniorProjectRobot_Empty);
+        __Marshaller_CapstoneRobot_EndVideoStream,
+        __Marshaller_CapstoneRobot_Empty);
+
+    static readonly grpc::Method<global::RobotClient.Empty, global::RobotClient.FollowerData> __Method_FollowerStream = new grpc::Method<global::RobotClient.Empty, global::RobotClient.FollowerData>(
+        grpc::MethodType.ServerStreaming,
+        __ServiceName,
+        "FollowerStream",
+        __Marshaller_CapstoneRobot_Empty,
+        __Marshaller_CapstoneRobot_FollowerData);
+
+    static readonly grpc::Method<global::RobotClient.Empty, global::RobotClient.Empty> __Method_StopFollowerStream = new grpc::Method<global::RobotClient.Empty, global::RobotClient.Empty>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "StopFollowerStream",
+        __Marshaller_CapstoneRobot_Empty,
+        __Marshaller_CapstoneRobot_Empty);
 
     /// <summary>Service descriptor</summary>
     public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
@@ -121,6 +136,29 @@ namespace RobotClient {
       /// <param name="context">The context of the server-side call handler being invoked.</param>
       /// <returns>The response to send back to the client (wrapped by a task).</returns>
       public virtual global::System.Threading.Tasks.Task<global::RobotClient.Empty> StopStream(global::RobotClient.EndVideoStream request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///Start follower stream
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="responseStream">Used for sending responses back to the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>A task indicating completion of the handler.</returns>
+      public virtual global::System.Threading.Tasks.Task FollowerStream(global::RobotClient.Empty request, grpc::IServerStreamWriter<global::RobotClient.FollowerData> responseStream, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///End follower stream
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::RobotClient.Empty> StopFollowerStream(global::RobotClient.Empty request, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
@@ -348,6 +386,72 @@ namespace RobotClient {
       {
         return CallInvoker.AsyncUnaryCall(__Method_StopStream, null, options, request);
       }
+      /// <summary>
+      ///Start follower stream
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
+      public virtual grpc::AsyncServerStreamingCall<global::RobotClient.FollowerData> FollowerStream(global::RobotClient.Empty request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return FollowerStream(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      ///Start follower stream
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      public virtual grpc::AsyncServerStreamingCall<global::RobotClient.FollowerData> FollowerStream(global::RobotClient.Empty request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncServerStreamingCall(__Method_FollowerStream, null, options, request);
+      }
+      /// <summary>
+      ///End follower stream
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The response received from the server.</returns>
+      public virtual global::RobotClient.Empty StopFollowerStream(global::RobotClient.Empty request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return StopFollowerStream(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      ///End follower stream
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The response received from the server.</returns>
+      public virtual global::RobotClient.Empty StopFollowerStream(global::RobotClient.Empty request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_StopFollowerStream, null, options, request);
+      }
+      /// <summary>
+      ///End follower stream
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
+      public virtual grpc::AsyncUnaryCall<global::RobotClient.Empty> StopFollowerStreamAsync(global::RobotClient.Empty request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return StopFollowerStreamAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      ///End follower stream
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      public virtual grpc::AsyncUnaryCall<global::RobotClient.Empty> StopFollowerStreamAsync(global::RobotClient.Empty request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_StopFollowerStream, null, options, request);
+      }
       /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
       protected override PiCarClient NewInstance(ClientBaseConfiguration configuration)
       {
@@ -364,7 +468,9 @@ namespace RobotClient {
           .AddMethod(__Method_SwitchMode, serviceImpl.SwitchMode)
           .AddMethod(__Method_RemoteControl, serviceImpl.RemoteControl)
           .AddMethod(__Method_VideoStream, serviceImpl.VideoStream)
-          .AddMethod(__Method_StopStream, serviceImpl.StopStream).Build();
+          .AddMethod(__Method_StopStream, serviceImpl.StopStream)
+          .AddMethod(__Method_FollowerStream, serviceImpl.FollowerStream)
+          .AddMethod(__Method_StopFollowerStream, serviceImpl.StopFollowerStream).Build();
     }
 
   }
