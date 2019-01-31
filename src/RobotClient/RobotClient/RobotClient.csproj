@@ -73,6 +73,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Replay.cs" />
     <Compile Include="Direction.cs" />
     <Compile Include="Picar.cs" />
     <Compile Include="PiCarConnection.cs" />
