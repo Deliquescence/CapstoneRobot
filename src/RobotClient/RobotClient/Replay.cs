@@ -69,6 +69,9 @@ namespace RobotClient
             this.savedOffsetInputs = savedInputs.Select(x =>
             {
                 var t = Tuple.Create(x.time - priorTime, x);
+                if (t.Item1.Duration() != t.Item1) {
+                    throw new ArgumentException("Replay inputs must be in chronological order");
+                }
                 priorTime = x.time;
                 return t;
             }).ToList();
