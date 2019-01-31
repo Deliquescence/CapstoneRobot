@@ -105,5 +105,13 @@ namespace RobotClient
             this.replayThread.Abort();
         }
 
+        /**
+         * Return true if this replay has been started and is still ongoing.
+         */
+        public bool isActive()
+        {
+            return this.replayThread.IsAlive;
+        }
+
     }
 }
