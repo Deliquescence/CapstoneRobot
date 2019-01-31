@@ -41,6 +41,8 @@ namespace RobotClient
 
             var secondInputs = new List<Direction>(savedInputs);
             Direction catchupInput = new Direction(secondInputs[0].time - CatchupDuration, 1.0, 0.0);
+
+            savedInputs.Add(catchupInput); // Don't collide at the end
             secondInputs.Insert(0, catchupInput);
 
             var firstReplay = new Replay(first, savedInputs);
