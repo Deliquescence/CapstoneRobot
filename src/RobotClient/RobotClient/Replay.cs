@@ -41,9 +41,12 @@ namespace RobotClient
 
             var secondInputs = new List<Direction>(savedInputs);
             Direction catchupInput = new Direction(secondInputs[0].time - CatchupDuration, 1.0, 0.0);
-
-            savedInputs.Add(catchupInput); // Don't collide at the end
             secondInputs.Insert(0, catchupInput);
+            secondInputs.Add(new Direction(secondInputs.Last().time, 0.0, 0.0)); // Ensure we stop at the end
+
+            Direction avoidCrashInput = new Direction(savedInputs.Last().time, 1.0, 0.0);
+            savedInputs.Add(avoidCrashInput);
+            savedInputs.Add(new Direction(savedInputs.Last().time + CatchupDuration, 0.0, 0.0)); // Stop after avoiding crash
 
             var firstReplay = new Replay(first, savedInputs);
             var secondReplay = new Replay(second, secondInputs);
