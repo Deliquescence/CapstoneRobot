@@ -90,11 +90,9 @@ namespace RobotClient
                         {
                             //Get a Byte[] array from the message
                             var imageBytes = responseStream.Current.Image.ToByteArray();
-                            //Convert it to ImageSource type
-                            var img = (ImageSource)new ImageSourceConverter().ConvertFrom(imageBytes);
 
                             //Call update UI
-                            _mainWindow.UpdateStream(img);
+                            _mainWindow.HandleImageStream(imageBytes);
                         }
                     }
                 }
