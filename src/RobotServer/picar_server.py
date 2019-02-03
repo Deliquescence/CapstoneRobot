@@ -1,7 +1,6 @@
 """Server run on each PiCar to listen to desktop application commands"""
 
 from concurrent import futures
-from time import sleep
 
 import grpc
 import cv2
@@ -44,52 +43,28 @@ class PiCarServicer(picar_pb2_grpc.PiCarServicer):
         self.driver.set_throttle_and_dir(throttle, direction)
         return picar_pb2.Empty()
 
-    def VideoStream(self, request, context):
-        """Send back images captured from webcam, encoded as jpeg"""
-        self.streaming = True
-        print('Starting video stream')
+    def StartStream(self, request, context):
+        """Send video feed, throttle, and direction."""
 
-        while self.streaming:
-            image = cv2.resize(self.driver.frame, (320, 240))
-            _, b = cv2.imencode('.jpg', image)
-            b = b.tobytes()
-
-            message = picar_pb2.ImageCapture(
-                image=b)  # Create message with image
-            yield message  # Send it
-            sleep(1 / 24)  # 24Hz refresh rate
-
-    def StopStream(self, request, context):
-        """Stop the sending of a video stream"""
-        self.streaming = False
-        print('Stopping video stream')
-        return picar_pb2.Empty()
-
-    def FollowerStream(self, request, context):
-        """Send video feed and follower actions.
-
-        If we are not a follower, the stream is empty."""
-
-        # Empty the follower queue and start streaming
-        self.driver.start_follower_streaming()
+        # Empty the stream queue and start streaming
+        self.driver.start_streaming()
         print('Starting follower stream')
-        while self.driver.is_follower_streaming():
-            follower_data = self.driver.follower_queue.get()
-            image = cv2.resize(follower_data.frame, (320, 240))
+        while self.driver.is_streaming():
+            stream_data = self.driver.stream_queue.get()
+            image = cv2.resize(stream_data.frame, (320, 240))
             _, b = cv2.imencode('.jpg', image)
             b = b.tobytes()
 
-            image_message = picar_pb2.ImageCapture(image=b)
-            action = picar_pb2.SetMotion(throttle=follower_data.throttle,
-                                         direction=follower_data.direction)
-            message = picar_pb2.FollowerData(image=image_message,
-                                             action=action)
+            action = picar_pb2.SetMotion(throttle=stream_data.throttle,
+                                         direction=stream_data.direction)
+            message = picar_pb2.StreamData(image=b,
+                                           action=action)
             yield message
 
-    def StopFollowerStream(self, request, context):
+    def StopStream(self, request, context):
         """Stop the sending of the follower stream"""
 
-        self.driver.stop_follower_streaming()
+        self.driver.stop_streaming()
         print('Stopping follower stream')
         return picar_pb2.Empty()
 

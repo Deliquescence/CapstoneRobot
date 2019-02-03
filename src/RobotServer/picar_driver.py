@@ -25,10 +25,8 @@ def main():
     server = picar_server.getServer(driver)
     server.start()
 
-
     print('Server Started on' + socket.gethostname() + '\n')
     print('Press Ctrl-C to quit')
-
 
     # start the driver
     driver.run()
@@ -42,24 +40,24 @@ class PiCarDriver(object):
         self.mode = 0
         self.frame = cv2.imread('init.jpg')
         self.next_throttle_and_dir = (0.0, 0.0)
-        self._follower_streaming = False
-        self.follower_queue = Queue(maxsize=20)
+        self._streaming = False
+        self.stream_queue = Queue(maxsize=20)
         self._prev_throttle = 0.0
         self._prev_direction = 0.0
 
     def set_throttle_and_dir(self, throttle, direction):
         self.next_throttle_and_dir = (throttle, direction)
 
-    def start_follower_streaming(self):
-        self.follower_queue = Queue(maxsize=20)
-        self._follower_streaming = True
+    def start_streaming(self):
+        self.stream_queue = Queue(maxsize=20)
+        self._streaming = True
 
-    def stop_follower_streaming(self):
-        self._follower_streaming = False
-        self.follower_queue = Queue(maxsize=20)
+    def stop_streaming(self):
+        self._streaming = False
+        self.stream_queue = Queue(maxsize=20)
 
-    def is_follower_streaming(self):
-        return self._follower_streaming
+    def is_streaming(self):
+        return self._streaming
 
     def run(self):
         self._move(0.0, 0.0)
@@ -90,11 +88,11 @@ class PiCarDriver(object):
                 else:
                     print("Base Tag Corners Not Detected!")
 
-                # Add frame, and move vector to follower queue
-                if self.is_follower_streaming():
-                    self.follower_queue.put(
-                        FollowerData(self.frame, self._prev_throttle,
-                                     self._prev_direction))
+                # Add frame, and move vector to stream queue
+                if self.is_streaming():
+                    self.stream_queue.put(
+                        StreamData(self.frame, self._prev_throttle,
+                                   self._prev_direction))
             else:
                 self._move(0.0, 0.0)
 
@@ -106,7 +104,7 @@ class PiCarDriver(object):
         picar_helper.move(throttle, direction)
 
 
-class FollowerData(object):
+class StreamData(object):
     def __init__(self, frame, throttle, direction):
         self.frame = frame
         self.throttle = throttle
