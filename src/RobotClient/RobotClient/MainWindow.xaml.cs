@@ -111,14 +111,14 @@ namespace RobotClient
                     var image_file_name = $"{session_prefix}_{saved_frame_count}.jpg";
 
                     saved_frame_count += 1;
-                    using (var fileStream = new FileStream($"{save_dir_path}\\{image_file_name}", FileMode.Create))
+                    using (var fileStream = new FileStream($"{save_dir_path}\\train\\{image_file_name}", FileMode.Create))
                     {
                         fileStream.WriteAsync(imageBytes, 0, imageBytes.Length);
                     }
 
                     using (var streamWriter = new StreamWriter(csv_path, true))
                     {
-                        streamWriter.WriteLineAsync($"{image_file_name},{action.Throttle},{action.Direction}");
+                        streamWriter.WriteLineAsync($"train/{image_file_name},{action.Throttle},{action.Direction}");
                     }
                 }
                 catch (Exception e)
