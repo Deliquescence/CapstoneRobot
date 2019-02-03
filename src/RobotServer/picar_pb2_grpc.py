@@ -29,24 +29,14 @@ class PiCarStub(object):
         request_serializer=picar__pb2.SetMotion.SerializeToString,
         response_deserializer=picar__pb2.Empty.FromString,
         )
-    self.VideoStream = channel.unary_stream(
-        '/CapstoneRobot.PiCar/VideoStream',
-        request_serializer=picar__pb2.StartVideoStream.SerializeToString,
-        response_deserializer=picar__pb2.ImageCapture.FromString,
+    self.StartStream = channel.unary_stream(
+        '/CapstoneRobot.PiCar/StartStream',
+        request_serializer=picar__pb2.StartStreaming.SerializeToString,
+        response_deserializer=picar__pb2.StreamData.FromString,
         )
     self.StopStream = channel.unary_unary(
         '/CapstoneRobot.PiCar/StopStream',
-        request_serializer=picar__pb2.EndVideoStream.SerializeToString,
-        response_deserializer=picar__pb2.Empty.FromString,
-        )
-    self.FollowerStream = channel.unary_stream(
-        '/CapstoneRobot.PiCar/FollowerStream',
-        request_serializer=picar__pb2.Empty.SerializeToString,
-        response_deserializer=picar__pb2.FollowerData.FromString,
-        )
-    self.StopFollowerStream = channel.unary_unary(
-        '/CapstoneRobot.PiCar/StopFollowerStream',
-        request_serializer=picar__pb2.Empty.SerializeToString,
+        request_serializer=picar__pb2.StopStreaming.SerializeToString,
         response_deserializer=picar__pb2.Empty.FromString,
         )
 
@@ -76,29 +66,15 @@ class PiCarServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
-  def VideoStream(self, request, context):
-    """Begin video streaming
+  def StartStream(self, request, context):
+    """Begin video/action streaming
     """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
   def StopStream(self, request, context):
-    """End video streaming
-    """
-    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-    context.set_details('Method not implemented!')
-    raise NotImplementedError('Method not implemented!')
-
-  def FollowerStream(self, request, context):
-    """Start follower stream
-    """
-    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-    context.set_details('Method not implemented!')
-    raise NotImplementedError('Method not implemented!')
-
-  def StopFollowerStream(self, request, context):
-    """End follower stream
+    """End video/action streaming
     """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
@@ -122,24 +98,14 @@ def add_PiCarServicer_to_server(servicer, server):
           request_deserializer=picar__pb2.SetMotion.FromString,
           response_serializer=picar__pb2.Empty.SerializeToString,
       ),
-      'VideoStream': grpc.unary_stream_rpc_method_handler(
-          servicer.VideoStream,
-          request_deserializer=picar__pb2.StartVideoStream.FromString,
-          response_serializer=picar__pb2.ImageCapture.SerializeToString,
+      'StartStream': grpc.unary_stream_rpc_method_handler(
+          servicer.StartStream,
+          request_deserializer=picar__pb2.StartStreaming.FromString,
+          response_serializer=picar__pb2.StreamData.SerializeToString,
       ),
       'StopStream': grpc.unary_unary_rpc_method_handler(
           servicer.StopStream,
-          request_deserializer=picar__pb2.EndVideoStream.FromString,
-          response_serializer=picar__pb2.Empty.SerializeToString,
-      ),
-      'FollowerStream': grpc.unary_stream_rpc_method_handler(
-          servicer.FollowerStream,
-          request_deserializer=picar__pb2.Empty.FromString,
-          response_serializer=picar__pb2.FollowerData.SerializeToString,
-      ),
-      'StopFollowerStream': grpc.unary_unary_rpc_method_handler(
-          servicer.StopFollowerStream,
-          request_deserializer=picar__pb2.Empty.FromString,
+          request_deserializer=picar__pb2.StopStreaming.FromString,
           response_serializer=picar__pb2.Empty.SerializeToString,
       ),
   }

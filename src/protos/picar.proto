@@ -16,17 +16,11 @@ service PiCar {
 	//Receive control data from desktop application
 	rpc RemoteControl(SetMotion) returns (Empty) {}
 	
-	//Begin video streaming
-	rpc VideoStream(StartVideoStream) returns (stream ImageCapture) {}
+	//Begin video/action streaming
+	rpc StartStream(StartStreaming) returns (stream StreamData) {}
 	
-	//End video streaming
-	rpc StopStream(EndVideoStream) returns (Empty) {}
-
-	//Start follower stream
-	rpc FollowerStream(Empty) returns (stream FollowerData) {}
-
-	//End follower stream
-	rpc StopFollowerStream(Empty) returns (Empty) {}
+	//End video/action streaming
+	rpc StopStream(StopStreaming) returns (Empty) {}
 }
 
 //An empty message
@@ -74,20 +68,17 @@ message SetMotion {
 	double direction = 2;
 }
 
-message StartVideoStream {
-	//Message to indicate to begin streaming video
+message StartStreaming {
+	//Message to indicate to begin streaming video and actions
 }
 
-message ImageCapture {
+message StopStreaming {
+	//Message to indiciate to stop streaming video and actions
+}
+
+message StreamData {
 	//A bytestring containing the image data
 	bytes image = 1;
-}
-
-message EndVideoStream {
-	//Message to indiciate to stop streaming video
-}
-
-message FollowerData {
-	ImageCapture image = 1;
+	//The action taken by the car
 	SetMotion action = 2;
 }
