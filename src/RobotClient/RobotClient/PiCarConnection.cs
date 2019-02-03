@@ -80,9 +80,9 @@ namespace RobotClient
             {
                 try
                 {
-                    StartVideoStream request = new StartVideoStream();
+                    StartStreaming request = new StartStreaming();
 
-                    using (var call = _client.VideoStream(request))
+                    using (var call = _client.StartStream(request))
                     {
                         var responseStream = call.ResponseStream;
 
@@ -111,7 +111,7 @@ namespace RobotClient
                 try
                 {
                     //Send a control signal to the PiCar
-                    var request = new EndVideoStream();
+                    var request = new StopStreaming();
                     _client.StopStream(request);
                 }
                 catch (RpcException e)
