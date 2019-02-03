@@ -88,11 +88,11 @@ namespace RobotClient
 
                         while (await responseStream.MoveNext())
                         {
-                            //Get a Byte[] array from the message
                             var imageBytes = responseStream.Current.Image.ToByteArray();
+                            var carAction = responseStream.Current.Action;
 
                             //Call update UI
-                            _mainWindow.HandleImageStream(imageBytes);
+                            _mainWindow.HandleStream(imageBytes, carAction);
                         }
                     }
                 }

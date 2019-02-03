@@ -75,9 +75,9 @@ namespace RobotClient
         }
 
         /**
-         * Image update method which gets called by PiCarConnection when sending image frames.
+         * Update method which gets called by PiCarConnection when sending image frames and car actions.
          */
-        public void HandleImageStream(byte[] imageBytes)
+        public void HandleStream(byte[] imageBytes, SetMotion action)
         {
             if (imageBytes == null) { return; }
 
@@ -119,6 +119,20 @@ namespace RobotClient
                 }
             }
 
+        }
+
+        /**
+         * Clear the image that was displayed by the stream
+         */
+        public void clearStreamImage() {
+            try
+            {
+                synchronizationContext.Post(o => StreamImage.Source = (ImageSource)o, null);
+            }
+            catch (Exception e)
+            {
+                LogField.AppendText($"{DateTime.Now}: Error clearing stream image: {e}\n");
+            }
         }
 
         /**
@@ -408,7 +422,7 @@ namespace RobotClient
             if (picar == null) return;
             try
             {
-                HandleImageStream(null);
+                clearStreamImage();
                 picar.StopStream();
             }
             catch (Exception exception)
@@ -454,7 +468,7 @@ namespace RobotClient
                 {
                     if (!(t is PiCarConnection temp) || temp.Mode != ModeRequest.Types.Mode.Lead) continue;
                     LogField.AppendText(DateTime.Now + ":\t" + temp.Name + " is stopping");
-                    HandleImageStream(null);
+                    clearStreamImage();
                     temp.StopStream();
                     MoveVehicle(0.0, 0.0);
                     SetVehicleMode(ModeRequest.Types.Mode.Idle);
@@ -478,8 +492,8 @@ namespace RobotClient
                 //Stop the stream of the previously selected event
                 foreach (PiCarConnection oldPicar in e.RemovedItems)
                 {
-                    HandleImageStream(null);
                     oldPicar.StopStream();
+                    clearStreamImage();
                 }
             }
             catch(Exception exception)
