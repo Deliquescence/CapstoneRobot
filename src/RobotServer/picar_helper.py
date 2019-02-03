@@ -3,9 +3,10 @@ import socket
 
 bw = back_wheels.Back_Wheels()
 fw = front_wheels.Front_Wheels()
+hostname = socket.gethostname()
 
 def move(throttle, direction):
-    fw_default = getDefaultAngle(socket.gethostname())
+    fw_default = getDefaultAngle()
     FW_ANGLE_MAX = fw_default+30
     FW_ANGLE_MIN = fw_default-30
     rear_wheels_enabled = True
@@ -36,7 +37,7 @@ def move_backward(speed):
 def stop():
     bw.stop()
 
-def getDefaultAngle(hostname):
+def getDefaultAngle():
     if hostname == 'picarA':
         return 95
     elif hostname == 'picarB':

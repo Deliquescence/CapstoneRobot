@@ -76,7 +76,7 @@ class PiCarDriver(object):
 
             if self.mode == 1:
                 # leader mode
-                self._move(self.next_throttle_and_dir[0] / 2,
+                self._move(self.next_throttle_and_dir[0],
                            self.next_throttle_and_dir[1])
             elif self.mode == 2:
                 # follower mode
