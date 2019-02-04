@@ -114,6 +114,7 @@ namespace RobotClient
                     using (var fileStream = new FileStream($"{save_dir_path}\\train\\{image_file_name}", FileMode.Create))
                     {
                         fileStream.WriteAsync(imageBytes, 0, imageBytes.Length);
+                        fileStream.Flush();
                     }
 
                     using (var streamWriter = new StreamWriter(csv_path, true))
