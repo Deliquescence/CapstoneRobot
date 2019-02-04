@@ -113,7 +113,8 @@ namespace RobotClient
                     saved_frame_count += 1;
                     using (var fileStream = new FileStream($"{save_dir_path}\\train\\{image_file_name}", FileMode.Create))
                     {
-                        fileStream.WriteAsync(imageBytes, 0, imageBytes.Length);
+                        //Console.WriteLine($"Writing image of length {imageBytes.Length}");
+                        fileStream.Write(imageBytes, 0, imageBytes.Length);
                         fileStream.Flush();
                     }
 
