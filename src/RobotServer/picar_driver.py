@@ -38,7 +38,6 @@ def main():
 class PiCarDriver(object):
     def __init__(self):
         self.mode = 0
-        self.frame = cv2.imread('init.jpg')
         self.next_throttle_and_dir = (0.0, 0.0)
         self._streaming = False
         self.stream_queue = Queue(maxsize=20)
@@ -72,7 +71,7 @@ class PiCarDriver(object):
                 break
 
             # get the current frame
-            _, self.frame = camera.read()
+            _, frame = camera.read()
 
             if self.mode == 1:
                 # leader mode
@@ -81,20 +80,20 @@ class PiCarDriver(object):
             elif self.mode == 2:
                 # follower mode
                 # if no base corners, get corners
-                bc = getBaseCorners(self.frame)
+                bc = getBaseCorners(frame)
                 if bc is not None:
-                    throttle, direction = tagID(self.frame, bc)
+                    throttle, direction = tagID(frame, bc)
                     self._move(throttle, direction)
                 else:
                     print("Base Tag Corners Not Detected!")
-
-                # Add frame, and move vector to stream queue
-                if self.is_streaming():
-                    self.stream_queue.put(
-                        StreamData(self.frame, self._prev_throttle,
-                                   self._prev_direction))
             else:
                 self._move(0.0, 0.0)
+
+            # Add frame and move vector to stream queue
+            if self.is_streaming():
+                self.stream_queue.put(
+                    StreamData(frame, self._prev_throttle,
+                               self._prev_direction))
 
             time.sleep(1 / 30)
 
