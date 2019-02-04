@@ -1,6 +1,9 @@
 from picar import front_wheels, back_wheels
 import socket
 
+picar_a_angle = 90.7
+picar_b_angle = 98.5
+
 bw = back_wheels.Back_Wheels()
 fw = front_wheels.Front_Wheels()
 hostname = socket.gethostname()
@@ -39,9 +42,9 @@ def stop():
 
 def getDefaultAngle():
     if hostname == 'picarA':
-        return 95
+        return picar_a_angle
     elif hostname == 'picarB':
-        return 90
+        return picar_b_angle
 
 """
 Wheel angle above 90 is to the right, below 90 is to the left
