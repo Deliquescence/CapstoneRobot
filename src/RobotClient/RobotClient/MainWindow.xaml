@@ -1,4 +1,4 @@
-﻿<Window x:Class="RobotClient.MainWindow"
+<Window x:Class="RobotClient.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -41,10 +41,18 @@
                 <MenuItem Header="_Import Log" InputGestureText="Ctrl + I" Click="ImportData_Click" />
                 <MenuItem Header="_Export Log" InputGestureText="Ctrl + U" Click="ExportLog_Click" />
                 <MenuItem Header="_Quit" InputGestureText="Alt + F4" Click="Shutdown_Click" />
+              
             </MenuItem>
             <MenuItem Header="_Options">
                 <MenuItem Header="_Default Control Mode" Name="DefaultHeader" IsEnabled="False" Click="ModeChanger_Click"/>
                 <MenuItem Header="_Alternative Control Mode" Name="AlternativeHeader" IsEnabled="True" Click="ModeChanger_Click"/>
+            </MenuItem>
+            <MenuItem Header="_Stream" Height="31">
+                <MenuItem Header="_Enable Stream Saving" Name="StreamSavingHeader" IsEnabled="True" Click="ImageSaving_Click"/>
+                <MenuItem Header="_Disable Stream Saving" Name="StopStreamSavingHeader" IsEnabled="False" Click="StopSaving_Click"/>
+            </MenuItem>
+            <MenuItem Header="_Mirroring">
+                <MenuItem Header="_Start Mirroring" Name="MirrorHeader" IsEnabled="true" Click="Mirror_Click"/>
             </MenuItem>
             <MenuItem Header="_Help" Height="31">
                 <MenuItem Header="_About" Click="About_Click" />
