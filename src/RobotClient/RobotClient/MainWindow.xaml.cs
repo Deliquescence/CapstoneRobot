@@ -34,6 +34,9 @@ namespace RobotClient
         //true is the default simulator style mode, false is RC mode
         private bool _controlMode;
 
+        // Number of image stream frames saved
+        private int saved_frame_count = 0;
+
         /**
          * Method that runs when the main window launches
          */
@@ -72,25 +75,73 @@ namespace RobotClient
         }
 
         /**
-         * Image update method to update video stream image asynchronously
+         * Update method which gets called by PiCarConnection when sending image frames and car actions.
          */
-        public void UpdateStream(ImageSource image)
-		{
-			try
-			{
-				synchronizationContext.Post(o =>
-				{
-				    StreamImage.Source = (ImageSource)o;
-				}, image);
-			}
-			
-			catch(Exception e)
-			{
-				Console.WriteLine("Error " + e);
+        public void HandleStream(byte[] imageBytes, SetMotion action)
+        {
+            if (imageBytes == null) { return; }
+
+            //TODO make these changeable in GUI
+            var save_dir_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\PiCarImages";
+            var session_prefix = "a";
+            bool save_to_disk = true;
+
+            //Convert bytes to ImageSource type for GUI
+            var imgSource = (ImageSource)new ImageSourceConverter().ConvertFrom(imageBytes);
+
+            // Update the GUI
+            try
+            {
+                synchronizationContext.Post(o => StreamImage.Source = (ImageSource)o, imgSource);
+            }
+            catch (Exception e)
+            {
+                LogField.AppendText($"{DateTime.Now}: Error updating the GUI with image received from car: {e}\n");
                 var picar = (PiCarConnection)DeviceListMn.SelectedItem;
                 if (picar == null)
                     return;
                 DisconnectCar();
+            }
+
+            if (save_to_disk)
+            {
+                try
+                {
+                    var csv_path = $"{save_dir_path}\\{session_prefix}.csv";
+                    var image_file_name = $"{session_prefix}_{saved_frame_count}.jpg";
+
+                    saved_frame_count += 1;
+                    using (var fileStream = new FileStream($"{save_dir_path}\\train\\{image_file_name}", FileMode.Create))
+                    {
+                        //Console.WriteLine($"Writing image of length {imageBytes.Length}");
+                        fileStream.Write(imageBytes, 0, imageBytes.Length);
+                        fileStream.Flush();
+                    }
+
+                    using (var streamWriter = new StreamWriter(csv_path, true))
+                    {
+                        streamWriter.WriteLineAsync($"train/{image_file_name},{action.Throttle},{action.Direction}");
+                    }
+                }
+                catch (Exception e)
+                {
+                    LogField.AppendText($"{DateTime.Now}: Error when writing stream data to disk: {e}\n");
+                }
+            }
+
+        }
+
+        /**
+         * Clear the image that was displayed by the stream
+         */
+        public void clearStreamImage() {
+            try
+            {
+                synchronizationContext.Post(o => StreamImage.Source = (ImageSource)o, null);
+            }
+            catch (Exception e)
+            {
+                LogField.AppendText($"{DateTime.Now}: Error clearing stream image: {e}\n");
             }
         }
 
@@ -381,7 +432,7 @@ namespace RobotClient
             if (picar == null) return;
             try
             {
-                UpdateStream(null);
+                clearStreamImage();
                 picar.StopStream();
             }
             catch (Exception exception)
@@ -427,7 +478,7 @@ namespace RobotClient
                 {
                     if (!(t is PiCarConnection temp) || temp.Mode != ModeRequest.Types.Mode.Lead) continue;
                     LogField.AppendText(DateTime.Now + ":\t" + temp.Name + " is stopping");
-                    UpdateStream(null);
+                    clearStreamImage();
                     temp.StopStream();
                     MoveVehicle(0.0, 0.0);
                     SetVehicleMode(ModeRequest.Types.Mode.Idle);
@@ -451,9 +502,8 @@ namespace RobotClient
                 //Stop the stream of the previously selected event
                 foreach (PiCarConnection oldPicar in e.RemovedItems)
                 {
-                    UpdateStream(null);
                     oldPicar.StopStream();
-
+                    clearStreamImage();
                 }
             }
             catch(Exception exception)

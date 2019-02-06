@@ -1,12 +1,15 @@
 from picar import front_wheels, back_wheels
-import picar
 import socket
+
+picar_a_angle = 90.7
+picar_b_angle = 98.5
 
 bw = back_wheels.Back_Wheels()
 fw = front_wheels.Front_Wheels()
+hostname = socket.gethostname()
 
 def move(throttle, direction):
-    fw_default = getDefaultAngle(socket.gethostname())
+    fw_default = getDefaultAngle()
     FW_ANGLE_MAX = fw_default+30
     FW_ANGLE_MIN = fw_default-30
     rear_wheels_enabled = True
@@ -24,7 +27,7 @@ def move(throttle, direction):
             move_backward(motor_speed)
         else:
             stop()
-
+			
 
 def move_forward(speed):
     bw.speed = speed
@@ -37,11 +40,11 @@ def move_backward(speed):
 def stop():
     bw.stop()
 
-def getDefaultAngle(hostname):
+def getDefaultAngle():
     if hostname == 'picarA':
-        return 95
+        return picar_a_angle
     elif hostname == 'picarB':
-        return 90
+        return picar_b_angle
 
 """
 Wheel angle above 90 is to the right, below 90 is to the left

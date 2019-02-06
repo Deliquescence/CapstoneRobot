@@ -1,5 +1,5 @@
 syntax = "proto3";
-package SeniorProjectRobot;
+package CapstoneRobot;
 
 option csharp_namespace = "RobotClient";
 
@@ -16,11 +16,11 @@ service PiCar {
 	//Receive control data from desktop application
 	rpc RemoteControl(SetMotion) returns (Empty) {}
 	
-	//Begin video streaming
-	rpc VideoStream(StartVideoStream) returns (stream ImageCapture) {}
+	//Begin video/action streaming
+	rpc StartStream(StartStreaming) returns (stream StreamData) {}
 	
-	//End video streaming
-	rpc StopStream(EndVideoStream) returns (Empty) {}
+	//End video/action streaming
+	rpc StopStream(StopStreaming) returns (Empty) {}
 }
 
 //An empty message
@@ -68,16 +68,17 @@ message SetMotion {
 	double direction = 2;
 }
 
-message StartVideoStream {
-	//Message to indicate to begin streaming video
+message StartStreaming {
+	//Message to indicate to begin streaming video and actions
 }
 
-message ImageCapture {
+message StopStreaming {
+	//Message to indiciate to stop streaming video and actions
+}
+
+message StreamData {
 	//A bytestring containing the image data
 	bytes image = 1;
+	//The action taken by the car
+	SetMotion action = 2;
 }
-
-message EndVideoStream {
-	//Message to indiciate to stop streaming video
-}
-

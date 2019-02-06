@@ -80,21 +80,19 @@ namespace RobotClient
             {
                 try
                 {
-                    StartVideoStream request = new StartVideoStream();
+                    StartStreaming request = new StartStreaming();
 
-                    using (var call = _client.VideoStream(request))
+                    using (var call = _client.StartStream(request))
                     {
                         var responseStream = call.ResponseStream;
 
                         while (await responseStream.MoveNext())
                         {
-                            //Get a Byte[] array from the message
                             var imageBytes = responseStream.Current.Image.ToByteArray();
-                            //Convert it to ImageSource type
-                            var img = (ImageSource)new ImageSourceConverter().ConvertFrom(imageBytes);
+                            var carAction = responseStream.Current.Action;
 
                             //Call update UI
-                            _mainWindow.UpdateStream(img);
+                            _mainWindow.HandleStream(imageBytes, carAction);
                         }
                     }
                 }
@@ -111,7 +109,7 @@ namespace RobotClient
                 try
                 {
                     //Send a control signal to the PiCar
-                    var request = new EndVideoStream();
+                    var request = new StopStreaming();
                     _client.StopStream(request);
                 }
                 catch (RpcException e)

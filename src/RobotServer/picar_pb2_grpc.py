@@ -15,28 +15,28 @@ class PiCarStub(object):
       channel: A grpc.Channel.
     """
     self.ReceiveConnection = channel.unary_unary(
-        '/SeniorProjectRobot.PiCar/ReceiveConnection',
+        '/CapstoneRobot.PiCar/ReceiveConnection',
         request_serializer=picar__pb2.ConnectRequest.SerializeToString,
         response_deserializer=picar__pb2.ConnectAck.FromString,
         )
     self.SwitchMode = channel.unary_unary(
-        '/SeniorProjectRobot.PiCar/SwitchMode',
+        '/CapstoneRobot.PiCar/SwitchMode',
         request_serializer=picar__pb2.ModeRequest.SerializeToString,
         response_deserializer=picar__pb2.ModeAck.FromString,
         )
     self.RemoteControl = channel.unary_unary(
-        '/SeniorProjectRobot.PiCar/RemoteControl',
+        '/CapstoneRobot.PiCar/RemoteControl',
         request_serializer=picar__pb2.SetMotion.SerializeToString,
         response_deserializer=picar__pb2.Empty.FromString,
         )
-    self.VideoStream = channel.unary_stream(
-        '/SeniorProjectRobot.PiCar/VideoStream',
-        request_serializer=picar__pb2.StartVideoStream.SerializeToString,
-        response_deserializer=picar__pb2.ImageCapture.FromString,
+    self.StartStream = channel.unary_stream(
+        '/CapstoneRobot.PiCar/StartStream',
+        request_serializer=picar__pb2.StartStreaming.SerializeToString,
+        response_deserializer=picar__pb2.StreamData.FromString,
         )
     self.StopStream = channel.unary_unary(
-        '/SeniorProjectRobot.PiCar/StopStream',
-        request_serializer=picar__pb2.EndVideoStream.SerializeToString,
+        '/CapstoneRobot.PiCar/StopStream',
+        request_serializer=picar__pb2.StopStreaming.SerializeToString,
         response_deserializer=picar__pb2.Empty.FromString,
         )
 
@@ -66,15 +66,15 @@ class PiCarServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
-  def VideoStream(self, request, context):
-    """Begin video streaming
+  def StartStream(self, request, context):
+    """Begin video/action streaming
     """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
   def StopStream(self, request, context):
-    """End video streaming
+    """End video/action streaming
     """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
@@ -98,17 +98,17 @@ def add_PiCarServicer_to_server(servicer, server):
           request_deserializer=picar__pb2.SetMotion.FromString,
           response_serializer=picar__pb2.Empty.SerializeToString,
       ),
-      'VideoStream': grpc.unary_stream_rpc_method_handler(
-          servicer.VideoStream,
-          request_deserializer=picar__pb2.StartVideoStream.FromString,
-          response_serializer=picar__pb2.ImageCapture.SerializeToString,
+      'StartStream': grpc.unary_stream_rpc_method_handler(
+          servicer.StartStream,
+          request_deserializer=picar__pb2.StartStreaming.FromString,
+          response_serializer=picar__pb2.StreamData.SerializeToString,
       ),
       'StopStream': grpc.unary_unary_rpc_method_handler(
           servicer.StopStream,
-          request_deserializer=picar__pb2.EndVideoStream.FromString,
+          request_deserializer=picar__pb2.StopStreaming.FromString,
           response_serializer=picar__pb2.Empty.SerializeToString,
       ),
   }
   generic_handler = grpc.method_handlers_generic_handler(
-      'SeniorProjectRobot.PiCar', rpc_method_handlers)
+      'CapstoneRobot.PiCar', rpc_method_handlers)
   server.add_generic_rpc_handlers((generic_handler,))

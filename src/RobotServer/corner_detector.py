@@ -20,17 +20,16 @@ def main():
         tRight = corners[0][0][1]
         bRight = corners[0][0][2]
         bLeft = corners[0][0][3]
-        print("What")
-        print "Top Left: {}, {}".format(tLeft[0], tLeft[1])
-        print "Top Right: {}, {}".format(tRight[0], tRight[1])
-        print "Bottom Right: {}, {}".format(bRight[0], bRight[1])
-        print "Bottom Left: {}, {}".format(bLeft[0], bLeft[1])
+        print(f'Top Left: {tLeft[0]}, {tLeft[1]}')
+        print(f'Top Right: {tRight[0]}, {tRight[1]}')
+        print(f'Bottom Right: {bRight[0]}, {bRight[1]}')
+        print(f'Bottom Left: {bLeft[0]}, {bLeft[1]}')
         
         cv2.imshow("image", img)
         cv2.waitKey(0)
         cv2.detroyAllWindows()
     else:
-        print ("No corners detected!")
+        print("No corners detected!")
 
 def getCorners(img):
     grayImg = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)

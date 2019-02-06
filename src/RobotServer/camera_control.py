@@ -8,7 +8,7 @@
 * Update      :  
 **********************************************************************
 '''
-from SunFounder_PCA9685 import Servo
+from picar.SunFounder_PCA9685 import Servo
 
 class Camera_Control(object):
 	CAMERA_PAN_CHANNEL = 1
@@ -61,7 +61,7 @@ class Camera_Control(object):
 	def pan_to(self, angle):
 		#Pan camera to given horizontal angle
 		if self._DEBUG:
-			print self._DEBUG_INFO, "Pan to", angle
+			print(self._DEBUG_INFO, "Pan to", angle)
 		if angle < self._pan_angle["left"]:
 			angle = self._pan_angle["left"]
 		if angle > self._pan_angle["right"]:
