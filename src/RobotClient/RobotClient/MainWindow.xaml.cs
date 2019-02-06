@@ -65,7 +65,7 @@ namespace RobotClient
             CommandBindings.Add(new CommandBinding(streamKeybind, ImageSaving_Click));
             _controlMode = true;
 
-            _saveStreamEnabled = true;
+            _saveStreamEnabled = false;
 
             //Checks if a controller is plugged into the current OS
             _controller = new Controller(UserIndex.One);
