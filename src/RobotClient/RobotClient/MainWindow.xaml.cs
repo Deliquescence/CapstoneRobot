@@ -99,6 +99,10 @@ namespace RobotClient
         public void setSaveEnabled(bool b)
         {
             _saveStreamEnabled = b;
+            if (b)
+            {
+                writeStreamCsvHeader();
+            }
         }
 
         public string getPathName()
@@ -173,6 +177,21 @@ namespace RobotClient
                 }
             }
 
+        }
+
+        public void writeStreamCsvHeader()
+        {
+            var save_dir_path = getPathName();
+            var session_prefix = getSessionName();
+            var csv_path = $"{save_dir_path}\\{session_prefix}.csv";
+
+            if (!File.Exists(csv_path))
+            {
+                using (var streamWriter = new StreamWriter(csv_path, true))
+                {
+                    streamWriter.WriteLineAsync($"image_file,throttle,direction");
+                }
+            }
         }
 
         /**
