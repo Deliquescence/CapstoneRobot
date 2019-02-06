@@ -17,6 +17,8 @@ namespace RobotClient
     public partial class MainWindow
     {
         public Window Register;
+        public Window SaveStreamSetup;
+        public Window Mirror;
         public List<PiCarConnection> deviceListMain = new List<PiCarConnection>();
 
         private readonly SynchronizationContext synchronizationContext;
@@ -34,9 +36,13 @@ namespace RobotClient
         //true is the default simulator style mode, false is RC mode
         private bool _controlMode;
 
+        private bool _saveStreamEnabled;
+
         // Number of image stream frames saved
         private int saved_frame_count = 0;
 
+        private string pathName;
+        private string sessionName;
         /**
          * Method that runs when the main window launches
          */
@@ -54,7 +60,12 @@ namespace RobotClient
             newKeybind.InputGestures.Add(new KeyGesture(Key.R, ModifierKeys.Control));
             CommandBindings.Add(new CommandBinding(newKeybind, Register_Click));
 
+            var streamKeybind = new RoutedCommand();
+            streamKeybind.InputGestures.Add(new KeyGesture(Key.S, ModifierKeys.Control));
+            CommandBindings.Add(new CommandBinding(streamKeybind, ImageSaving_Click));
             _controlMode = true;
+
+            _saveStreamEnabled = true;
 
             //Checks if a controller is plugged into the current OS
             _controller = new Controller(UserIndex.One);
@@ -73,6 +84,38 @@ namespace RobotClient
                 _throttleController = 0.0;
             }
         }
+        //methods for getting and setting directory name, 
+        //session prefix and ability to save to disk for stream saving
+        public void setPathName(string Pname)
+        {
+            pathName = Pname;
+        }
+
+        public void setSessionName(string Sname)
+        {
+            sessionName = Sname;
+        }
+
+        public void setSaveEnabled(bool b)
+        {
+            _saveStreamEnabled = b;
+        }
+
+        public string getPathName()
+        {
+            return pathName;
+        }
+
+        public string getSessionName()
+        {
+            return sessionName;
+        }
+
+        public bool getSaveEnabled()
+        {
+            return _saveStreamEnabled;
+        }
+
 
         /**
          * Update method which gets called by PiCarConnection when sending image frames and car actions.
@@ -80,12 +123,13 @@ namespace RobotClient
         public void HandleStream(byte[] imageBytes, SetMotion action)
         {
             if (imageBytes == null) { return; }
-
             //TODO make these changeable in GUI
-            var save_dir_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\PiCarImages";
-            var session_prefix = "a";
-            bool save_to_disk = true;
-
+            //var save_dir_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\PiCarImages";
+            //var session_prefix = "a";
+            var save_dir_path = getPathName();
+            var session_prefix = getSessionName();
+            bool save_to_disk = getSaveEnabled();
+            
             //Convert bytes to ImageSource type for GUI
             var imgSource = (ImageSource)new ImageSourceConverter().ConvertFrom(imageBytes);
 
@@ -181,6 +225,33 @@ namespace RobotClient
             }
             LogField.ScrollToEnd();
         }
+        //opens up window for user to specify directory they want to save file to
+        //and allows them to specify the session prefix name
+        private void ImageSaving_Click(object sender, RoutedEventArgs e)
+        {
+            if (SaveStreamSetup == null)
+            {
+                SaveStreamSetup = new SaveStreamSetup();
+                SaveStreamSetup.Show();
+            }
+            else if(SaveStreamSetup != null)
+            {
+                SaveStreamSetup.Focus();
+            }
+
+            LogField.ScrollToEnd();
+        }
+        //stops the stream from being saved
+        private void StopSaving_Click(object sender, RoutedEventArgs e)
+        {
+            _saveStreamEnabled = false;
+            StreamSavingHeader.IsEnabled = true;
+            StopStreamSavingHeader.IsEnabled = false;
+            LogField.AppendText(DateTime.Now + ":\tStream will no longer be saved to a file\n");
+
+
+            LogField.ScrollToEnd();
+        }
 
         /**
          * Method that opens the registration window
@@ -197,6 +268,23 @@ namespace RobotClient
                 Register.Focus();
             }
         }
+
+        //opens up window that sets up mirroring mode
+        private void Mirror_Click(object sender, RoutedEventArgs e)
+        {
+            if (Mirror == null)
+            {
+                Mirror = new MirroringMode();
+                Mirror.Show();
+            }
+            else
+            {
+                Mirror.Focus();
+            }
+        }
+
+
+
 
         /**
          * Method that handles exporting data written to the log, and outputs a text file with timestamps
