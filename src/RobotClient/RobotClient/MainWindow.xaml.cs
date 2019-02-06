@@ -35,7 +35,7 @@ namespace RobotClient
 
         //true is the default simulator style mode, false is RC mode
         private bool _controlMode;
-
+        //true if stream saving is enabled
         private bool _saveStreamEnabled;
 
         // Number of image stream frames saved
