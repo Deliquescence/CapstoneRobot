@@ -18,7 +18,7 @@
         <Label Content="Enter catch up distance" HorizontalAlignment="Left" Margin="32,150,0,0" Grid.Row="1" VerticalAlignment="Top"/>
         <Button Content="Start Mirroring" HorizontalAlignment="Left" Margin="222,240,0,0" Grid.Row="1" VerticalAlignment="Top" Width="102" Click="StartMirroring_Click"/>
         <Button Content="Stop Mirroring" HorizontalAlignment="Left" Margin="373,240,0,0" Grid.Row="1" VerticalAlignment="Top" Width="102" Click="StopMirroring_Click" RenderTransformOrigin="0.422,-1.4"/>
-        <TextBox Name="CatchDistance" HorizontalAlignment="Left" Height="23" Margin="38,181,0,0" Grid.Row="1" TextWrapping="Wrap"  VerticalAlignment="Top" Width="120"/>
+        <TextBox Name="CatchDistance" HorizontalAlignment="Left" Height="23" Margin="38,181,0,0" Grid.Row="1" TextWrapping="Wrap"  VerticalAlignment="Top" Width="120" Text="1.0"/>
 
     </Grid>
 </Window>

@@ -13,9 +13,9 @@
             <ColumnDefinition Width="366*"/>
         </Grid.ColumnDefinitions>
         <Label Content="Enter the directory you would like to save to" HorizontalAlignment="Left" Margin="34,18,0,0" VerticalAlignment="Top" Width="242" Grid.ColumnSpan="2"/>
-        <TextBox Name="DirectoryText" HorizontalAlignment="Left" Height="23" Margin="40,49,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="196" Grid.ColumnSpan="2"/>
+        <TextBox Name="DirectoryText" HorizontalAlignment="Left" Height="23" Margin="40,49,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="196" Grid.ColumnSpan="2" Text="C:\Users\Gaming\Documents\PiCarImages"/>
         <Label Content="Enter Session Name" HorizontalAlignment="Left" Margin="40,86,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
-        <TextBox Name="SessionText" HorizontalAlignment="Left" Height="23" Margin="40,117,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="196" Grid.ColumnSpan="2"/>
+        <TextBox Name="SessionText" HorizontalAlignment="Left" Height="23" Margin="40,117,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="196" Grid.ColumnSpan="2" Text="mirrorA"/>
         <Button Name ="okButton" Click="StartSaving" Content="OK" HorizontalAlignment="Left" Margin="220.333,173,0,0" VerticalAlignment="Top" Width="75" Grid.Column="1"/>
 
     </Grid>
