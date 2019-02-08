@@ -68,6 +68,7 @@ class PiCarDriver(object):
 
             # if q key is pressed we break loop
             if k == ord('q'):
+                self._move(0.0, 0.0)
                 break
 
             # get the current frame

@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='CapstoneRobot',
   syntax='proto3',
   serialized_options=_b('\252\002\013RobotClient'),
-  serialized_pb=_b('\n\x0bpicar.proto\x12\rCapstoneRobot\"\x07\n\x05\x45mpty\"!\n\x0e\x43onnectRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\"\x1d\n\nConnectAck\x12\x0f\n\x07success\x18\x01 \x01(\x08\"d\n\x0bModeRequest\x12-\n\x04mode\x18\x01 \x01(\x0e\x32\x1f.CapstoneRobot.ModeRequest.Mode\"&\n\x04Mode\x12\x08\n\x04IDLE\x10\x00\x12\x08\n\x04LEAD\x10\x01\x12\n\n\x06\x46OLLOW\x10\x02\"\x1a\n\x07ModeAck\x12\x0f\n\x07success\x18\x01 \x01(\x08\"0\n\tSetMotion\x12\x10\n\x08throttle\x18\x01 \x01(\x01\x12\x11\n\tdirection\x18\x02 \x01(\x01\"\x10\n\x0eStartStreaming\"\x0f\n\rStopStreaming\"E\n\nStreamData\x12\r\n\x05image\x18\x01 \x01(\x0c\x12(\n\x06\x61\x63tion\x18\x02 \x01(\x0b\x32\x18.CapstoneRobot.SetMotion2\xf0\x02\n\x05PiCar\x12O\n\x11ReceiveConnection\x12\x1d.CapstoneRobot.ConnectRequest\x1a\x19.CapstoneRobot.ConnectAck\"\x00\x12\x42\n\nSwitchMode\x12\x1a.CapstoneRobot.ModeRequest\x1a\x16.CapstoneRobot.ModeAck\"\x00\x12\x41\n\rRemoteControl\x12\x18.CapstoneRobot.SetMotion\x1a\x14.CapstoneRobot.Empty\"\x00\x12K\n\x0bStartStream\x12\x1d.CapstoneRobot.StartStreaming\x1a\x19.CapstoneRobot.StreamData\"\x00\x30\x01\x12\x42\n\nStopStream\x12\x1c.CapstoneRobot.StopStreaming\x1a\x14.CapstoneRobot.Empty\"\x00\x42\x0e\xaa\x02\x0bRobotClientb\x06proto3')
+  serialized_pb=_b('\n\x0bpicar.proto\x12\rCapstoneRobot\"\x07\n\x05\x45mpty\"!\n\x0e\x43onnectRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\"\x1d\n\nConnectAck\x12\x0f\n\x07success\x18\x01 \x01(\x08\"d\n\x0bModeRequest\x12-\n\x04mode\x18\x01 \x01(\x0e\x32\x1f.CapstoneRobot.ModeRequest.Mode\"&\n\x04Mode\x12\x08\n\x04IDLE\x10\x00\x12\x08\n\x04LEAD\x10\x01\x12\n\n\x06\x46OLLOW\x10\x02\"\x1a\n\x07ModeAck\x12\x0f\n\x07success\x18\x01 \x01(\x08\"0\n\tSetMotion\x12\x10\n\x08throttle\x18\x01 \x01(\x01\x12\x11\n\tdirection\x18\x02 \x01(\x01\"\x10\n\x0eStartStreaming\"\x0f\n\rStopStreaming\"E\n\nStreamData\x12\r\n\x05image\x18\x01 \x01(\x0c\x12(\n\x06\x61\x63tion\x18\x02 \x01(\x0b\x32\x18.CapstoneRobot.SetMotion2\xf2\x02\n\x05PiCar\x12O\n\x11ReceiveConnection\x12\x1d.CapstoneRobot.ConnectRequest\x1a\x19.CapstoneRobot.ConnectAck\"\x00\x12\x42\n\nSwitchMode\x12\x1a.CapstoneRobot.ModeRequest\x1a\x16.CapstoneRobot.ModeAck\"\x00\x12\x43\n\rRemoteControl\x12\x18.CapstoneRobot.SetMotion\x1a\x14.CapstoneRobot.Empty\"\x00(\x01\x12K\n\x0bStartStream\x12\x1d.CapstoneRobot.StartStreaming\x1a\x19.CapstoneRobot.StreamData\"\x00\x30\x01\x12\x42\n\nStopStream\x12\x1c.CapstoneRobot.StopStreaming\x1a\x14.CapstoneRobot.Empty\"\x00\x42\x0e\xaa\x02\x0bRobotClientb\x06proto3')
 )
 
 
@@ -410,7 +410,7 @@ _PICAR = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   serialized_start=392,
-  serialized_end=760,
+  serialized_end=762,
   methods=[
   _descriptor.MethodDescriptor(
     name='ReceiveConnection',
