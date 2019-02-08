@@ -19,9 +19,12 @@ namespace RobotClient
 
             private readonly MainWindow _mainWindow = (MainWindow)Application.Current.MainWindow;
 
+            private readonly AsyncClientStreamingCall<SetMotion, Empty> remoteControlCall;
+
             public PiCarClient(PiCar.PiCarClient client)
             {
                 _client = client;
+                remoteControlCall = _client.RemoteControl();
             }
 
             //Request a connection to the PiCar server. Return success
@@ -64,9 +67,9 @@ namespace RobotClient
             {
                 try
                 {
-                    //Send a control signal to the PiCar
-                    var request = new SetMotion {Throttle = throttle, Direction = direction};
-                    _client.RemoteControl(request);
+                    // Send a control signal to the PiCar
+                    var request = new SetMotion { Throttle = throttle, Direction = direction };
+                    remoteControlCall.RequestStream.WriteAsync(request);
                 }
                 catch (RpcException e)
                 {
