@@ -31,9 +31,6 @@ def main():
     # start the driver
     driver.run()
 
-    # cleanup
-    destroy()
-
 
 class PiCarDriver(object):
     def __init__(self):
