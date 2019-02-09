@@ -335,7 +335,6 @@ namespace RobotClient
 
                 LogField.Text = File.ReadAllText(fileName);
                 var res = Direction.ParseLog(LogField.Text);
-                LogField.AppendText("Loaded log with length " + res.Count);
             }
             catch(IOException exception)
             {
