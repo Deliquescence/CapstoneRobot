@@ -14,7 +14,7 @@ service PiCar {
 	rpc SwitchMode(ModeRequest) returns (ModeAck) {}
 	
 	//Receive control data from desktop application
-	rpc RemoteControl(SetMotion) returns (Empty) {}
+	rpc RemoteControl(stream SetMotion) returns (Empty) {}
 	
 	//Begin video/action streaming
 	rpc StartStream(StartStreaming) returns (stream StreamData) {}
