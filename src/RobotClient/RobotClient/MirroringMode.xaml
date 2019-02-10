@@ -1,24 +1,21 @@
-﻿<Window x:Class="RobotClient.MirroringMode"
+<Window x:Class="RobotClient.MirroringMode"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RobotClient"
         mc:Ignorable="d"
-        Closing="Window_Closing"
-        Title="Mirroring Mode" Height="353" Width="530">
-    <Grid Margin="0,0,11,24">
+        Title="Mirroring Mode" Height="198" Width="481">
+    <Grid Margin="0,0,2,4">
         <Grid.RowDefinitions>
             <RowDefinition Height="13*"/>
             <RowDefinition Height="406*"/>
         </Grid.RowDefinitions>
-        <Label Content="Set the leader and follower from the registered device list" HorizontalAlignment="Left" Margin="32,32,0,0" VerticalAlignment="Top" Grid.Row="1" Width="320"/>
-        <Button Content="Set Leader" Click="SetLeader" HorizontalAlignment="Left" Margin="49,78,0,0" Grid.Row="1" VerticalAlignment="Top" Width="75"/>
-        <Button Content="Set Follower" Click="SetAsLeader" HorizontalAlignment="Left" Margin="49,114,0,0" Grid.Row="1" VerticalAlignment="Top" Width="75"/>
-        <Label Content="Enter catch up distance" HorizontalAlignment="Left" Margin="32,150,0,0" Grid.Row="1" VerticalAlignment="Top"/>
-        <Button Content="Start Mirroring" HorizontalAlignment="Left" Margin="222,240,0,0" Grid.Row="1" VerticalAlignment="Top" Width="102" Click="StartMirroring_Click"/>
-        <Button Content="Stop Mirroring" HorizontalAlignment="Left" Margin="373,240,0,0" Grid.Row="1" VerticalAlignment="Top" Width="102" Click="StopMirroring_Click" RenderTransformOrigin="0.422,-1.4"/>
-        <TextBox Name="CatchDistance" HorizontalAlignment="Left" Height="23" Margin="38,181,0,0" Grid.Row="1" TextWrapping="Wrap"  VerticalAlignment="Top" Width="120"/>
+        <Label Content="Configure Mirror Mode" HorizontalAlignment="Left" Margin="27,18,0,0" VerticalAlignment="Top" Grid.Row="1" Width="320"/>
+        <Button Content="Start Mirroring" HorizontalAlignment="Left" Margin="214,121,0,0" Grid.Row="1" VerticalAlignment="Top" Width="102" Click="StartMirroring_Click"/>
+        <Button Content="Stop Mirroring" HorizontalAlignment="Left" Margin="344,121,0,0" Grid.Row="1" VerticalAlignment="Top" Width="102" Click="StopMirroring_Click" RenderTransformOrigin="0.422,-1.4"/>
+        <Label Content="Set Delay:" HorizontalAlignment="Left" Margin="28,59,0,0" Grid.Row="1" VerticalAlignment="Top" RenderTransformOrigin="0.444,0.769"/>
+        <TextBox Name ="Delay" HorizontalAlignment="Left" Height="22" Margin="90,63,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
 
     </Grid>
 </Window>
