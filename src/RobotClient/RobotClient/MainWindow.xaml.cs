@@ -289,18 +289,7 @@ namespace RobotClient
         }
 
         //opens up window that sets up mirroring mode
-        private void Mirror_Click(object sender, RoutedEventArgs e)
-        {
-            if (Mirror == null)
-            {
-                Mirror = new MirroringMode();
-                Mirror.Show();
-            }
-            else
-            {
-                Mirror.Focus();
-            }
-        }
+        
 
 
 
@@ -670,7 +659,7 @@ namespace RobotClient
         {
             foreach (var picar in deviceListMain)
             {
-                if (picar.Mode == ModeRequest.Types.Mode.Lead)
+                if (picar.Mode == ModeRequest.Types.Mode.Lead && !picar.isMirroring())
                 {
                     try
                     {
@@ -759,5 +748,11 @@ namespace RobotClient
         }
 
         #endregion
+
+        private void SetMirror(object sender, RoutedEventArgs e)
+        {
+                Mirror = new MirroringMode();
+                Mirror.Show();
+        }
     }
 }
