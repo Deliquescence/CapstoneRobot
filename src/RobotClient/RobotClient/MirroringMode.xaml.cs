@@ -31,13 +31,14 @@ namespace RobotClient
 
         //starts the replays for mirroring mode
         private void StartMirroring_Click(object sender, RoutedEventArgs e)
-        {   
+        {
             //sets picar to leader mode for backend
             Picar = (PiCarConnection)_mainWindow.DeviceListMn.SelectedItem;
 
-            
             if (Picar == null) return;
             SetVehicleMode(ModeRequest.Types.Mode.Lead);
+            //sets mirroring true for this picar
+            Picar.SetMirroring(true);
             //creates new replay after a given delay
             var inputs = Direction.ParseLog(_mainWindow.LogField.Text);
             replay = new Replay(Picar, inputs);
@@ -47,6 +48,7 @@ namespace RobotClient
 
         private void StopMirroring_Click(object sender, RoutedEventArgs e)
         {
+            Picar.SetMirroring(false);
             replay.Stop();
         }
 
