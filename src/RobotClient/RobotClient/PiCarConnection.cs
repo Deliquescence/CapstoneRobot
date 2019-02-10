@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
@@ -125,12 +125,14 @@ namespace RobotClient
         public string Name;
         public string ipAddress;
         public ModeRequest.Types.Mode Mode;
+        private bool currentlyMirroring;
 
         public PiCarConnection()
         {
             Name = "Default";
             ipAddress = "127.0.0.1";
             Mode = ModeRequest.Types.Mode.Idle;
+            currentlyMirroring = false;
         }
 
         public PiCarConnection(string name, string ipAddress)
@@ -140,6 +142,17 @@ namespace RobotClient
             _channel = new Channel(ipAddress + ":50051", ChannelCredentials.Insecure);
             _client = new PiCarClient(new PiCar.PiCarClient(_channel));
             Mode = ModeRequest.Types.Mode.Idle; //Start in Idle mode
+            currentlyMirroring = false;
+        }
+
+        //getter and setter to find out if the picar is mirroring
+        public void SetMirroring(bool b)
+        {
+            currentlyMirroring = b;
+        }
+        public bool isMirroring()
+        {
+            return currentlyMirroring;
         }
 
         public virtual bool RequestConnect()
