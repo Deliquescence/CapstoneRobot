@@ -319,15 +319,9 @@ namespace RobotClient
         {
             try
             {
-                var dlg = new Microsoft.Win32.OpenFileDialog
-                {
-                    DefaultExt = ".txt"
-                };
-                var result = dlg.ShowDialog();
-                if (result != true) return;
-                LogField.Text = File.ReadAllText(dlg.FileName);
+                var fName = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\robotlog.txt";
+                LogField.Text = File.ReadAllText(fName);
                 var res = Direction.ParseLog(LogField.Text);
-                LogField.AppendText("Loaded log with length " + res.Count);
             }
             catch(IOException exception)
             {
