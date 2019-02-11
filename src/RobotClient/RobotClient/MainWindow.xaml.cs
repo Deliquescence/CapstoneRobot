@@ -168,7 +168,7 @@ namespace RobotClient
 
                     using (var streamWriter = new StreamWriter(csv_path, true))
                     {
-                        streamWriter.WriteLineAsync($"train/{image_file_name},{action.Throttle},{action.Direction}");
+                        streamWriter.WriteLineAsync($"train/{image_file_name},{action.Throttle} {action.Direction}");
                     }
                 }
                 catch (Exception e)
@@ -189,7 +189,7 @@ namespace RobotClient
             {
                 using (var streamWriter = new StreamWriter(csv_path, true))
                 {
-                    streamWriter.WriteLineAsync($"image_file,throttle,direction");
+                    streamWriter.WriteLineAsync($"image_file,throttle direction");
                 }
             }
         }
@@ -319,15 +319,11 @@ namespace RobotClient
         {
             try
             {
-                var dlg = new Microsoft.Win32.OpenFileDialog
-                {
-                    DefaultExt = ".txt"
-                };
-                var result = dlg.ShowDialog();
-                if (result != true) return;
-                LogField.Text = File.ReadAllText(dlg.FileName);
+                var fileName = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                fileName += "\\robotlog.txt";
+
+                LogField.Text = File.ReadAllText(fileName);
                 var res = Direction.ParseLog(LogField.Text);
-                LogField.AppendText("Loaded log with length " + res.Count);
             }
             catch(IOException exception)
             {

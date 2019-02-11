@@ -27,6 +27,8 @@ namespace RobotClient
         private static readonly object LockObj = new object();
         private TimeSpan _ts;
         private readonly BackgroundWorker _backgroundWorker1 = new BackgroundWorker();
+        private readonly int firstPicar = 110; //Final bits of IP address
+        private readonly int lastPicar = 111;
 
 
         /**
@@ -34,8 +36,7 @@ namespace RobotClient
          */
         private void InitializeBackgroundWorker() //initalizes the backgroundworker
         {
-            _backgroundWorker1.DoWork += BackgroundWorker1_DoWorkAsync;
-            
+            _backgroundWorker1.DoWork += BackgroundWorker1_DoWorkAsync;         
         }
 
         /**
@@ -76,7 +77,6 @@ namespace RobotClient
             _defaultGateway = _defaultGateway.Substring(0, _defaultGateway.Length - 1);
             LogFieldReg.AppendText("The gateway IP is " + _defaultGateway + "x\n");
             _mainWindow.LogField.AppendText(DateTime.Now + ":\tThe gateway IP is " + _defaultGateway + "x\n");
-
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)
@@ -87,7 +87,7 @@ namespace RobotClient
         /**
          * Function for initiating IP scan
          */
-            private void ButtonScan(object sender, RoutedEventArgs e)
+        private void ButtonScan(object sender, RoutedEventArgs e)
         {
             buttonScan.IsEnabled = false;
             Scan.IsEnabled = false;
@@ -115,6 +115,7 @@ namespace RobotClient
             Dispatcher.Invoke(() => //making changes to the main thread
             {
                 LogFieldReg.AppendText("Starting scan\n");
+                LogFieldReg.AppendText("Default Gateway: " + _defaultGateway);
                 _mainWindow.LogField.AppendText(DateTime.Now + ":\tStarting scan\n");
                 buttonScan.IsEnabled = false;
                 CancelButton.IsEnabled = true;
@@ -123,7 +124,7 @@ namespace RobotClient
             var stopWatch = new Stopwatch(); //wipes the stopwatch
             stopWatch.Start(); //starts the stopwatch
 
-            for (var i = 1; i <= 255; i++) //for the entire local ip range
+            for (var i = firstPicar; i <= lastPicar; i++) //for Picar IP range
             {
                 _scanningIp = _defaultGateway + i;
                 var p = new Ping();
@@ -211,19 +212,19 @@ namespace RobotClient
         /**
          * Function that handles connection to the picar server, if possible and handles various cases
          */
-        private void TryConnect(object sender, RoutedEventArgs e)
+        private async void TryConnect(object sender, RoutedEventArgs e)
         {
             //Device list wasn't selected and the manual ip box was left in the default state
             if (DeviceList.SelectedItem == null && SelectedIpBox.Equals("IP Address"))
                 return;
 
-            string selectedName;
             var selectedIP = SelectedIpBox.Text;
+            string selectedName;
             if (DeviceList.SelectedItem != null)
             {
                 var selectedDevice = DeviceList.SelectedItem.ToString();
                 var index = deviceStringList.FindIndex(array => array[0] == selectedDevice);
-                if(_mainWindow.DeviceListMn.Items.Cast<PiCarConnection>().Any(item => item.Name == deviceStringList[index][0]))
+                if (_mainWindow.DeviceListMn.Items.Cast<PiCarConnection>().Any(item => item.Name == deviceStringList[index][0]))
                     return;
 
                 selectedIP = deviceStringList[index][1];
@@ -237,6 +238,18 @@ namespace RobotClient
                 selectedName = "Unknown" + randomNumber;
             }
 
+            await IPConnect(selectedIP, selectedName);
+
+            _mainWindow.DeviceListMn.ItemsSource = null;
+            _mainWindow.DeviceListMn.ItemsSource = _mainWindow.deviceListMain;
+            _mainWindow.LogField.ScrollToEnd();
+        }
+
+        /**
+         * Function that tries to connect to a given IP address
+         */
+        private async Task IPConnect(string selectedIP, string selectedName)
+        {
 
             //Handle the dummy connection
             if (selectedIP == "DummyIP")
@@ -266,7 +279,7 @@ namespace RobotClient
                 {
                     _mainWindow.LogField.AppendText(DateTime.Now + ":\tError! " + rpcE + "\n");
                 }
-                catch(Exception exception)
+                catch (Exception exception)
                 {
                     _mainWindow.LogField.AppendText(DateTime.Now + ":\tError! " + exception + "\n");
                 }
@@ -283,10 +296,6 @@ namespace RobotClient
                     LogFieldReg.AppendText("Failed to connect to " + selectedName + " with IP: " + selectedIP + "\n");
                 }
             }
-
-            _mainWindow.DeviceListMn.ItemsSource = null;
-            _mainWindow.DeviceListMn.ItemsSource = _mainWindow.deviceListMain;
-            _mainWindow.LogField.ScrollToEnd();
         }
 
         private static bool CheckIfValidIP(string localIP)
