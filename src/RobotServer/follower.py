@@ -1,8 +1,6 @@
-import fastai
-import torch
-import PIL
 from fastai.vision import *
 import cv2
+
 
 class Follower:
     def __init__(self):

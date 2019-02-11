@@ -6,6 +6,7 @@ import picar_helper
 from queue import Queue
 import socket
 import numpy as np
+import follower
 
 picar.setup()
 
@@ -35,6 +36,7 @@ def main():
 class PiCarDriver(object):
     def __init__(self):
         self.mode = 0
+        self.follower = follower.Follower()
         self.next_throttle_and_dir = (0.0, 0.0)
         self._streaming = False
         self.stream_queue = Queue(maxsize=20)
@@ -78,12 +80,8 @@ class PiCarDriver(object):
             elif self.mode == 2:
                 # follower mode
                 # if no base corners, get corners
-                bc = getBaseCorners(frame)
-                if bc is not None:
-                    throttle, direction = tagID(frame, bc)
-                    self._move(throttle, direction)
-                else:
-                    print("Base Tag Corners Not Detected!")
+                action = self.follower.get_action(frame)
+                self._move(action[0], action[1])
             else:
                 self._move(0.0, 0.0)
 
