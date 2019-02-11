@@ -40,7 +40,7 @@ namespace RobotClient {
         __Marshaller_CapstoneRobot_ModeAck);
 
     static readonly grpc::Method<global::RobotClient.SetMotion, global::RobotClient.Empty> __Method_RemoteControl = new grpc::Method<global::RobotClient.SetMotion, global::RobotClient.Empty>(
-        grpc::MethodType.Unary,
+        grpc::MethodType.ClientStreaming,
         __ServiceName,
         "RemoteControl",
         __Marshaller_CapstoneRobot_SetMotion,
@@ -94,10 +94,10 @@ namespace RobotClient {
       /// <summary>
       ///Receive control data from desktop application
       /// </summary>
-      /// <param name="request">The request received from the client.</param>
+      /// <param name="requestStream">Used for reading requests from the client.</param>
       /// <param name="context">The context of the server-side call handler being invoked.</param>
       /// <returns>The response to send back to the client (wrapped by a task).</returns>
-      public virtual global::System.Threading.Tasks.Task<global::RobotClient.Empty> RemoteControl(global::RobotClient.SetMotion request, grpc::ServerCallContext context)
+      public virtual global::System.Threading.Tasks.Task<global::RobotClient.Empty> RemoteControl(grpc::IAsyncStreamReader<global::RobotClient.SetMotion> requestStream, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
@@ -241,46 +241,22 @@ namespace RobotClient {
       /// <summary>
       ///Receive control data from desktop application
       /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
-      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
-      /// <param name="cancellationToken">An optional token for canceling the call.</param>
-      /// <returns>The response received from the server.</returns>
-      public virtual global::RobotClient.Empty RemoteControl(global::RobotClient.SetMotion request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
-      {
-        return RemoteControl(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      /// <summary>
-      ///Receive control data from desktop application
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="options">The options for the call.</param>
-      /// <returns>The response received from the server.</returns>
-      public virtual global::RobotClient.Empty RemoteControl(global::RobotClient.SetMotion request, grpc::CallOptions options)
-      {
-        return CallInvoker.BlockingUnaryCall(__Method_RemoteControl, null, options, request);
-      }
-      /// <summary>
-      ///Receive control data from desktop application
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
       /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
       /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
       /// <param name="cancellationToken">An optional token for canceling the call.</param>
       /// <returns>The call object.</returns>
-      public virtual grpc::AsyncUnaryCall<global::RobotClient.Empty> RemoteControlAsync(global::RobotClient.SetMotion request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      public virtual grpc::AsyncClientStreamingCall<global::RobotClient.SetMotion, global::RobotClient.Empty> RemoteControl(grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
       {
-        return RemoteControlAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+        return RemoteControl(new grpc::CallOptions(headers, deadline, cancellationToken));
       }
       /// <summary>
       ///Receive control data from desktop application
       /// </summary>
-      /// <param name="request">The request to send to the server.</param>
       /// <param name="options">The options for the call.</param>
       /// <returns>The call object.</returns>
-      public virtual grpc::AsyncUnaryCall<global::RobotClient.Empty> RemoteControlAsync(global::RobotClient.SetMotion request, grpc::CallOptions options)
+      public virtual grpc::AsyncClientStreamingCall<global::RobotClient.SetMotion, global::RobotClient.Empty> RemoteControl(grpc::CallOptions options)
       {
-        return CallInvoker.AsyncUnaryCall(__Method_RemoteControl, null, options, request);
+        return CallInvoker.AsyncClientStreamingCall(__Method_RemoteControl, null, options);
       }
       /// <summary>
       ///Begin video/action streaming

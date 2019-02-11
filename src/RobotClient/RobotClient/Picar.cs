@@ -32,16 +32,16 @@ namespace RobotClient {
             "c3MYASABKAgiMAoJU2V0TW90aW9uEhAKCHRocm90dGxlGAEgASgBEhEKCWRp",
             "cmVjdGlvbhgCIAEoASIQCg5TdGFydFN0cmVhbWluZyIPCg1TdG9wU3RyZWFt",
             "aW5nIkUKClN0cmVhbURhdGESDQoFaW1hZ2UYASABKAwSKAoGYWN0aW9uGAIg",
-            "ASgLMhguQ2Fwc3RvbmVSb2JvdC5TZXRNb3Rpb24y8AIKBVBpQ2FyEk8KEVJl",
+            "ASgLMhguQ2Fwc3RvbmVSb2JvdC5TZXRNb3Rpb24y8gIKBVBpQ2FyEk8KEVJl",
             "Y2VpdmVDb25uZWN0aW9uEh0uQ2Fwc3RvbmVSb2JvdC5Db25uZWN0UmVxdWVz",
             "dBoZLkNhcHN0b25lUm9ib3QuQ29ubmVjdEFjayIAEkIKClN3aXRjaE1vZGUS",
             "Gi5DYXBzdG9uZVJvYm90Lk1vZGVSZXF1ZXN0GhYuQ2Fwc3RvbmVSb2JvdC5N",
-            "b2RlQWNrIgASQQoNUmVtb3RlQ29udHJvbBIYLkNhcHN0b25lUm9ib3QuU2V0",
-            "TW90aW9uGhQuQ2Fwc3RvbmVSb2JvdC5FbXB0eSIAEksKC1N0YXJ0U3RyZWFt",
-            "Eh0uQ2Fwc3RvbmVSb2JvdC5TdGFydFN0cmVhbWluZxoZLkNhcHN0b25lUm9i",
-            "b3QuU3RyZWFtRGF0YSIAMAESQgoKU3RvcFN0cmVhbRIcLkNhcHN0b25lUm9i",
-            "b3QuU3RvcFN0cmVhbWluZxoULkNhcHN0b25lUm9ib3QuRW1wdHkiAEIOqgIL",
-            "Um9ib3RDbGllbnRiBnByb3RvMw=="));
+            "b2RlQWNrIgASQwoNUmVtb3RlQ29udHJvbBIYLkNhcHN0b25lUm9ib3QuU2V0",
+            "TW90aW9uGhQuQ2Fwc3RvbmVSb2JvdC5FbXB0eSIAKAESSwoLU3RhcnRTdHJl",
+            "YW0SHS5DYXBzdG9uZVJvYm90LlN0YXJ0U3RyZWFtaW5nGhkuQ2Fwc3RvbmVS",
+            "b2JvdC5TdHJlYW1EYXRhIgAwARJCCgpTdG9wU3RyZWFtEhwuQ2Fwc3RvbmVS",
+            "b2JvdC5TdG9wU3RyZWFtaW5nGhQuQ2Fwc3RvbmVSb2JvdC5FbXB0eSIAQg6q",
+            "AgtSb2JvdENsaWVudGIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {

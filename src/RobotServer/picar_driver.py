@@ -31,9 +31,6 @@ def main():
     # start the driver
     driver.run()
 
-    # cleanup
-    destroy()
-
 
 class PiCarDriver(object):
     def __init__(self):
@@ -68,6 +65,7 @@ class PiCarDriver(object):
 
             # if q key is pressed we break loop
             if k == ord('q'):
+                self._move(0.0, 0.0)
                 break
 
             # get the current frame
@@ -217,5 +215,5 @@ def destroy():
 if __name__ == '__main__':
     try:
         main()
-    except KeyboardInterrupt():
+    finally:
         destroy()

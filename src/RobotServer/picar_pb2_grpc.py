@@ -24,7 +24,7 @@ class PiCarStub(object):
         request_serializer=picar__pb2.ModeRequest.SerializeToString,
         response_deserializer=picar__pb2.ModeAck.FromString,
         )
-    self.RemoteControl = channel.unary_unary(
+    self.RemoteControl = channel.stream_unary(
         '/CapstoneRobot.PiCar/RemoteControl',
         request_serializer=picar__pb2.SetMotion.SerializeToString,
         response_deserializer=picar__pb2.Empty.FromString,
@@ -59,7 +59,7 @@ class PiCarServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
-  def RemoteControl(self, request, context):
+  def RemoteControl(self, request_iterator, context):
     """Receive control data from desktop application
     """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -93,7 +93,7 @@ def add_PiCarServicer_to_server(servicer, server):
           request_deserializer=picar__pb2.ModeRequest.FromString,
           response_serializer=picar__pb2.ModeAck.SerializeToString,
       ),
-      'RemoteControl': grpc.unary_unary_rpc_method_handler(
+      'RemoteControl': grpc.stream_unary_rpc_method_handler(
           servicer.RemoteControl,
           request_deserializer=picar__pb2.SetMotion.FromString,
           response_serializer=picar__pb2.Empty.SerializeToString,
