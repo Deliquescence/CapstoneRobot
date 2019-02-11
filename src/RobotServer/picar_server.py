@@ -34,13 +34,16 @@ class PiCarServicer(picar_pb2_grpc.PiCarServicer):
             print('Request received for mode %s, but already in that mode!' % request.mode)
             return picar_pb2.ModeAck(success=False)
 
-    def RemoteControl(self, request, context):
+    def RemoteControl(self, request_iterator, context):
         """Receive control data from desktop application"""
-        # Clamp the input throttle and direction to [-1, 1]
-        throttle = max(-1, min(request.throttle, 1))
-        direction = max(-1, min(request.direction, 1))
-        print('Setting wheels to %f throttle and %f steering' % (throttle, direction))
-        self.driver.set_throttle_and_dir(throttle, direction)
+        for set_motion in request_iterator:
+            # Clamp the input throttle and direction to [-1, 1]
+            throttle = max(-1, min(set_motion.throttle, 1))
+            direction = max(-1, min(set_motion.direction, 1))
+            print('Setting wheels to %f throttle and %f steering' % (throttle, direction))
+            self.driver.set_throttle_and_dir(throttle, direction)
+        # Stop car when stream ends
+        self.driver.set_throttle_and_dir(0.0, 0.0)
         return picar_pb2.Empty()
 
     def StartStream(self, request, context):
