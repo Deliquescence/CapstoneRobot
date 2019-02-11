@@ -9,6 +9,7 @@ namespace RobotClient
     public class Replay
     {
         private PiCarConnection piCar;
+        private readonly int InitialDelay;
         private Thread replayThread;
         private List<Tuple<TimeSpan, Direction>> savedOffsetInputs;
 
@@ -19,8 +20,8 @@ namespace RobotClient
          */
         public static Tuple<Replay, Replay> StartTwoWithDelay(PiCarConnection first, PiCarConnection second, List<Direction> savedInputs, TimeSpan delay)
         {
-            var firstReplay = new Replay(first, savedInputs);
-            var secondReplay = new Replay(second, savedInputs);
+            var firstReplay = new Replay(first, savedInputs, 0);
+            var secondReplay = new Replay(second, savedInputs, 0);
 
             firstReplay.Start();
 
@@ -48,8 +49,8 @@ namespace RobotClient
             savedInputs.Add(avoidCrashInput);
             savedInputs.Add(new Direction(savedInputs.Last().time + CatchupDuration, 0.0, 0.0)); // Stop after avoiding crash
 
-            var firstReplay = new Replay(first, savedInputs);
-            var secondReplay = new Replay(second, secondInputs);
+            var firstReplay = new Replay(first, savedInputs, 0);
+            var secondReplay = new Replay(second, secondInputs, 0);
 
             firstReplay.Start();
             secondReplay.Start();
@@ -60,8 +61,9 @@ namespace RobotClient
         /**
          * Create a replay which will send the SavedInputs to the piCar after .Start() is called.
          */
-        public Replay(PiCarConnection piCarConnection, List<Direction> savedInputs)
+        public Replay(PiCarConnection piCarConnection, List<Direction> savedInputs, int initDelay)
         {
+            this.InitialDelay = initDelay;
             this.piCar = piCarConnection;
 
             // Map Direction -> <Offset to next instruction, Direction>
@@ -80,6 +82,7 @@ namespace RobotClient
 
         private void DoReplay()
         {
+            Thread.Sleep(InitialDelay); //Init delay
             try
             {
                 foreach (var x in savedOffsetInputs)

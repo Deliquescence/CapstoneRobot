@@ -40,8 +40,7 @@ namespace RobotClient
             //creates new replay after a given delay
             var inputs = Direction.ParseLog(_mainWindow.LogField.Text);
             _mainWindow.LogField.Clear(); //Clear after load
-            replay = new Replay(Picar, inputs);
-            Thread.Sleep(Convert.ToInt16(Delay.Text));
+            replay = new Replay(Picar, inputs, Convert.ToInt32(Delay.Text) * 1000);
             replay.Start();
         }
 
