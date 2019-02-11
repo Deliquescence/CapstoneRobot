@@ -168,7 +168,7 @@ namespace RobotClient
 
                     using (var streamWriter = new StreamWriter(csv_path, true))
                     {
-                        streamWriter.WriteLineAsync($"train/{image_file_name},{action.Throttle} {action.Direction}");
+                        streamWriter.WriteLineAsync($"train/{image_file_name},{action.Throttle},{action.Direction}");
                     }
                 }
                 catch (Exception e)
@@ -189,7 +189,7 @@ namespace RobotClient
             {
                 using (var streamWriter = new StreamWriter(csv_path, true))
                 {
-                    streamWriter.WriteLineAsync($"image_file,throttle direction");
+                    streamWriter.WriteLineAsync($"image_file,throttle,direction");
                 }
             }
         }
@@ -747,8 +747,10 @@ namespace RobotClient
 
         private void SetMirror(object sender, RoutedEventArgs e)
         {
-                Mirror = new MirroringMode();
-                Mirror.Show();
+            var car = (PiCarConnection) DeviceListMn.SelectedItem;
+            if (car == null) return;
+            Mirror = new MirroringMode(car);
+            Mirror.Show();
         }
     }
 }

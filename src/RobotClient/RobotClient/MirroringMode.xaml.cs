@@ -24,23 +24,22 @@ namespace RobotClient
         private PiCarConnection Picar;
         private Replay replay;
         private readonly MainWindow _mainWindow = (MainWindow)Application.Current.MainWindow;
-        public MirroringMode()
+        public MirroringMode(PiCarConnection picar)
         {
+            Picar = picar;
             InitializeComponent();
         }
 
         //starts the replays for mirroring mode
         private void StartMirroring_Click(object sender, RoutedEventArgs e)
         {
-            //sets picar to leader mode for backend
-            Picar = (PiCarConnection)_mainWindow.DeviceListMn.SelectedItem;
-
-            if (Picar == null) return;
+            //Leader mode for backend
             SetVehicleMode(ModeRequest.Types.Mode.Lead);
             //sets mirroring true for this picar
             Picar.SetMirroring(true);
             //creates new replay after a given delay
             var inputs = Direction.ParseLog(_mainWindow.LogField.Text);
+            _mainWindow.LogField.Clear(); //Clear after load
             replay = new Replay(Picar, inputs);
             Thread.Sleep(Convert.ToInt16(Delay.Text));
             replay.Start();
