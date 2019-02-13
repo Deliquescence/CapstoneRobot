@@ -8,6 +8,13 @@ import cv2
 import picar_pb2
 import picar_pb2_grpc
 
+# Increment major version for incompatible protocol API changes
+# Increment minor version for backwards-compatible protocol API additions
+# Increment patch version for backwards-compatible bug fixes
+MAJOR_VERSION = 1
+MINOR_VERSION = 0
+PATCH_VERSION = 0
+
 
 class PiCarServicer(picar_pb2_grpc.PiCarServicer):
     """Provides methods that implement functionality of PiCar server."""
@@ -19,8 +26,9 @@ class PiCarServicer(picar_pb2_grpc.PiCarServicer):
     def ReceiveConnection(self, request, context):
         """Handshake between PiCar and desktop application"""
         print('Received connection request from %s' % request.message)
-        # Send a ConnectAck message showing success
-        return picar_pb2.ConnectAck(success=True)
+        # Send a ConnectAck message showing success with supported protocol version
+        version = picar_pb2.SemVer(major=MAJOR_VERSION, minor=MINOR_VERSION, patch=PATCH_VERSION)
+        return picar_pb2.ConnectAck(success=True, version=version)
 
     def SwitchMode(self, request, context):
         """Changes the operating mode of the PiCar"""

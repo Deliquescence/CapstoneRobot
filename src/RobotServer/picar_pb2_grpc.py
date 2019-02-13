@@ -46,7 +46,8 @@ class PiCarServicer(object):
   """
 
   def ReceiveConnection(self, request, context):
-    """Handshake between PiCar and desktop application
+    """Handshake between PiCar and desktop application.
+    All clients starting from the initial version expect this. Do not change.
     """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
