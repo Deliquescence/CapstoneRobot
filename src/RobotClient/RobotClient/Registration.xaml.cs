@@ -260,7 +260,11 @@ namespace RobotClient
                 try
                 {
                     newConnection = new PiCarConnection(selectedName, selectedIP);
-                    canConnect = newConnection.RequestConnect();
+                    var connectResponse = newConnection.RequestConnect();
+                    Console.Write(connectResponse.Item2);
+                    LogFieldReg.AppendText(connectResponse.Item2);
+                    _mainWindow.LogField.AppendText(DateTime.Now + ":\t" + connectResponse.Item2);
+                    canConnect = connectResponse.Item1;
                 }
                 catch (RpcException rpcE)
                 {

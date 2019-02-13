@@ -21,6 +21,9 @@ namespace RobotClient
 
             private readonly AsyncClientStreamingCall<SetMotion, Empty> remoteControlCall;
 
+            private const uint _exactMajorVersion = 1;
+            private const uint _atLeastMinorVersion = 0;
+
             public PiCarClient(PiCar.PiCarClient client)
             {
                 _client = client;
@@ -28,15 +31,28 @@ namespace RobotClient
             }
 
             //Request a connection to the PiCar server. Return success
-            public bool RequestConnect()
+            public Tuple<bool, string> RequestConnect()
             {
                 try
                 {
                     //Attempt connection to PiCar server
                     var request = new ConnectRequest {Message = "Desktop App"};
                     var ack = _client.ReceiveConnection(request);
+                    var version = ack.Version;
+                    string msg = null;
 
-                    return ack.Success;
+                    // Version ok
+                    if (version.Major == _exactMajorVersion && version.Minor >= _atLeastMinorVersion)
+                    {
+                        msg = $"Protocol version {version.Major}.{version.Minor}.{version.Patch} ok";
+                    } else // Version bad
+                    {
+                        msg = $"Expected major version {_exactMajorVersion} and minor version "
+                            + $"at least {_atLeastMinorVersion}, but server returned "
+                            + $"{version.Major}.{version.Minor}.{version.Patch}.\n";
+                    }
+
+                    return Tuple.Create(ack.Success, msg);
                 }
                 catch (RpcException e)
                 {
@@ -145,7 +161,7 @@ namespace RobotClient
             Mode = ModeRequest.Types.Mode.Idle; //Start in Idle mode
         }
 
-        public virtual bool RequestConnect()
+        public virtual Tuple<bool, string> RequestConnect()
         {
             return _client.RequestConnect();
         }
@@ -193,9 +209,9 @@ namespace RobotClient
             Mode = ModeRequest.Types.Mode.Idle;
         }
 
-        public override bool RequestConnect()
+        public override Tuple<bool, string> RequestConnect()
         {
-            return true;
+            return Tuple.Create(true, "");
         }
 
         public override void SetMode(ModeRequest.Types.Mode mode)

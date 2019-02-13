@@ -607,7 +607,7 @@ namespace RobotClient
             DeviceListMn.ItemsSource = null;
             DeviceListMn.ItemsSource = deviceListMain;
         }
-
+         
         #region Properties
 
         public string LeftAxis
