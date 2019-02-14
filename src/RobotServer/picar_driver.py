@@ -81,7 +81,7 @@ class PiCarDriver(object):
                 # follower mode
                 # if no base corners, get corners
                 action = self.follower.get_action(frame)
-                self._move(action[0], action[1])
+                self._move(action[0].item(), action[1].item())
             else:
                 self._move(0.0, 0.0)
 
