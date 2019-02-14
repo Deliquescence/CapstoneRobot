@@ -12,11 +12,11 @@ class Follower:
         img = pil2tensor(img, np.float32)
         img.div_(255)
         result = self.model.predict(Image(img))
-        print(result[0])
+        return result[0]
 
 
 if __name__ == '__main__':
     follower = Follower()
     image = cv2.imread("C:/Code/Senior Project/train/mirrorB_2605.jpg")
 
-    follower.get_action(image)
+    print(follower.get_action(image))
