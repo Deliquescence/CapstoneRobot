@@ -44,7 +44,7 @@ namespace RobotClient
                     // Version ok
                     if (version.Major == _exactMajorVersion && version.Minor >= _atLeastMinorVersion)
                     {
-                        msg = $"Protocol version {version.Major}.{version.Minor}.{version.Patch} ok";
+                        msg = $"Protocol version {version.Major}.{version.Minor}.{version.Patch} ok/n";
                     } else // Version bad
                     {
                         msg = $"Expected major version {_exactMajorVersion} and minor version "
