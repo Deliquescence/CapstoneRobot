@@ -7,7 +7,8 @@ option csharp_namespace = "RobotClient";
 //Interface exported by the server
 service PiCar {
 
-	//Handshake between PiCar and desktop application
+	// Handshake between PiCar and desktop application.
+	// All clients starting from the initial version expect this. Do not change.
 	rpc ReceiveConnection(ConnectRequest) returns (ConnectAck) {}
 	
 	//Changes the operating mode of the PiCar
@@ -35,6 +36,20 @@ message ConnectRequest {
 message ConnectAck {
 	//Boolean, returns True for working connection, False if not accepted for some reason
 	bool success = 1;
+
+	// Returns the semantic version of the protocol supported by the server.
+	// All clients starting from the initial version expect this. Do not change.
+    SemVer version = 2;
+}
+
+// All clients starting from the initial version expect this. Do not change.
+// The major version returned by the server shall be incremented for incompatible API changes.
+// The minor version returned shall be incremented for backwards-compatible additions to the API.
+// The patch version returned shall be incremented for backwards-compatible bug fixes.
+message SemVer {
+    uint32 major = 1;
+    uint32 minor = 2;
+    uint32 patch = 3;
 }
 
 //Sent from application to set the operation mode of the PiCar

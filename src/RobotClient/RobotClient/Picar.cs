@@ -25,29 +25,32 @@ namespace RobotClient {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CgtwaWNhci5wcm90bxINQ2Fwc3RvbmVSb2JvdCIHCgVFbXB0eSIhCg5Db25u",
-            "ZWN0UmVxdWVzdBIPCgdtZXNzYWdlGAEgASgJIh0KCkNvbm5lY3RBY2sSDwoH",
-            "c3VjY2VzcxgBIAEoCCJkCgtNb2RlUmVxdWVzdBItCgRtb2RlGAEgASgOMh8u",
-            "Q2Fwc3RvbmVSb2JvdC5Nb2RlUmVxdWVzdC5Nb2RlIiYKBE1vZGUSCAoESURM",
-            "RRAAEggKBExFQUQQARIKCgZGT0xMT1cQAiIaCgdNb2RlQWNrEg8KB3N1Y2Nl",
-            "c3MYASABKAgiMAoJU2V0TW90aW9uEhAKCHRocm90dGxlGAEgASgBEhEKCWRp",
-            "cmVjdGlvbhgCIAEoASIQCg5TdGFydFN0cmVhbWluZyIPCg1TdG9wU3RyZWFt",
-            "aW5nIkUKClN0cmVhbURhdGESDQoFaW1hZ2UYASABKAwSKAoGYWN0aW9uGAIg",
-            "ASgLMhguQ2Fwc3RvbmVSb2JvdC5TZXRNb3Rpb24y8gIKBVBpQ2FyEk8KEVJl",
-            "Y2VpdmVDb25uZWN0aW9uEh0uQ2Fwc3RvbmVSb2JvdC5Db25uZWN0UmVxdWVz",
-            "dBoZLkNhcHN0b25lUm9ib3QuQ29ubmVjdEFjayIAEkIKClN3aXRjaE1vZGUS",
-            "Gi5DYXBzdG9uZVJvYm90Lk1vZGVSZXF1ZXN0GhYuQ2Fwc3RvbmVSb2JvdC5N",
-            "b2RlQWNrIgASQwoNUmVtb3RlQ29udHJvbBIYLkNhcHN0b25lUm9ib3QuU2V0",
-            "TW90aW9uGhQuQ2Fwc3RvbmVSb2JvdC5FbXB0eSIAKAESSwoLU3RhcnRTdHJl",
-            "YW0SHS5DYXBzdG9uZVJvYm90LlN0YXJ0U3RyZWFtaW5nGhkuQ2Fwc3RvbmVS",
-            "b2JvdC5TdHJlYW1EYXRhIgAwARJCCgpTdG9wU3RyZWFtEhwuQ2Fwc3RvbmVS",
-            "b2JvdC5TdG9wU3RyZWFtaW5nGhQuQ2Fwc3RvbmVSb2JvdC5FbXB0eSIAQg6q",
-            "AgtSb2JvdENsaWVudGIGcHJvdG8z"));
+            "ZWN0UmVxdWVzdBIPCgdtZXNzYWdlGAEgASgJIkUKCkNvbm5lY3RBY2sSDwoH",
+            "c3VjY2VzcxgBIAEoCBImCgd2ZXJzaW9uGAIgASgLMhUuQ2Fwc3RvbmVSb2Jv",
+            "dC5TZW1WZXIiNQoGU2VtVmVyEg0KBW1ham9yGAEgASgNEg0KBW1pbm9yGAIg",
+            "ASgNEg0KBXBhdGNoGAMgASgNImQKC01vZGVSZXF1ZXN0Ei0KBG1vZGUYASAB",
+            "KA4yHy5DYXBzdG9uZVJvYm90Lk1vZGVSZXF1ZXN0Lk1vZGUiJgoETW9kZRII",
+            "CgRJRExFEAASCAoETEVBRBABEgoKBkZPTExPVxACIhoKB01vZGVBY2sSDwoH",
+            "c3VjY2VzcxgBIAEoCCIwCglTZXRNb3Rpb24SEAoIdGhyb3R0bGUYASABKAES",
+            "EQoJZGlyZWN0aW9uGAIgASgBIhAKDlN0YXJ0U3RyZWFtaW5nIg8KDVN0b3BT",
+            "dHJlYW1pbmciRQoKU3RyZWFtRGF0YRINCgVpbWFnZRgBIAEoDBIoCgZhY3Rp",
+            "b24YAiABKAsyGC5DYXBzdG9uZVJvYm90LlNldE1vdGlvbjLyAgoFUGlDYXIS",
+            "TwoRUmVjZWl2ZUNvbm5lY3Rpb24SHS5DYXBzdG9uZVJvYm90LkNvbm5lY3RS",
+            "ZXF1ZXN0GhkuQ2Fwc3RvbmVSb2JvdC5Db25uZWN0QWNrIgASQgoKU3dpdGNo",
+            "TW9kZRIaLkNhcHN0b25lUm9ib3QuTW9kZVJlcXVlc3QaFi5DYXBzdG9uZVJv",
+            "Ym90Lk1vZGVBY2siABJDCg1SZW1vdGVDb250cm9sEhguQ2Fwc3RvbmVSb2Jv",
+            "dC5TZXRNb3Rpb24aFC5DYXBzdG9uZVJvYm90LkVtcHR5IgAoARJLCgtTdGFy",
+            "dFN0cmVhbRIdLkNhcHN0b25lUm9ib3QuU3RhcnRTdHJlYW1pbmcaGS5DYXBz",
+            "dG9uZVJvYm90LlN0cmVhbURhdGEiADABEkIKClN0b3BTdHJlYW0SHC5DYXBz",
+            "dG9uZVJvYm90LlN0b3BTdHJlYW1pbmcaFC5DYXBzdG9uZVJvYm90LkVtcHR5",
+            "IgBCDqoCC1JvYm90Q2xpZW50YgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::RobotClient.Empty), global::RobotClient.Empty.Parser, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::RobotClient.ConnectRequest), global::RobotClient.ConnectRequest.Parser, new[]{ "Message" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::RobotClient.ConnectAck), global::RobotClient.ConnectAck.Parser, new[]{ "Success" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::RobotClient.ConnectAck), global::RobotClient.ConnectAck.Parser, new[]{ "Success", "Version" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::RobotClient.SemVer), global::RobotClient.SemVer.Parser, new[]{ "Major", "Minor", "Patch" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::RobotClient.ModeRequest), global::RobotClient.ModeRequest.Parser, new[]{ "Mode" }, null, new[]{ typeof(global::RobotClient.ModeRequest.Types.Mode) }, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::RobotClient.ModeAck), global::RobotClient.ModeAck.Parser, new[]{ "Success" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::RobotClient.SetMotion), global::RobotClient.SetMotion.Parser, new[]{ "Throttle", "Direction" }, null, null, null),
@@ -325,6 +328,7 @@ namespace RobotClient {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public ConnectAck(ConnectAck other) : this() {
       success_ = other.success_;
+      version_ = other.version_ != null ? other.version_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -347,6 +351,21 @@ namespace RobotClient {
       }
     }
 
+    /// <summary>Field number for the "version" field.</summary>
+    public const int VersionFieldNumber = 2;
+    private global::RobotClient.SemVer version_;
+    /// <summary>
+    /// Returns the semantic version of the protocol supported by the server.
+    /// All clients starting from the initial version expect this. Do not change.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::RobotClient.SemVer Version {
+      get { return version_; }
+      set {
+        version_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as ConnectAck);
@@ -361,6 +380,7 @@ namespace RobotClient {
         return true;
       }
       if (Success != other.Success) return false;
+      if (!object.Equals(Version, other.Version)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -368,6 +388,7 @@ namespace RobotClient {
     public override int GetHashCode() {
       int hash = 1;
       if (Success != false) hash ^= Success.GetHashCode();
+      if (version_ != null) hash ^= Version.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -385,6 +406,10 @@ namespace RobotClient {
         output.WriteRawTag(8);
         output.WriteBool(Success);
       }
+      if (version_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Version);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -395,6 +420,9 @@ namespace RobotClient {
       int size = 0;
       if (Success != false) {
         size += 1 + 1;
+      }
+      if (version_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Version);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -410,6 +438,12 @@ namespace RobotClient {
       if (other.Success != false) {
         Success = other.Success;
       }
+      if (other.version_ != null) {
+        if (version_ == null) {
+          version_ = new global::RobotClient.SemVer();
+        }
+        Version.MergeFrom(other.Version);
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -423,6 +457,204 @@ namespace RobotClient {
             break;
           case 8: {
             Success = input.ReadBool();
+            break;
+          }
+          case 18: {
+            if (version_ == null) {
+              version_ = new global::RobotClient.SemVer();
+            }
+            input.ReadMessage(version_);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  /// <summary>
+  /// All clients starting from the initial version expect this. Do not change.
+  /// The major version returned by the server shall be incremented for incompatible API changes.
+  /// The minor version returned shall be incremented for backwards-compatible additions to the API.
+  /// The patch version returned shall be incremented for backwards-compatible bug fixes.
+  /// </summary>
+  public sealed partial class SemVer : pb::IMessage<SemVer> {
+    private static readonly pb::MessageParser<SemVer> _parser = new pb::MessageParser<SemVer>(() => new SemVer());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<SemVer> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[3]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public SemVer() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public SemVer(SemVer other) : this() {
+      major_ = other.major_;
+      minor_ = other.minor_;
+      patch_ = other.patch_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public SemVer Clone() {
+      return new SemVer(this);
+    }
+
+    /// <summary>Field number for the "major" field.</summary>
+    public const int MajorFieldNumber = 1;
+    private uint major_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public uint Major {
+      get { return major_; }
+      set {
+        major_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "minor" field.</summary>
+    public const int MinorFieldNumber = 2;
+    private uint minor_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public uint Minor {
+      get { return minor_; }
+      set {
+        minor_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "patch" field.</summary>
+    public const int PatchFieldNumber = 3;
+    private uint patch_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public uint Patch {
+      get { return patch_; }
+      set {
+        patch_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as SemVer);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(SemVer other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Major != other.Major) return false;
+      if (Minor != other.Minor) return false;
+      if (Patch != other.Patch) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Major != 0) hash ^= Major.GetHashCode();
+      if (Minor != 0) hash ^= Minor.GetHashCode();
+      if (Patch != 0) hash ^= Patch.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Major != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(Major);
+      }
+      if (Minor != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(Minor);
+      }
+      if (Patch != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(Patch);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Major != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Major);
+      }
+      if (Minor != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Minor);
+      }
+      if (Patch != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Patch);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(SemVer other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Major != 0) {
+        Major = other.Major;
+      }
+      if (other.Minor != 0) {
+        Minor = other.Minor;
+      }
+      if (other.Patch != 0) {
+        Patch = other.Patch;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Major = input.ReadUInt32();
+            break;
+          }
+          case 16: {
+            Minor = input.ReadUInt32();
+            break;
+          }
+          case 24: {
+            Patch = input.ReadUInt32();
             break;
           }
         }
@@ -442,7 +674,7 @@ namespace RobotClient {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[3]; }
+      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[4]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -590,7 +822,7 @@ namespace RobotClient {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[4]; }
+      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[5]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -725,7 +957,7 @@ namespace RobotClient {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[5]; }
+      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[6]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -896,7 +1128,7 @@ namespace RobotClient {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[6]; }
+      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[7]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1000,7 +1232,7 @@ namespace RobotClient {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[7]; }
+      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[8]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1101,7 +1333,7 @@ namespace RobotClient {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[8]; }
+      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[9]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
