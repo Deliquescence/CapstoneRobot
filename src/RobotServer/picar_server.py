@@ -19,6 +19,9 @@ class PiCarServicer(picar_pb2_grpc.PiCarServicer):
     def ReceiveConnection(self, request, context):
         """Handshake between PiCar and desktop application"""
         print('Received connection request from %s' % request.message)
+        print('Switching mode to idle')
+        self.driver.mode = 0
+        self.driver.set_throttle_and_dir(0.0, 0.0)
         # Send a ConnectAck message showing success
         return picar_pb2.ConnectAck(success=True)
 

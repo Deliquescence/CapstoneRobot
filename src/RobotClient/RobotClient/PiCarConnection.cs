@@ -152,10 +152,8 @@ namespace RobotClient
 
         public virtual void SetMode(ModeRequest.Types.Mode mode)
         {
-            var success = _client.SetMode(mode);
-            //Change local mode if successful
-            if (success)
-                Mode = mode;
+            _client.SetMode(mode);
+            Mode = mode;
         }
 
         public virtual void SetMotion(double throttle, double direction)
