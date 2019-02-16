@@ -16,9 +16,11 @@ export NO_NNPACK=1
 export NO_QNNPACK=1
 
 sudo apt install libopenblas-dev libblas-dev m4 cmake cython python3-dev python3-yaml python3-setuptools
-sudo pip3.6 install Pillow beautifulsoup4 bottleneck dataclasses;python_version<'3.7' fastprogress>=0.1.18 matplotlib numexpr numpy>=1.12 nvidia-ml-py3 packaging pandas pyyaml requests scipy typing
-# Watch for missing fastai deps, may have missed some
-# also check https://docs.fast.ai/install.html
+
+# https://github.com/pytorch/pytorch#from-source
+sudo pip3.6 install numpy pyyaml mkl mkl-include setuptools cmake cffi typing
+# https://docs.fast.ai/install.html
+sudo pip3.6 install Pillow beautifulsoup4 bottleneck dataclasses;python_version<'3.7' fastprogress>=0.1.18 matplotlib numexpr numpy>=1.12 nvidia-ml-py3 packaging pandas requests scipy
 sudo pip3.6 install --no-deps fastai
 
 cd ~
