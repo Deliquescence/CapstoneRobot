@@ -12,8 +12,12 @@ picar.setup()
 
 # det up our tag dictionary and parameter value
 # we use tag ids 1,2,4,8
-arDict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_6X6_50)
-parameters = cv2.aruco.DetectorParameters_create()
+
+# Error with dependencies,
+#  cv2.cv2 has no attirbute 'aruco'
+# but with ML follower we don't need this, so remove for now
+#arDict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_6X6_50)
+#parameters = cv2.aruco.DetectorParameters_create()
 
 # get a reference to the camera, default is 0
 camera = cv2.VideoCapture(0)
