@@ -1,5 +1,6 @@
 from fastai.vision import *
 import cv2
+import time
 
 
 class Follower:
@@ -7,11 +8,16 @@ class Follower:
         self.model = load_learner("models", fname="supervised.pkl")
 
     def get_action(self, frame):
+        start_time = time.time()
+
         img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         img = PIL.Image.fromarray(img)
         img = pil2tensor(img, np.float32)
         img.div_(255)
         result = self.model.predict(Image(img))
+
+        duration = time.time() - start_time
+        #print(f"Prediction took {duration}")
         return result[1]
 
 
