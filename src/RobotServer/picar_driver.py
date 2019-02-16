@@ -7,6 +7,7 @@ from queue import Queue
 import socket
 import numpy as np
 import follower
+from follower import CustomDarknet, ResLayer
 
 picar.setup()
 
