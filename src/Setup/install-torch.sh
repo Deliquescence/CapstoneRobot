@@ -18,12 +18,13 @@ export NO_QNNPACK=1
 sudo apt install libopenblas-dev libblas-dev m4 cmake cython python3-dev python3-yaml python3-setuptools
 sudo pip3.6 install Pillow beautifulsoup4 bottleneck dataclasses;python_version<'3.7' fastprogress>=0.1.18 matplotlib numexpr numpy>=1.12 nvidia-ml-py3 packaging pandas pyyaml requests scipy typing
 # Watch for missing fastai deps, may have missed some
+# also check https://docs.fast.ai/install.html
 sudo pip3.6 install --no-deps fastai
 
 cd ~
 
 # Ideally replace below with archive of successfull build
-mkdir install_pytorch && cd install_pytorch
+mkdir build_pytorch && cd build_pytorch
 git clone --recursive https://github.com/pytorch/pytorch -b v1.0.1
 cd pytorch
 
