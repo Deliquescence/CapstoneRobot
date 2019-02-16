@@ -44,7 +44,7 @@ class CustomDarknet(nn.Module):
 
 class Follower:
     def __init__(self):
-        self.model = load_learner("models", fname="supervised.pkl")
+        self.model = load_learner("models", fname="tiny.pkl")
 
     def get_action(self, frame):
         start_time = time.time()
