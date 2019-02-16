@@ -44,13 +44,14 @@ class CustomDarknet(nn.Module):
 
 class Follower:
     def __init__(self):
-        self.model = load_learner("models", fname="tiny.pkl")
+        self.model = load_learner("models", fname="dark64.pkl")
 
     def get_action(self, frame):
         start_time = time.time()
-
-        img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        img = frame[88:152, 148:212]
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         img = PIL.Image.fromarray(img)
+        img.save("tmp.png")
         img = pil2tensor(img, np.float32)
         img.div_(255)
         result = self.model.predict(Image(img))
