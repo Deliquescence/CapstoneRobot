@@ -62,7 +62,9 @@ class Follower:
 
 if __name__ == '__main__':
     follower = Follower()
-    image = cv2.imread("C:/Code/Senior Project/train/mirrorB_2605.jpg")
+    #image = cv2.imread("~/Pictures/mirrorB_2605.jpg")
+    camera = cv2.VideoCapture(0)
+    _, image = camera.read()
     action = follower.get_action(image)
     print(action[0].item())
     print(action[1].item())
