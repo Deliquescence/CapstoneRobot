@@ -1,4 +1,8 @@
 from fastai.vision import *
+import onnx
+import caffe2.python.onnx.backend
+import numpy as np
+from PIL import Image
 import cv2
 import time
 
@@ -44,16 +48,23 @@ class CustomDarknet(nn.Module):
 
 class Follower:
     def __init__(self):
-        self.model = load_learner("models", fname="supervised.pkl")
+        self.model = onnx.load('models/supervised.onnx')
 
     def get_action(self, frame):
         start_time = time.time()
 
         img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         img = PIL.Image.fromarray(img)
+        img = img.resize((240,320), Image.ANTIALIAS)
         img = pil2tensor(img, np.float32)
         img.div_(255)
-        result = self.model.predict(Image(img))
+        print("img: ", img)
+        img = np.array(img)
+        print("shape: ", img.shape)
+        img = img.reshape(1,3,240,320).astype(np.float32)
+        print("img2: ", img)
+        print("shape: ", img.shape)
+        result = caffe2.python.onnx.backend.run_model(self.model, img)
 
         duration = time.time() - start_time
         #print(f"Prediction took {duration}")
