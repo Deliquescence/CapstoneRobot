@@ -15,7 +15,7 @@ FAR_THRESHOLD = 70
 
 def state_from_frame(frame):
     """Returns a State indicating the approximate location of the tag in the given frame."""
-    state_from_loc(tag_loc(frame))
+    return state_from_loc(tag_loc(frame))
 
 
 def state_from_loc(loc):
