@@ -1,6 +1,8 @@
 
 from enum import Enum
 
+n = 21
+
 
 class Action(Enum):
     stop = 0

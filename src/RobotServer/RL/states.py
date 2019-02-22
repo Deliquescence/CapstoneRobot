@@ -1,6 +1,8 @@
 
 from enum import Enum
 
+n = 10
+
 
 class State(Enum):
     unknown = 0
