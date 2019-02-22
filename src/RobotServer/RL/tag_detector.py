@@ -2,15 +2,15 @@ import cv2
 import numpy as np
 import time
 
-from RL.states import State
+from states import State
 
 AR_DICT = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_6X6_50)
 AR_PARAMS = cv2.aruco.DetectorParameters_create()
 
-LEFT_THRESHOLD = -10
-RIGHT_THRESHOLD = 10
-NEAR_THRESHOLD = 10
-FAR_THRESHOLD = 20
+LEFT_THRESHOLD = -50
+RIGHT_THRESHOLD = 50
+NEAR_THRESHOLD = 125
+FAR_THRESHOLD = 70
 
 
 def state_from_frame(frame):
