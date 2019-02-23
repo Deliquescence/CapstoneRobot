@@ -1,4 +1,4 @@
-﻿<Window x:Class="RobotClient.MainWindow"
+<Window x:Class="RobotClient.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -41,10 +41,15 @@
                 <MenuItem Header="_Import Log" InputGestureText="Ctrl + I" Click="ImportData_Click" />
                 <MenuItem Header="_Export Log" InputGestureText="Ctrl + U" Click="ExportLog_Click" />
                 <MenuItem Header="_Quit" InputGestureText="Alt + F4" Click="Shutdown_Click" />
+
             </MenuItem>
             <MenuItem Header="_Options">
                 <MenuItem Header="_Default Control Mode" Name="DefaultHeader" IsEnabled="False" Click="ModeChanger_Click"/>
                 <MenuItem Header="_Alternative Control Mode" Name="AlternativeHeader" IsEnabled="True" Click="ModeChanger_Click"/>
+            </MenuItem>
+            <MenuItem Header="_Stream" Height="31">
+                <MenuItem Header="_Enable Stream Saving" Name="StreamSavingHeader" IsEnabled="True" Click="ImageSaving_Click"/>
+                <MenuItem Header="_Disable Stream Saving" Name="StopStreamSavingHeader" IsEnabled="False" Click="StopSaving_Click"/>
             </MenuItem>
             <MenuItem Header="_Help" Height="31">
                 <MenuItem Header="_About" Click="About_Click" />
@@ -56,12 +61,13 @@
             <RepeatButton Delay="10000" PreviewMouseUp="ButtonPress_Released" x:Name="Left" Click="ButtonPress_Event" Content="←" HorizontalAlignment="Left" Margin="0,39,0,0" VerticalAlignment="Top" Width="44" Height="39" FontSize="24"/>
             <RepeatButton Delay="10000" PreviewMouseUp="ButtonPress_Released" x:Name="Right" Click="ButtonPress_Event" Content="→" HorizontalAlignment="Left" Margin="88,39,0,0" VerticalAlignment="Top" Width="44" RenderTransformOrigin="1.6,2.75" FontSize="24" Height="39"/>
         </Grid>
-        <StackPanel Margin="0,52,39,0" Orientation="Vertical" HorizontalAlignment="Right" Width="129" Height="130" VerticalAlignment="Top">
+        <StackPanel Margin="0,38,45,0" Orientation="Vertical" HorizontalAlignment="Right" Width="129" Height="154" VerticalAlignment="Top">
             <Button Content="Set Leader" Click="SetLeader" HorizontalAlignment="Left" Margin="28,0,0,0" VerticalAlignment="Top" Width="80" RenderTransformOrigin="0.481,1.932" Height="24"/>
             <Button Content="Set Idle" Click="SetDefault" HorizontalAlignment="Left" Margin="28,0,0,0" VerticalAlignment="Top" Width="80" RenderTransformOrigin="0.481,1.932" Height="24"/>
             <Button Content="Set Follower" Click="SetFollower" HorizontalAlignment="Left" Margin="28,0,0,0" VerticalAlignment="Top" Width="80" RenderTransformOrigin="0.481,1.932" Height="24"/>
+            <Button Content="Mirror" Click="SetMirror" HorizontalAlignment="Left" Margin="28,0,0,0" VerticalAlignment="Top" Width="80" RenderTransformOrigin="0.481,1.932" Height="24"/>
             <Label Content="Status" HorizontalAlignment="Left" Margin="47,0,0,0" VerticalAlignment="Top"/>
-            <TextBox IsReadOnly="True" x:Name="DeviceStatus" HorizontalAlignment="Left" Height="24" TextWrapping="Wrap" VerticalAlignment="Top" Width="127" TextAlignment="Center" RenderTransformOrigin="2.528,2.5"/>
+            <TextBox IsReadOnly="True" x:Name="DeviceStatus" HorizontalAlignment="Left" Height="28" TextWrapping="Wrap" VerticalAlignment="Top" Width="127" TextAlignment="Center" RenderTransformOrigin="2.528,2.5"/>
         </StackPanel>
         <Image Name="StreamImage" Margin="249,55,223,251"/>
         <Grid Margin="24,52,0,240" HorizontalAlignment="Left" Width="179">
