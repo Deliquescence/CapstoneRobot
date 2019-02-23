@@ -1,74 +1,54 @@
-from fastai.vision import *
-import onnx
-import caffe2.python.onnx.backend
 import numpy as np
 from PIL import Image
 import cv2
 import time
+import pickle
 
-# From fastai
-def conv_bn_lrelu(ni:int, nf:int, ks:int=3, stride:int=1)->nn.Sequential:
-    "Create a seuence Conv2d->BatchNorm2d->LeakyReLu layer."
-    return nn.Sequential(
-        nn.Conv2d(ni, nf, kernel_size=ks, bias=False, stride=stride, padding=ks//2),
-        nn.BatchNorm2d(nf),
-        nn.LeakyReLU(negative_slope=0.1, inplace=True))
+from RL import tag_detector, states, actions
 
-class ResLayer(nn.Module):
-    "Resnet style layer with `ni` inputs."
-    def __init__(self, ni:int):
-        super().__init__()
-        self.conv1=conv_bn_lrelu(ni, ni//2, ks=1)
-        self.conv2=conv_bn_lrelu(ni//2, ni, ks=3)
 
-    def forward(self, x): return x + self.conv2(self.conv1(x))
+# From
+# https://github.com/dennybritz/reinforcement-learning/blob/master/TD/Q-Learning%20Solution.ipynb
+# Under MIT License by Denny Britz
+def make_epsilon_greedy_policy(Q, epsilon, nA):
+    """
+    Creates an epsilon-greedy policy based on a given Q-function and epsilon.
 
-# From fastai, modified head
-class CustomDarknet(nn.Module):
-    "https://github.com/pjreddie/darknet"
+    Args:
+        Q: A dictionary that maps from state -> action-values.
+            Each value is a numpy array of length nA (see below)
+        epsilon: The probability to select a random action . float between 0 and 1.
+        nA: Number of actions in the environment.
 
-    def make_group_layer(self, ch_in: int, num_blocks: int, stride: int = 1):
-        "starts with conv layer - `ch_in` channels in - then has `num_blocks` `ResLayer`"
-        return [conv_bn_lrelu(ch_in, ch_in * 2, stride=stride)
-                ] + [(ResLayer(ch_in * 2)) for i in range(num_blocks)]
+    Returns:
+        A function that takes the observation as an argument and returns
+        the probabilities for each action in the form of a numpy array of length nA.
 
-    def __init__(self, num_blocks: Collection[int], num_classes: int, nf=32):
-        "create darknet with `nf` and `num_blocks` layers"
-        super().__init__()
-        layers = [conv_bn_lrelu(3, nf, ks=3, stride=1)]
-        for i, nb in enumerate(num_blocks):
-            layers += self.make_group_layer(nf, nb, stride=2 - (i == 1))
-            nf *= 2
-        layers += [nn.AdaptiveAvgPool2d(1), Flatten(), nn.Linear(nf, num_classes)]
-        layers += [nn.Linear(num_classes, 2), SigmoidRange(-1, 1)]
-        self.layers = nn.Sequential(*layers)
+    """
+    def policy_fn(observation):
+        A = np.ones(nA, dtype=float) * epsilon / nA
+        best_action = np.argmax(Q[observation])
+        A[best_action] += (1.0 - epsilon)
+        return A
+    return policy_fn
 
-    def forward(self, x):
-        return self.layers(x)
 
 class Follower:
     def __init__(self):
-        self.model = onnx.load('models/supervised.onnx')
+        with open('models/q.pkl', 'rb') as f:
+            Q = pickle.loads(f.read())
+            self.policy = make_epsilon_greedy_policy(Q, 0, actions.n)
 
     def get_action(self, frame):
         start_time = time.time()
 
-        img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        img = PIL.Image.fromarray(img)
-        img = img.resize((240,320), Image.ANTIALIAS)
-        img = pil2tensor(img, np.float32)
-        img.div_(255)
-        print("img: ", img)
-        img = np.array(img)
-        print("shape: ", img.shape)
-        img = img.reshape(1,3,240,320).astype(np.float32)
-        print("img2: ", img)
-        print("shape: ", img.shape)
-        result = caffe2.python.onnx.backend.run_model(self.model, img)
+        state = tag_detector.state_from_frame(frame)
+        action = actions.Action(self.policy(state.value))
 
         duration = time.time() - start_time
         #print(f"Prediction took {duration}")
-        return result[1]
+
+        return actions.to_throttle_direction(action)
 
 
 if __name__ == '__main__':
@@ -79,4 +59,4 @@ if __name__ == '__main__':
     while True:
         _, image = camera.read()
         action = follower.get_action(image)
-        print(action[0].item(), '\t', action[1].item())
+        print(action[0], '\t', action[1])
