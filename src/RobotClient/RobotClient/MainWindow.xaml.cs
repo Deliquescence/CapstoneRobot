@@ -127,9 +127,7 @@ namespace RobotClient
         public void HandleStream(byte[] imageBytes, SetMotion action)
         {
             if (imageBytes == null) { return; }
-            //TODO make these changeable in GUI
-            //var save_dir_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\PiCarImages";
-            //var session_prefix = "a";
+
             var save_dir_path = getPathName();
             var session_prefix = getSessionName();
             bool save_to_disk = getSaveEnabled();
@@ -168,7 +166,7 @@ namespace RobotClient
 
                     using (var streamWriter = new StreamWriter(csv_path, true))
                     {
-                        streamWriter.WriteLineAsync($"train/{image_file_name},{action.Throttle} {action.Direction}");
+                        streamWriter.WriteLineAsync($"train/{image_file_name},{action.Throttle},{action.Direction}");
                     }
                 }
                 catch (Exception e)
@@ -189,7 +187,7 @@ namespace RobotClient
             {
                 using (var streamWriter = new StreamWriter(csv_path, true))
                 {
-                    streamWriter.WriteLineAsync($"image_file,throttle direction");
+                    streamWriter.WriteLineAsync($"image_file,throttle,direction");
                 }
             }
         }
@@ -289,18 +287,7 @@ namespace RobotClient
         }
 
         //opens up window that sets up mirroring mode
-        private void Mirror_Click(object sender, RoutedEventArgs e)
-        {
-            if (Mirror == null)
-            {
-                Mirror = new MirroringMode();
-                Mirror.Show();
-            }
-            else
-            {
-                Mirror.Focus();
-            }
-        }
+        
 
 
 
@@ -666,7 +653,7 @@ namespace RobotClient
         {
             foreach (var picar in deviceListMain)
             {
-                if (picar.Mode == ModeRequest.Types.Mode.Lead)
+                if (picar.Mode == ModeRequest.Types.Mode.Lead && !picar.isMirroring())
                 {
                     try
                     {
@@ -710,7 +697,7 @@ namespace RobotClient
             DeviceListMn.ItemsSource = null;
             DeviceListMn.ItemsSource = deviceListMain;
         }
-
+         
         #region Properties
 
         public string LeftAxis
@@ -755,5 +742,13 @@ namespace RobotClient
         }
 
         #endregion
+
+        private void SetMirror(object sender, RoutedEventArgs e)
+        {
+            var car = (PiCarConnection) DeviceListMn.SelectedItem;
+            if (car == null) return;
+            Mirror = new MirroringMode(car);
+            Mirror.Show();
+        }
     }
 }

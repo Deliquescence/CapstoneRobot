@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
@@ -21,6 +21,9 @@ namespace RobotClient
 
             private readonly AsyncClientStreamingCall<SetMotion, Empty> remoteControlCall;
 
+            private const uint _exactMajorVersion = 1;
+            private const uint _atLeastMinorVersion = 0;
+
             public PiCarClient(PiCar.PiCarClient client)
             {
                 _client = client;
@@ -28,15 +31,28 @@ namespace RobotClient
             }
 
             //Request a connection to the PiCar server. Return success
-            public bool RequestConnect()
+            public Tuple<bool, string> RequestConnect()
             {
                 try
                 {
                     //Attempt connection to PiCar server
                     var request = new ConnectRequest {Message = "Desktop App"};
                     var ack = _client.ReceiveConnection(request);
+                    var version = ack.Version;
+                    string msg = null;
 
-                    return ack.Success;
+                    // Version ok
+                    if (version.Major == _exactMajorVersion && version.Minor >= _atLeastMinorVersion)
+                    {
+                        msg = $"Protocol version {version.Major}.{version.Minor}.{version.Patch} ok\n";
+                    } else // Version bad
+                    {
+                        msg = $"Expected major version {_exactMajorVersion} and minor version "
+                            + $"at least {_atLeastMinorVersion}, but server returned "
+                            + $"{version.Major}.{version.Minor}.{version.Patch}.\n";
+                    }
+
+                    return Tuple.Create(ack.Success, msg);
                 }
                 catch (RpcException e)
                 {
@@ -128,12 +144,14 @@ namespace RobotClient
         public string Name;
         public string ipAddress;
         public ModeRequest.Types.Mode Mode;
+        private bool currentlyMirroring;
 
         public PiCarConnection()
         {
             Name = "Default";
             ipAddress = "127.0.0.1";
             Mode = ModeRequest.Types.Mode.Idle;
+            currentlyMirroring = false;
         }
 
         public PiCarConnection(string name, string ipAddress)
@@ -143,19 +161,28 @@ namespace RobotClient
             _channel = new Channel(ipAddress + ":50051", ChannelCredentials.Insecure);
             _client = new PiCarClient(new PiCar.PiCarClient(_channel));
             Mode = ModeRequest.Types.Mode.Idle; //Start in Idle mode
+            currentlyMirroring = false;
         }
 
-        public virtual bool RequestConnect()
+        //getter and setter to find out if the picar is mirroring
+        public void SetMirroring(bool b)
+        {
+            currentlyMirroring = b;
+        }
+        public bool isMirroring()
+        {
+            return currentlyMirroring;
+        }
+
+        public virtual Tuple<bool, string> RequestConnect()
         {
             return _client.RequestConnect();
         }
 
         public virtual void SetMode(ModeRequest.Types.Mode mode)
         {
-            var success = _client.SetMode(mode);
-            //Change local mode if successful
-            if (success)
-                Mode = mode;
+            _client.SetMode(mode);
+            Mode = mode;
         }
 
         public virtual void SetMotion(double throttle, double direction)
@@ -193,9 +220,9 @@ namespace RobotClient
             Mode = ModeRequest.Types.Mode.Idle;
         }
 
-        public override bool RequestConnect()
+        public override Tuple<bool, string> RequestConnect()
         {
-            return true;
+            return Tuple.Create(true, "");
         }
 
         public override void SetMode(ModeRequest.Types.Mode mode)

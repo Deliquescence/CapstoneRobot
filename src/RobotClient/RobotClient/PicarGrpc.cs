@@ -70,7 +70,8 @@ namespace RobotClient {
     public abstract partial class PiCarBase
     {
       /// <summary>
-      ///Handshake between PiCar and desktop application
+      /// Handshake between PiCar and desktop application.
+      /// All clients starting from the initial version expect this. Do not change.
       /// </summary>
       /// <param name="request">The request received from the client.</param>
       /// <param name="context">The context of the server-side call handler being invoked.</param>
@@ -151,7 +152,8 @@ namespace RobotClient {
       }
 
       /// <summary>
-      ///Handshake between PiCar and desktop application
+      /// Handshake between PiCar and desktop application.
+      /// All clients starting from the initial version expect this. Do not change.
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
@@ -163,7 +165,8 @@ namespace RobotClient {
         return ReceiveConnection(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
       /// <summary>
-      ///Handshake between PiCar and desktop application
+      /// Handshake between PiCar and desktop application.
+      /// All clients starting from the initial version expect this. Do not change.
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="options">The options for the call.</param>
@@ -173,7 +176,8 @@ namespace RobotClient {
         return CallInvoker.BlockingUnaryCall(__Method_ReceiveConnection, null, options, request);
       }
       /// <summary>
-      ///Handshake between PiCar and desktop application
+      /// Handshake between PiCar and desktop application.
+      /// All clients starting from the initial version expect this. Do not change.
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
@@ -185,7 +189,8 @@ namespace RobotClient {
         return ReceiveConnectionAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
       /// <summary>
-      ///Handshake between PiCar and desktop application
+      /// Handshake between PiCar and desktop application.
+      /// All clients starting from the initial version expect this. Do not change.
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="options">The options for the call.</param>

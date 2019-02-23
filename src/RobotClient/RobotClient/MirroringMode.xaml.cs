@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,30 +21,33 @@ namespace RobotClient
     /// </summary>
     public partial class MirroringMode : Window
     {
-        private PiCarConnection leaderPicar;
-        private PiCarConnection followerPicar;
-        private Replay leaderReplay;
-        private Replay followerReplay;
+        private PiCarConnection Picar;
+        private Replay replay;
         private readonly MainWindow _mainWindow = (MainWindow)Application.Current.MainWindow;
-        public MirroringMode()
+        public MirroringMode(PiCarConnection picar)
         {
+            Picar = picar;
             InitializeComponent();
         }
 
-        private void SetLeader(object sender, RoutedEventArgs e)
+        //starts the replays for mirroring mode
+        private void StartMirroring_Click(object sender, RoutedEventArgs e)
         {
-            //Get the picar from the device List
-            leaderPicar = (PiCarConnection) _mainWindow.DeviceListMn.SelectedItem;
-            if (leaderPicar == null) return;
+            //Leader mode for backend
             SetVehicleMode(ModeRequest.Types.Mode.Lead);
+            //sets mirroring true for this picar
+            Picar.SetMirroring(true);
+            //creates new replay after a given delay
+            var inputs = Direction.ParseLog(_mainWindow.LogField.Text);
+            _mainWindow.LogField.Clear(); //Clear after load
+            replay = new Replay(Picar, inputs, Convert.ToInt32(Delay.Text) * 1000);
+            replay.Start();
         }
-        //follower must be set as leader for the backend
-        private void SetAsLeader(object sender, RoutedEventArgs e)
+
+        private void StopMirroring_Click(object sender, RoutedEventArgs e)
         {
-            //Get the picar from the device List
-            followerPicar = (PiCarConnection)_mainWindow.DeviceListMn.SelectedItem;
-            if (followerPicar == null) return;
-            SetVehicleMode(ModeRequest.Types.Mode.Lead);
+            Picar.SetMirroring(false);
+            replay.Stop();
         }
 
         private void SetVehicleMode(ModeRequest.Types.Mode mode)
@@ -75,28 +79,7 @@ namespace RobotClient
             _mainWindow.DeviceListMn.ItemsSource = null;
             _mainWindow.DeviceListMn.ItemsSource = _mainWindow.deviceListMain;
         }
-        //starts the replays for mirroring mode
-        private void StartMirroring_Click(object sender, RoutedEventArgs e)
-        {
-            var inputs = Direction.ParseLog(_mainWindow.LogField.Text);
 
-            //Replay.StartTwoWithCatchup((PiCarConnection)_mainWindow.DeviceListMn.Items[0], (PiCarConnection)_mainWindow.DeviceListMn.Items[1], inputs, 1.0);
-            Replay.StartTwoWithCatchup(leaderPicar, followerPicar, inputs, Convert.ToDouble(CatchDistance.Text));
-            
-            //leaderReplay = Replay.StartTwoWithCatchup(leaderPicar, followerPicar, inputs, Convert.ToDouble(CatchDistance.Text)).Item1;
-            //followerReplay = Replay.StartTwoWithCatchup(leaderPicar, followerPicar, inputs, Convert.ToDouble(CatchDistance.Text)).Item2;
-        }
 
-        private void StopMirroring_Click(object sender, RoutedEventArgs e)
-        {
-            //leaderReplay.Stop();
-            //followerReplay.Stop();
-            
-        }
-
-        private void Window_Closing(object sender, CancelEventArgs e)
-        {
-            _mainWindow.Mirror = null;
-        }
     }
 }
