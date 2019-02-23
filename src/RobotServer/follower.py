@@ -38,11 +38,16 @@ def make_epsilon_greedy_policy(Q, epsilon, nA):
 def default_action_values():
     return np.zeros(actions.n)
 
+
 class Follower:
     def __init__(self):
         with open('models/q.pkl', 'rb') as f:
             Q = pickle.loads(f.read())
-            self.policy = make_epsilon_greedy_policy(Q, 0, actions.n)
+            self.update_policy(Q, 0)
+
+    def update_policy(self, Q, epsilon):
+        self.Q = Q
+        self.policy = make_epsilon_greedy_policy(Q, epsilon, actions.n)
 
     def get_action(self, frame):
         start_time = time.time()
