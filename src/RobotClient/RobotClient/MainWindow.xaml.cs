@@ -94,7 +94,7 @@ namespace RobotClient
         private async void initializeUI()
         {
             //gets text from specified .ini file
-            string[] lines = File.ReadAllLines(@"C:\Users\Charlie\Desktop\gui_config.ini");
+            string[] lines = File.ReadAllLines($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\\picar\\gui_config.ini");
 
             string selectedIP;
             string selectedName;
