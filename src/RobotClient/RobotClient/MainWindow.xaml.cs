@@ -55,7 +55,7 @@ namespace RobotClient
 
             //Setup sync context
             synchronizationContext = SynchronizationContext.Current;
-            
+
             Title = "Welcome " + Environment.UserName;
 
             //Adds shortcut to open the registration window with Ctrl + R
@@ -80,7 +80,7 @@ namespace RobotClient
             {
                 //Uses a timer to loop a method that checks the status of the controller
                 LogField.AppendText(DateTime.Now + ":\tController detected!\n");
-                _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1/30) };
+                _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1 / 30) };
                 _timer.Tick += _timer_Tick;
                 _timer.Start();
                 _directionController = 0.0;
@@ -94,37 +94,42 @@ namespace RobotClient
         private async void initializeUI()
         {
             //gets text from specified .ini file
-            string[] lines = File.ReadAllLines($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\\picar\\gui_config.ini");
-
-            string selectedIP;
-            string selectedName;
-            string[] iPandName;
-            for (int i = 0; i < lines.Length; i++)
+            try
             {
+                string[] lines = File.ReadAllLines($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\\picar\\gui_config.ini");
 
-                if (lines[i] == "(*connect)")
+                string selectedIP;
+                string selectedName;
+                string[] iPandName;
+                for (int i = 0; i < lines.Length; i++)
                 {
-                    while (lines[i + 1] != "(connect*)")
+
+                    if (lines[i] == "(*connect)")
                     {
-                        iPandName = lines[i + 1].Split(',');
-                        selectedIP = iPandName[0];
-                        selectedName = iPandName[1];
-                        await IPConnect(selectedIP, selectedName);
-                        i = i + 1;
+                        while (lines[i + 1] != "(connect*)")
+                        {
+                            iPandName = lines[i + 1].Split(',');
+                            selectedIP = iPandName[0];
+                            selectedName = iPandName[1];
+                            await IPConnect(selectedIP, selectedName);
+                            i = i + 1;
+                        }
                     }
-                }
 
-                if (lines[i] == "(*log)")
-                {
-                    while (lines[i + 1] != "(log*)")
+                    if (lines[i] == "(*log)")
                     {
-                        LogField.AppendText(lines[i + 1] + "\n");
-                        i = i + 1;
+                        while (lines[i + 1] != "(log*)")
+                        {
+                            LogField.AppendText(lines[i + 1] + "\n");
+                            i = i + 1;
+                        }
                     }
                 }
             }
-
-
+            catch (Exception e)
+            {
+                LogField.AppendText($"{DateTime.Now}: Error when initializing configuration: {e}\n");
+            }
             DeviceListMn.ItemsSource = null;
             DeviceListMn.ItemsSource = deviceListMain;
         }
@@ -240,7 +245,7 @@ namespace RobotClient
             var save_dir_path = getPathName();
             var session_prefix = getSessionName();
             bool save_to_disk = getSaveEnabled();
-            
+
             //Convert bytes to ImageSource type for GUI
             var imgSource = (ImageSource)new ImageSourceConverter().ConvertFrom(imageBytes);
 
@@ -304,7 +309,8 @@ namespace RobotClient
         /**
          * Clear the image that was displayed by the stream
          */
-        public void clearStreamImage() {
+        public void clearStreamImage()
+        {
             try
             {
                 synchronizationContext.Post(o => StreamImage.Source = (ImageSource)o, null);
@@ -360,7 +366,7 @@ namespace RobotClient
                 SaveStreamSetup = new SaveStreamSetup();
                 SaveStreamSetup.Show();
             }
-            else if(SaveStreamSetup != null)
+            else if (SaveStreamSetup != null)
             {
                 SaveStreamSetup.Focus();
             }
@@ -396,7 +402,7 @@ namespace RobotClient
         }
 
         //opens up window that sets up mirroring mode
-        
+
 
 
 
@@ -413,9 +419,9 @@ namespace RobotClient
                 var filename = "Log " + DateTime.Now.ToString("dddd, dd MMMM yyyy") + ".txt";
                 File.WriteAllText(Path.Combine(documentsLocation, filename), LogField.Text);
             }
-            catch(IOException exception)
+            catch (IOException exception)
             {
-                MessageBox.Show("Problem exporting log data " + exception.ToString(), "Error!");  
+                MessageBox.Show("Problem exporting log data " + exception.ToString(), "Error!");
             }
         }
 
@@ -432,7 +438,7 @@ namespace RobotClient
                 LogField.Text = File.ReadAllText(fileName);
                 var res = Direction.ParseLog(LogField.Text);
             }
-            catch(IOException exception)
+            catch (IOException exception)
             {
                 MessageBox.Show("Problem importing log data " + exception.ToString(), "Error!");
             }
@@ -458,7 +464,7 @@ namespace RobotClient
 
                 //_Motor1 produces either -1.0 for left or 1.0 for right motion
                 _directionController = Math.Abs((double)state.LeftThumbX) < DeadzoneValue
-                    ? 0: 
+                    ? 0 :
                     (double)state.LeftThumbX / short.MinValue * -1;
                 _directionController = Math.Round(_directionController, 3);
 
@@ -662,7 +668,7 @@ namespace RobotClient
             {
 
                 Application.Current.Shutdown();
-            }        
+            }
         }
 
         /**
@@ -682,9 +688,9 @@ namespace RobotClient
                     MoveVehicle(0.0, 0.0);
                     SetVehicleMode(ModeRequest.Types.Mode.Idle);
                 }
-                catch(Exception exception)
+                catch (Exception exception)
                 {
-                LogField.AppendText(DateTime.Now + ":\tSomething went wrong: " + exception.ToString());
+                    LogField.AppendText(DateTime.Now + ":\tSomething went wrong: " + exception.ToString());
                 }
             }
 
@@ -705,7 +711,7 @@ namespace RobotClient
                     clearStreamImage();
                 }
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 //TODO Remove vehicles that throw exceptions
                 LogField.AppendText(DateTime.Now + ":\tException found when removing an old streams!\n" + e + "\n");
@@ -806,7 +812,7 @@ namespace RobotClient
             DeviceListMn.ItemsSource = null;
             DeviceListMn.ItemsSource = deviceListMain;
         }
-         
+
         #region Properties
 
         public string LeftAxis
@@ -854,7 +860,7 @@ namespace RobotClient
 
         private void SetMirror(object sender, RoutedEventArgs e)
         {
-            var car = (PiCarConnection) DeviceListMn.SelectedItem;
+            var car = (PiCarConnection)DeviceListMn.SelectedItem;
             if (car == null) return;
             Mirror = new MirroringMode(car);
             Mirror.Show();
