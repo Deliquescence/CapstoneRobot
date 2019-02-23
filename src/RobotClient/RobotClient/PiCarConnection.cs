@@ -13,6 +13,8 @@ namespace RobotClient
         //TODO figure this out
         public const double SPEED_AT_MAX_THROTTLE = 1.0;
 
+        public const int CONNECTION_TIMEOUT_SECONDS = 2;
+
         private class PiCarClient
         {
             private readonly PiCar.PiCarClient _client;
@@ -36,8 +38,9 @@ namespace RobotClient
                 try
                 {
                     //Attempt connection to PiCar server
-                    var request = new ConnectRequest {Message = "Desktop App"};
-                    var ack = _client.ReceiveConnection(request);
+                    var request = new ConnectRequest { Message = "Desktop App" };
+
+                    var ack = _client.ReceiveConnection(request, new CallOptions(deadline: DateTime.UtcNow.AddSeconds(CONNECTION_TIMEOUT_SECONDS)));
                     var version = ack.Version;
                     string msg = null;
 
