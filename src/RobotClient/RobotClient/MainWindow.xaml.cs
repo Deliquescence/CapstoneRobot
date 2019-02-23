@@ -11,6 +11,9 @@ using SharpDX.XInput;
 using System.IO;
 using System.Threading;
 using System.Windows.Media;
+using Grpc.Core;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace RobotClient
 {
@@ -83,7 +86,113 @@ namespace RobotClient
                 _directionController = 0.0;
                 _throttleController = 0.0;
             }
+            //sets initial connection configuration specified by .ini file
+            initializeUI();
         }
+
+        //sets up initia configuration for connection and log using specified .ini file
+        private async void initializeUI()
+        {
+            //gets text from specified .ini file
+            string[] lines = File.ReadAllLines(@"C:\Users\Charlie\Desktop\gui_config.ini");
+
+            string selectedIP;
+            string selectedName;
+            string[] iPandName;
+            for (int i = 0; i < lines.Length; i++)
+            {
+
+                if (lines[i] == "(*connect)")
+                {
+                    while (lines[i + 1] != "(connect*)")
+                    {
+                        iPandName = lines[i + 1].Split(',');
+                        selectedIP = iPandName[0];
+                        selectedName = iPandName[1];
+                        await IPConnect(selectedIP, selectedName);
+                        i = i + 1;
+                    }
+                }
+
+                if (lines[i] == "(*log)")
+                {
+                    while (lines[i + 1] != "(log*)")
+                    {
+                        LogField.AppendText(lines[i + 1] + "\n");
+                        i = i + 1;
+                    }
+                }
+            }
+
+
+            DeviceListMn.ItemsSource = null;
+            DeviceListMn.ItemsSource = deviceListMain;
+        }
+
+        //tries to connect to cars specified in .ini file
+        private async Task IPConnect(string selectedIP, string selectedName)
+        {
+
+            //Handle the dummy connection
+            if (selectedIP == "DummyIP")
+            {
+                var dummyConnection = new DummyConnection(selectedName, selectedIP);
+                deviceListMain.Add(dummyConnection);
+                LogField.AppendText(DateTime.Now + ":\t" + "Added " + selectedName + " for testing\n");
+                //LogFieldReg.AppendText("Added " + selectedName + " for testing\n");
+            }
+
+            else if (!CheckIfValidIP(selectedIP))
+            {
+                //LogFieldReg.AppendText("Invalid IP used, try again!\n");
+                LogField.AppendText(DateTime.Now + ":\tInvalid IP used, try again!\n");
+            }
+
+            else
+            {
+                PiCarConnection newConnection = null;
+                var canConnect = false;
+                try
+                {
+                    newConnection = new PiCarConnection(selectedName, selectedIP);
+                    var connectResponse = newConnection.RequestConnect();
+                    Console.Write(connectResponse.Item2);
+                    //LogFieldReg.AppendText(connectResponse.Item2);
+                    LogField.AppendText(DateTime.Now + ":\t" + connectResponse.Item2);
+                    canConnect = connectResponse.Item1;
+                }
+                catch (RpcException rpcE)
+                {
+                    LogField.AppendText(DateTime.Now + ":\tError! " + rpcE + "\n");
+                }
+                catch (Exception exception)
+                {
+                    LogField.AppendText(DateTime.Now + ":\tError! " + exception + "\n");
+                }
+
+                if (canConnect)
+                {
+                    LogField.AppendText(DateTime.Now + ":\t" + "Connected to " + selectedName + " with IP: " + selectedIP + "\n");
+                    //LogFieldReg.AppendText("Connected to " + selectedName + " with IP: " + selectedIP + "\n");
+                    deviceListMain.Add(newConnection);
+                }
+                else
+                {
+                    LogField.AppendText(DateTime.Now + ":\t" + "Failed to connect to " + selectedName + " with IP: " + selectedIP + "\n");
+                    //LogFieldReg.AppendText("Failed to connect to " + selectedName + " with IP: " + selectedIP + "\n");
+                }
+            }
+        }
+
+        private static bool CheckIfValidIP(string localIP)
+        {
+            if (string.IsNullOrWhiteSpace(localIP))
+                return false;
+
+            var temp = localIP.Split('.');
+            return temp.Length == 4 && temp.All(r => byte.TryParse(r, out var tempForParsing));
+        }
+
         //methods for getting and setting directory name, 
         //session prefix and ability to save to disk for stream saving
         public void setPathName(string Pname)
