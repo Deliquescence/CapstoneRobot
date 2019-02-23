@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import time
 
-from states import State
+from .states import State
 
 AR_DICT = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_6X6_50)
 AR_PARAMS = cv2.aruco.DetectorParameters_create()

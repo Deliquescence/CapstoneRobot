@@ -22,16 +22,21 @@ def make_epsilon_greedy_policy(Q, epsilon, nA):
 
     Returns:
         A function that takes the observation as an argument and returns
-        the probabilities for each action in the form of a numpy array of length nA.
+        an action chosen by epsilon greedy.
 
     """
     def policy_fn(observation):
         A = np.ones(nA, dtype=float) * epsilon / nA
         best_action = np.argmax(Q[observation])
         A[best_action] += (1.0 - epsilon)
-        return A
+
+        action = np.random.choice(np.arange(len(A)), p=A)
+        return action
     return policy_fn
 
+
+def default_action_values():
+    return np.zeros(actions.n)
 
 class Follower:
     def __init__(self):
