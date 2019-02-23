@@ -127,9 +127,7 @@ namespace RobotClient
         public void HandleStream(byte[] imageBytes, SetMotion action)
         {
             if (imageBytes == null) { return; }
-            //TODO make these changeable in GUI
-            //var save_dir_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\PiCarImages";
-            //var session_prefix = "a";
+
             var save_dir_path = getPathName();
             var session_prefix = getSessionName();
             bool save_to_disk = getSaveEnabled();
