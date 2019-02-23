@@ -66,7 +66,6 @@ def main():
     classifications = pd.DataFrame(columns=['file_name', 'state'])
 
     for file_name in os.listdir(IMAGE_DIR):
-        print(file_name)
         file_name_with_folder = "{0}/{1}".format(IMAGE_DIR, file_name)
         img = Image.open(file_name_with_folder)
         img = np.array(img)
@@ -74,19 +73,19 @@ def main():
         loc = tag_detector.tag_loc(img)
         state = tag_detector.state_from_loc(loc)
 
-        if loc is not None:
-            print(loc.x_pos, loc.avg_edge_len)
-            print(state)
+        logging = False
+        if logging:
+            print(file_name)
+            if loc is not None:
+                print(loc.x_pos, loc.avg_edge_len)
+                print(state)
 
         # state = tag_detector.state_from_frame(img)
 
         classifications = classifications.append(
             {"file_name": file_name_with_folder, "state": state}, ignore_index=True)
 
-        # break
-
     print(classifications['state'].value_counts())
-    classifications.to_csv(OUT_CSV, index=False)
 
     df = classifications.merge(
         pd.read_csv(IN_CSV), left_on="file_name", right_on="image_file", how="inner")
@@ -96,6 +95,7 @@ def main():
 
     rl_labels = df[['state', 'action']]
     print(rl_labels)
+    rl_labels.to_csv(OUT_CSV, index=False)
 
 
 if __name__ == '__main__':
