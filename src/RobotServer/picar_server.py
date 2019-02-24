@@ -65,8 +65,7 @@ class PiCarServicer(picar_pb2_grpc.PiCarServicer):
         print('Starting follower stream')
         while self.driver.is_streaming():
             stream_data = self.driver.stream_queue.get()
-            image = cv2.resize(stream_data.frame, (320, 240))
-            _, b = cv2.imencode('.jpg', image)
+            _, b = cv2.imencode('.jpg', stream_data.frame)
             b = b.tobytes()
 
             action = picar_pb2.SetMotion(throttle=stream_data.throttle,
