@@ -29,32 +29,42 @@ def reward(tag_loc, action):
     if edge_len < tag_detector.NEAR_THRESHOLD and edge_len > tag_detector.FAR_THRESHOLD:
         return 1.0
     else:
-        return -1.0
+        return 0.0
 
     return 0.0
 
 
-def next_state(df, row):
-    # print("next_state")
-    # print(df_row)
+def offset_state(df, row, offset):
     try:
-        next_row = df.iloc[row.name + 1]
+        offset_row = df.iloc[row.name + offset]
     except IndexError:
         return State.unknown
 
     current_name_splits = row['file_name'].split('_')
-    next_name_splits = next_row['file_name'].split('_')
-    if next_name_splits[0] != current_name_splits[0]:
+    offset_name_splits = offset_row['file_name'].split('_')
+    if offset_name_splits[0] != current_name_splits[0]:
         # Not same training label
         return State.unknown
 
     current_num = current_name_splits[1].split(".")[0]
-    next_num = next_name_splits[1].split(".")[0]
-    if int(next_num) != int(current_num) + 1:
+    offset_num = offset_name_splits[1].split(".")[0]
+    if int(offset_num) != int(current_num) + offset:
         # Not consecutive
         return State.unknown
 
-    return next_row['state']
+    return offset_row['state']
+
+
+def unknown_state_cache(previous_state, state):
+    """If the current state is not unknown, pass it through.
+    If the current state is unknown but the previous state is known, use that.
+    If both are unknown, then unknown."""
+    if state != State.unknown:
+        return state
+    elif previous_state != State.unknown:
+        return previous_state
+    else:
+        return state
 
 
 def main():
@@ -83,9 +93,10 @@ def main():
             {"file_name": file_name_with_folder, "state": state, "tag_loc": loc}, ignore_index=True)
 
     print(df['state'].value_counts())
+    print(df)
 
     df = df.merge(
-        pd.read_csv(IN_CSV), left_on="file_name", right_on="image_file", how="inner")
+        pd.read_csv(IN_CSV), left_on="file_name", right_on="image_file", how="inner", validate="1:1")
 
     df['action'] = df.apply(lambda row: actions.from_throttle_direction(
         row['throttle'], row['direction']), axis=1)
@@ -93,11 +104,13 @@ def main():
     df['reward'] = df.apply(lambda row: reward(
         row['tag_loc'], row['action']), axis=1)
 
-    df['next_state'] = df.apply(lambda row: next_state(df, row), axis=1)
+    df['next_state'] = df.apply(lambda row: offset_state(df, row, 1), axis=1)
+
+    df['state'] = df.apply(lambda row: unknown_state_cache(
+        offset_state(df, row, -1), row['state']), axis=1)
 
     rl_labels = df[['state', 'action', 'reward', 'next_state']]
 
-    print(rl_labels)
     # change enum to ints
     # pandas is yelling at me about view vs copy but this seems to do what I want
     rl_labels['next_state'] = df.apply(
@@ -108,6 +121,7 @@ def main():
         lambda row: row['action'].value, axis=1)
 
     print(rl_labels)
+    print(rl_labels['state'].value_counts())
     rl_labels.to_csv(OUT_CSV, index=False)
 
 

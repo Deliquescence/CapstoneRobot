@@ -39,11 +39,23 @@ def default_action_values():
     return np.zeros(actions.n)
 
 
+def unknown_state_cache(previous_state, state):
+    """If the current state is not unknown, pass it through.
+    If the current state is unknown but the previous state is known, use that.
+    If both are unknown, then unknown."""
+    if state != states.State.unknown:
+        return state
+    elif previous_state != states.State.unknown:
+        return previous_state
+    else:
+        return state
+
 class Follower:
     def __init__(self):
         with open('models/q.pkl', 'rb') as f:
             Q = pickle.loads(f.read())
             self.update_policy(Q, 0)
+            self.previous_state = states.State.unknown
 
     def update_policy(self, Q, epsilon):
         self.Q = Q
@@ -52,7 +64,9 @@ class Follower:
     def get_action(self, frame):
         start_time = time.time()
 
-        state = tag_detector.state_from_frame(frame)
+        current_state = tag_detector.state_from_frame(frame)
+        state = unknown_state_cache(self.previous_state, current_state)
+        self.previous_state = current_state
         action = actions.Action(self.policy(state.value))
 
         duration = time.time() - start_time
