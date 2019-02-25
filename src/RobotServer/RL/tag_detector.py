@@ -9,8 +9,9 @@ AR_PARAMS = cv2.aruco.DetectorParameters_create()
 
 LEFT_THRESHOLD = -50
 RIGHT_THRESHOLD = 50
-NEAR_THRESHOLD = 125
-FAR_THRESHOLD = 70
+# These were chosen based on 640 width image
+NEAR_THRESHOLD = 125 / 640
+FAR_THRESHOLD = 70 / 640
 
 
 def state_from_frame(frame):
@@ -80,7 +81,7 @@ def tag_loc(frame):
         _height, width = frame.shape[:2]
         tag_mid_x = (top_edge[0] / 2) + b_left[0] - width / 2
 
-        return PreciseLocation(avg_edge, tag_mid_x)
+        return PreciseLocation(avg_edge / width, tag_mid_x)
     else:
         return None
 

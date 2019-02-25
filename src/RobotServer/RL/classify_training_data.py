@@ -15,10 +15,6 @@ IMAGE_DIR = "train"
 IN_CSV = "labels.csv"  # For the action done
 OUT_CSV = "rl_Labels.csv"
 
-# Training data is 320x240 but pi camera is 640x480
-tag_detector.NEAR_THRESHOLD /= 2
-tag_detector.FAR_THRESHOLD /= 2
-
 
 def reward(tag_loc, action):
     if tag_loc is None:
