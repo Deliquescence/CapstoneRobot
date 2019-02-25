@@ -91,16 +91,16 @@ def to_throttle_direction(action):
 
     # This could be dumb, and it might just be better to make a normal lookup table
     # Low throttle
-    if action in [Action.low_soft_right, Action.low_hard_right, Action.low_soft_left, Action.low_soft_right, Action.low_straight]:
+    if action in [Action.low_soft_right, Action.low_hard_right, Action.low_soft_left, Action.low_hard_left, Action.low_straight]:
         throttle = THROTTLE_LOW
     # Reverse low throttle
-    elif action in [Action.rev_low_soft_right, Action.rev_low_hard_right, Action.rev_low_soft_left, Action.rev_low_soft_right, Action.rev_low_straight]:
+    elif action in [Action.rev_low_soft_right, Action.rev_low_hard_right, Action.rev_low_soft_left, Action.rev_low_hard_lef5, Action.rev_low_straight]:
         throttle = -1*THROTTLE_LOW
     # High throttle
-    elif action in [Action.high_soft_right, Action.high_hard_right, Action.high_soft_left, Action.high_soft_right, Action.high_straight]:
+    elif action in [Action.high_soft_right, Action.high_hard_right, Action.high_soft_left, Action.high_hard_left, Action.high_straight]:
         throttle = THROTTLE_HIGH
     # Reverse high throttle
-    elif action in [Action.rev_high_soft_right, Action.rev_high_hard_right, Action.rev_high_soft_left, Action.rev_high_soft_right, Action.rev_high_straight]:
+    elif action in [Action.rev_high_soft_right, Action.rev_high_hard_right, Action.rev_high_soft_left, Action.rev_high_hard_left, Action.rev_high_straight]:
         throttle = -1*THROTTLE_HIGH
 
     # Hard left
