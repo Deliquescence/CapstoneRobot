@@ -66,7 +66,12 @@ class Follower:
 
         current_state = tag_detector.state_from_frame(frame)
         state = unknown_state_cache(self.previous_state, current_state)
-        self.previous_state = current_state
+
+        # 1 state buffer
+        #self.previous_state = current_state
+        # Latch
+        self.previous_state = state
+        
         action = actions.Action(self.policy(state.value))
 
         duration = time.time() - start_time
