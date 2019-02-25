@@ -40,12 +40,15 @@ def offset_state(df, row, offset):
     offset_name_splits = offset_row['file_name'].split('_')
     if offset_name_splits[0] != current_name_splits[0]:
         # Not same training label
+        # print("{} and {} are not same label".format(
+        #     offset_name_splits[0], current_name_splits[0]))
         return State.unknown
 
     current_num = current_name_splits[1].split(".")[0]
     offset_num = offset_name_splits[1].split(".")[0]
     if int(offset_num) != int(current_num) + offset:
         # Not consecutive
+        # print("{} and {} are not consecutive".format(offset_num, current_num))
         return State.unknown
 
     return offset_row['state']
@@ -100,12 +103,19 @@ def main():
     df['reward'] = df.apply(lambda row: reward(
         row['tag_loc'], row['action']), axis=1)
 
+    # One state unknown buffer
+    # df['state'] = df.apply(lambda row: unknown_state_cache(
+    #     offset_state(df, row, -1), row['state']), axis=1)
+
+    # Unknown latch
+    for index, row in df.iterrows():
+        row['state'] = unknown_state_cache(offset_state(df, row, -1), row.state)
+        df.loc[index, 'state'] = row.state
+
     df['next_state'] = df.apply(lambda row: offset_state(df, row, 1), axis=1)
 
-    df['state'] = df.apply(lambda row: unknown_state_cache(
-        offset_state(df, row, -1), row['state']), axis=1)
-
     rl_labels = df[['state', 'action', 'reward', 'next_state']]
+    print(rl_labels)
 
     # change enum to ints
     # pandas is yelling at me about view vs copy but this seems to do what I want
@@ -116,7 +126,7 @@ def main():
     rl_labels['action'] = df.apply(
         lambda row: row['action'].value, axis=1)
 
-    print(rl_labels)
+    # print(rl_labels)
     print(rl_labels['state'].value_counts())
     rl_labels.to_csv(OUT_CSV, index=False)
 
