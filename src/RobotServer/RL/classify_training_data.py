@@ -104,13 +104,13 @@ def main():
         row['tag_loc'], row['action']), axis=1)
 
     # One state unknown buffer
-    # df['state'] = df.apply(lambda row: unknown_state_cache(
-    #     offset_state(df, row, -1), row['state']), axis=1)
+    df['state'] = df.apply(lambda row: unknown_state_cache(
+        offset_state(df, row, -1), row['state']), axis=1)
 
     # Unknown latch
-    for index, row in df.iterrows():
-        row['state'] = unknown_state_cache(offset_state(df, row, -1), row.state)
-        df.loc[index, 'state'] = row.state
+    # for index, row in df.iterrows():
+    #     row['state'] = unknown_state_cache(offset_state(df, row, -1), row.state)
+    #     df.loc[index, 'state'] = row.state
 
     df['next_state'] = df.apply(lambda row: offset_state(df, row, 1), axis=1)
 
