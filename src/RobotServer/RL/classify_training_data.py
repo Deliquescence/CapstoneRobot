@@ -107,6 +107,11 @@ def main():
     df['state'] = df.apply(lambda row: unknown_state_cache(
         offset_state(df, row, -1), row['state']), axis=1)
 
+    # Save tag classifications for manual inspection
+    # TODO save the exact detection data so it can be loaded instead of always rerunning
+    df[['file_name', 'state', 'throttle', 'direction', 'action']].to_csv(
+        "categorized.csv", index=False)
+
     # Unknown latch
     # for index, row in df.iterrows():
     #     row['state'] = unknown_state_cache(offset_state(df, row, -1), row.state)
