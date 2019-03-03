@@ -4,7 +4,7 @@ import time
 
 from .states import State
 
-AR_DICT = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_6X6_50)
+AR_DICT = cv2.aruco.Dictionary_create(1, 3)
 AR_PARAMS = cv2.aruco.DetectorParameters_create()
 
 LEFT_THRESHOLD = -50
