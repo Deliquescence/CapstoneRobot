@@ -4,7 +4,7 @@ import cv2
 import time
 import pickle
 
-from RL import tag_detector, states, actions
+from RL import tag_detector, states, actions, learn
 
 
 # From
