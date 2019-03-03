@@ -268,7 +268,7 @@ namespace RobotClient
                 try
                 {
                     var csv_path = $"{save_dir_path}\\{session_prefix}.csv";
-                    var image_file_name = $"{session_prefix}_{saved_frame_count}.jpg";
+                    var image_file_name = $"{session_prefix}_{saved_frame_count.ToString("D5")}.jpg";
 
                     saved_frame_count += 1;
                     using (var fileStream = new FileStream($"{save_dir_path}\\train\\{image_file_name}", FileMode.Create))
