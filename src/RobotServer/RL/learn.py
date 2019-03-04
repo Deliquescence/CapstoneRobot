@@ -7,8 +7,8 @@ NUM_FEATURES = 2  # Todo fix
 class ActorCritic:
 
     def __init__(self, lr, lamb):
-        self.lr = np.repeat(lr, 5)  # For each of the arrays in the following order
-        self.lamb = np.repeat(lamb, 5)
+        self.lr = np.repeat(lr, 6)  # For each of the arrays in the following order
+        self.lamb = np.repeat(lamb, 6)
 
         # throttle_mu, throttle_sigma, dir_mu, dir_sigma
         self.pol_weights = [np.zeros(sz) for sz in [NUM_FEATURES] * 4]
@@ -21,24 +21,63 @@ class ActorCritic:
     def sample_action(self, features):
         """
         Sample the throttle and direction according to our normal distributions
+
         :param features: Unified feature vector for all approximations
         :return: (throttle, direction)
         """
-        t_mu = np.dot(self.pol_weights[0], features)
-        t_sigma = math.exp(np.dot(self.pol_weights[1], features))
+        t_mu, t_sigma, d_mu, d_sigma = self._get_gaussian(features)
         throttle = np.random.normal(t_mu, t_sigma, 1)
-        d_mu = np.dot(self.pol_weights[2], features)
-        d_sigma = math.exp(np.dot(self.pol_weights[3], features))
         direction = np.random.normal(d_mu, d_sigma, 1)
         return throttle, direction
+
+    def _get_gaussian(self, features):
+        t_mu = np.dot(self.pol_weights[0], features)
+        t_sigma = math.exp(np.dot(self.pol_weights[1], features))
+        d_mu = np.dot(self.pol_weights[2], features)
+        d_sigma = math.exp(np.dot(self.pol_weights[3], features))
+        return t_mu, t_sigma, d_mu, d_sigma
 
     def estimate_value(self, state):
         return np.dot(self.val_weights, state)
 
-    def update(self, old_state, new_state, reward):
+    def update(self, old_state, new_state, throttle, direction, reward):
+        """
+        Update step after observing result of an action
+
+        :param old_state: Previous feature vector
+        :param new_state: Resulting feature vector
+        :param throttle: Throttle action value
+        :param direction: Direction action value
+        :param reward: One-step reward
+        """
         delta = reward - self.rbar + self.estimate_value(new_state) - self.estimate_value(old_state)  # Loss
-        # self.rbar += self.lr[4] * delta
-        # self.tm_trace *=
+        self.rbar += self.lr[4] * delta
+        # Update value fn
+        self.val_trace *= self.lamb[5]
+        self.val_trace += old_state  # derivative of linear val fn
+        self.val_weights += self.lr[5] * delta * self.val_trace
+        # Update policy weights
+        gauss = self._get_gaussian(old_state)
+
+        for index in range(len(self.pol_weights)):
+            self.pol_traces[index] *= self.lamb[index]
+
+        self.pol_traces[0] += self._mean_grad(gauss[0], gauss[1], throttle, old_state)
+        self.pol_traces[1] += self._std_grad(gauss[0], gauss[1], throttle, old_state)
+        self.pol_traces[2] += self._mean_grad(gauss[2], gauss[3], direction, old_state)
+        self.pol_traces[3] += self._std_grad(gauss[2], gauss[3], direction, old_state)
+
+        for index in range(len(self.pol_weights)):
+            self.pol_weights[index] += self.lr[index] * delta * self.pol_traces[index]
+
+    @staticmethod
+    def _mean_grad(mu, sigma, action, feature):
+        return 1 / (sigma ** 2) * (action - mu) * feature
+
+    @staticmethod
+    def _std_grad(mu, sigma, action, feature):
+        coeff = ((action - mu)**2 / (sigma**2)) - 1
+        return coeff * feature
 
 
 class TD:
@@ -102,7 +141,11 @@ class TD:
 
 if __name__ == '__main__':
     ac = ActorCritic(1e-2, 0.8)
-    feat = np.ones(NUM_FEATURES)
-    throttle, direction = ac.sample_action(feat)
+    st1 = np.array([0.8, 0.8])
+    st2 = np.array([0.9, 0.9])
+    throttle, direction = ac.sample_action(st1)
+    print(ac.pol_weights[0])
+    ac.update(st1, st2, throttle, direction, 1)
     print(throttle)
     print(direction)
+    print(ac.pol_weights[1])
