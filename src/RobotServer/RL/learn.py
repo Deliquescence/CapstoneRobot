@@ -1,4 +1,44 @@
 import numpy as np
+import math
+
+NUM_FEATURES = 2  # Todo fix
+
+
+class ActorCritic:
+
+    def __init__(self, lr, lamb):
+        self.lr = np.repeat(lr, 5)  # For each of the arrays in the following order
+        self.lamb = np.repeat(lamb, 5)
+
+        # throttle_mu, throttle_sigma, dir_mu, dir_sigma
+        self.pol_weights = [np.zeros(sz) for sz in [NUM_FEATURES] * 4]
+        self.pol_traces = [np.zeros(sz) for sz in [NUM_FEATURES] * 4]
+
+        self.rbar = 0
+        self.val_weights = np.zeros(NUM_FEATURES)
+        self.val_trace = np.zeros(NUM_FEATURES)
+
+    def sample_action(self, features):
+        """
+        Sample the throttle and direction according to our normal distributions
+        :param features: Unified feature vector for all approximations
+        :return: (throttle, direction)
+        """
+        t_mu = np.dot(self.pol_weights[0], features)
+        t_sigma = math.exp(np.dot(self.pol_weights[1], features))
+        throttle = np.random.normal(t_mu, t_sigma, 1)
+        d_mu = np.dot(self.pol_weights[2], features)
+        d_sigma = math.exp(np.dot(self.pol_weights[3], features))
+        direction = np.random.normal(d_mu, d_sigma, 1)
+        return throttle, direction
+
+    def estimate_value(self, state):
+        return np.dot(self.val_weights, state)
+
+    def update(self, old_state, new_state, reward):
+        delta = reward - self.rbar + self.estimate_value(new_state) - self.estimate_value(old_state)  # Loss
+        # self.rbar += self.lr[4] * delta
+        # self.tm_trace *=
 
 
 class TD:
@@ -59,3 +99,10 @@ class TD:
 
     def predict(self, phi):
         return np.dot(self.theta, phi)
+
+if __name__ == '__main__':
+    ac = ActorCritic(1e-2, 0.8)
+    feat = np.ones(NUM_FEATURES)
+    throttle, direction = ac.sample_action(feat)
+    print(throttle)
+    print(direction)
