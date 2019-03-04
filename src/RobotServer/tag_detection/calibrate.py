@@ -10,8 +10,8 @@ def calibrate():
     of an aruco marker."""
     camera = cv2.VideoCapture(0)
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
-    prepared_object_points = np.zeros((8*8, 3), np.float32)
-    prepared_object_points[:, :2] = np.mgrid[0:8, 0:8].T.reshape(-1, 2)
+    prepared_object_points = np.zeros((7*7, 3), np.float32)
+    prepared_object_points[:, :2] = np.mgrid[0:7, 0:7].T.reshape(-1, 2)
 
     object_points = []
     image_points = []
@@ -20,7 +20,7 @@ def calibrate():
     while True:
         _, img = camera.read()
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        ret, corners = cv2.findChessboardCorners(gray, (8, 8), None)
+        ret, corners = cv2.findChessboardCorners(gray, (7, 7), None)
 
         if ret:
             print('Found chessboard corners.')
