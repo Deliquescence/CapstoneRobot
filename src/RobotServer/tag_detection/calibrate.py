@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 
+DEFAULT_FILE_NAME = "calibration.npz"
 
 def calibrate():
     """Interactively finds a calibration for the camera by taking images from the camera
@@ -63,8 +64,9 @@ def load_calibration(file_name):
 
 def main():
     calibration = calibrate()
+    file_name = DEFAULT_FILE_NAME
     if calibration is not None:
-        save_calibration(*calibration)
+        save_calibration(file_name, *calibration)
 
 
 if __name__ == '__main__':
