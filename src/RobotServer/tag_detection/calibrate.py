@@ -33,9 +33,8 @@ def calibrate():
         else:
             print('Did not find chessboard corners.')
 
-        print('Press q to quit or any other key continue.')
-        key = cv2.waitKey(0) & 0xFF
-        if key == ord('q'):
+        s = input('Press q <Enter> to quit or c <Enter> to continue: ')
+        if s == 'q':
             break
 
     camera.release()
