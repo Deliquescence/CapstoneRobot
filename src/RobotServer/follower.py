@@ -4,7 +4,7 @@ import cv2
 import time
 import pickle
 
-from RL import tag_detector, states, actions, learn
+from RL import states, states, actions, learn
 
 
 # From
@@ -64,7 +64,7 @@ class Follower:
     def get_action(self, frame):
         start_time = time.time()
 
-        current_state = tag_detector.state_from_frame(frame)
+        current_state = states.state_from_frame(frame)
         state = unknown_state_cache(self.previous_state, current_state)
 
         # 1 state buffer
