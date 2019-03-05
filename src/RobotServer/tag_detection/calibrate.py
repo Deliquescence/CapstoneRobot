@@ -51,12 +51,12 @@ def calibrate():
         return None
 
 
-def save_calibration(file_name, mtx, dist):
+def save_calibration(mtx, dist, file_name=DEFAULT_FILE_NAME):
     """Saves the given calibration to a file at the given path."""
     np.savez(file_name, mtx=mtx, dist=dist)
 
 
-def load_calibration(file_name):
+def load_calibration(file_name=DEFAULT_FILE_NAME):
     """Returns the calibration saved in the file at the given path."""
     files = np.load(file_name).files
     return files['mtx'], files['dist']
@@ -64,9 +64,8 @@ def load_calibration(file_name):
 
 def main():
     calibration = calibrate()
-    file_name = DEFAULT_FILE_NAME
     if calibration is not None:
-        save_calibration(file_name, *calibration)
+        save_calibration(*calibration)
 
 
 if __name__ == '__main__':
