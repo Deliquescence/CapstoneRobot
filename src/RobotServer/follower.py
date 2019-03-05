@@ -50,34 +50,36 @@ def unknown_state_cache(previous_state, state):
     else:
         return state
 
+
 class Follower:
     def __init__(self):
-        with open('models/q.pkl', 'rb') as f:
-            Q = pickle.loads(f.read())
-            self.update_policy(Q, 0)
-            self.previous_state = states.State.unknown
-
-    def update_policy(self, Q, epsilon):
-        self.Q = Q
-        self.policy = make_epsilon_greedy_policy(Q, epsilon, actions.n)
+        # Todo serialization
+        self.learner = learn.ActorCritic(np.repeat(0.02, 6), np.repeat(0.8, 5))
+        self.last_state = None
 
     def get_action(self, frame):
         start_time = time.time()
 
-        current_state = tag_detector.state_from_frame(frame)
-        state = unknown_state_cache(self.previous_state, current_state)
+        state = self.get_features(frame)
+        reward = self.get_reward(frame)
 
-        # 1 state buffer
-        self.previous_state = current_state
-        # Latch
-        # self.previous_state = state
+        throttle, direction = self.learner.sample_action(state)
 
-        action = actions.Action(self.policy(state.value))
+        if self.last_state is not None:
+            self.learner.update(self.last_state, state, throttle, direction, reward)
+
+        self.last_state = state
 
         duration = time.time() - start_time
         #print(f"Prediction took {duration}")
 
-        return actions.to_throttle_direction(action)
+        return throttle, direction
+
+    def get_features(self, frame):
+        return np.zeros(2)  # Todo
+
+    def get_reward(self, frame):
+        return 0  # Todo
 
 
 if __name__ == '__main__':

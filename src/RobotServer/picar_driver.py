@@ -85,8 +85,8 @@ class PiCarDriver(object):
             elif self.mode == 2:
                 # follower mode
                 # if no base corners, get corners
-                action = self.follower.get_action(frame)
-                self._move(action[0], action[1])
+                throttle, direction = self.follower.get_action(frame)
+                self._move(throttle, direction)
             else:
                 self._move(0.0, 0.0)
 

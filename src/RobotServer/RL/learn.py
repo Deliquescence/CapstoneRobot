@@ -7,16 +7,16 @@ NUM_FEATURES = 2  # Todo fix
 class ActorCritic:
 
     def __init__(self, lr, lamb):
-        self.lr = np.repeat(lr, 6)  # For each of the arrays in the following order
-        self.lamb = np.repeat(lamb, 6)
+        self.lr = lr  # For each of the arrays in the following order
+        self.lamb = lamb
 
         # throttle_mu, throttle_sigma, dir_mu, dir_sigma
         self.pol_weights = [np.zeros(sz) for sz in [NUM_FEATURES] * 4]
         self.pol_traces = [np.zeros(sz) for sz in [NUM_FEATURES] * 4]
 
-        self.rbar = 0
         self.val_weights = np.zeros(NUM_FEATURES)
         self.val_trace = np.zeros(NUM_FEATURES)
+        self.rbar = 0  # Average reward
 
     def sample_action(self, features):
         """
@@ -51,11 +51,11 @@ class ActorCritic:
         :param reward: One-step reward
         """
         delta = reward - self.rbar + self.estimate_value(new_state) - self.estimate_value(old_state)  # Loss
-        self.rbar += self.lr[4] * delta
+        self.rbar += self.lr[5] * delta
         # Update value fn
-        self.val_trace *= self.lamb[5]
+        self.val_trace *= self.lamb[4]
         self.val_trace += old_state  # derivative of linear val fn
-        self.val_weights += self.lr[5] * delta * self.val_trace
+        self.val_weights += self.lr[4] * delta * self.val_trace
         # Update policy weights
         gauss = self._get_gaussian(old_state)
 
