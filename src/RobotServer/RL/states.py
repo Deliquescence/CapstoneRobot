@@ -1,5 +1,5 @@
 from enum import Enum
-from ..tag_detection.detector import tag_loc
+from tag_detection.detector import tag_loc
 
 LEFT_THRESHOLD = -50
 RIGHT_THRESHOLD = 50
