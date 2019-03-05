@@ -4,11 +4,9 @@ import pandas as pd
 import os
 from PIL import Image
 
-import tag_detector
-from states import State
-import actions
-from actions import Action
-
+from ..tag_detection.detector import tag_loc
+from .states import State, NEAR_THRESHOLD, FAR_THRESHOLD, state_from_loc
+from . import actions
 
 BASE_PATH = "../../../../train_data"
 IMAGE_DIR = "train"
@@ -22,7 +20,7 @@ def reward(tag_loc, action):
 
     edge_len = tag_loc.avg_edge_len
     # todo? squared distance error. Would need fn for tag_length -> distance.
-    if edge_len < tag_detector.NEAR_THRESHOLD and edge_len > tag_detector.FAR_THRESHOLD:
+    if edge_len < NEAR_THRESHOLD and edge_len > FAR_THRESHOLD:
         return 1.0
     else:
         return 0.0
@@ -76,8 +74,8 @@ def main():
         img = Image.open(file_name_with_folder)
         img = np.array(img)
 
-        loc = tag_detector.tag_loc(img)
-        state = tag_detector.state_from_loc(loc)
+        loc = tag_loc(img)
+        state = state_from_loc(loc)
 
         logging = False
         if logging:
@@ -85,8 +83,6 @@ def main():
             if loc is not None:
                 print(loc.x_pos, loc.avg_edge_len)
                 print(state)
-
-        # state = tag_detector.state_from_frame(img)
 
         df = df.append(
             {"file_name": file_name_with_folder, "state": state, "tag_loc": loc}, ignore_index=True)
