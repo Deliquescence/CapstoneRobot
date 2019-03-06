@@ -3,6 +3,11 @@ import numpy as np
 
 DEFAULT_FILE_NAME = "calibration.npz"
 
+# Saved/cached calibration values. See `get_calibration`.
+_matrix = None
+_distortion = None
+
+
 def calibrate():
     """Interactively finds a calibration for the camera by taking images from the camera
     that contain an image of an 8x8 chessboard. Returns a tuple of the camera matrix
@@ -45,6 +50,8 @@ def calibrate():
         print('Calibration complete.')
         print('mtx = {0}'.format(mtx))
         print('dist = {0}'.format(dist))
+        _matrix = mtx
+        _distortion = dist
         return mtx, dist
     else:
         print('Could not calibrate.')
@@ -60,6 +67,16 @@ def load_calibration(file_name=DEFAULT_FILE_NAME):
     """Returns the calibration saved in the file at the given path."""
     files = np.load(file_name).files
     return files['mtx'], files['dist']
+
+
+def get_calibration(file_name=DEFAULT_FILE_NAME):
+    """Returns the cached calibration, or loads it from the file if necessary."""
+    global _matrix, _distortion
+
+    if _matrix is None or _distortion is None:
+        _matrix, _distortion = load_calibration(file_name)
+
+    return _matrix, _distortion
 
 
 def main():
