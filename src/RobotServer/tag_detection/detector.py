@@ -83,7 +83,9 @@ def estimate_pose(frame):
     """Estimate the position of the tag.
     If tag not found, returns None.
     Otherwise, returns (vector of euler angles, vector of translations), both in order [x, y, z]"""
-    TAG_SIZE = 3 # inches
+    # The actual tag size is 3 in (white border) or 2.25 in (black border)
+    # but this gave better numbers for translation estimates
+    TAG_SIZE = 2.135  # inches
 
     cam_mtx, dist = get_calibration()
 
@@ -106,6 +108,7 @@ def estimate_pose(frame):
     # https://www.learnopencv.com/rotation-matrix-to-euler-angles/
     # http://answers.opencv.org/question/16796/computing-attituderoll-pitch-yaw-from-solvepnp/?answer=52913#post-id-52913
     # https://docs.opencv.org/2.4/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html#rodrigues
+    # https://docs.opencv.org/3.1.0/d5/dae/tutorial_aruco_detection.html
     # http://homepages.inf.ed.ac.uk/rbf/CVonline/LOCAL_COPIES/OWENS/LECT9/node2.html
 
     # x: We are not really interested in it (and I can't tell the range)
@@ -117,8 +120,6 @@ def estimate_pose(frame):
     # x: right +, left -
     # y: top -, bottom +
     # z: close -, far +
-
-    # TODO: figure out if x and y lines up with tag midpoint or corner
 
     tx = tvecs[0][0][0]
     ty = tvecs[0][0][1]
