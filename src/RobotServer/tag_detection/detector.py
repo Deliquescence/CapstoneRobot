@@ -101,13 +101,12 @@ def estimate_pose(frame):
     rvecs, tvecs, _objPoints = cv2.aruco.estimatePoseSingleMarkers(
         corners, TAG_SIZE, cam_mtx, dist)
 
-    # http://homepages.inf.ed.ac.uk/rbf/CVonline/LOCAL_COPIES/OWENS/LECT9/img4.gif
-
     # Rotations:
     # https://stackoverflow.com/questions/13823296/converting-opencv-rotation-and-translation-vectors-to-xyz-rotation-and-xyz-posit
     # https://www.learnopencv.com/rotation-matrix-to-euler-angles/
     # http://answers.opencv.org/question/16796/computing-attituderoll-pitch-yaw-from-solvepnp/?answer=52913#post-id-52913
     # https://docs.opencv.org/2.4/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html#rodrigues
+    # http://homepages.inf.ed.ac.uk/rbf/CVonline/LOCAL_COPIES/OWENS/LECT9/node2.html
 
     # x: We are not really interested in it (and I can't tell the range)
     # y: "lead car is turned right" -> positive, "lead car is turned left" -> negative, "lead car straight" -> ~0
