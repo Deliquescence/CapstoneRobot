@@ -6,6 +6,9 @@ from .calibrate import get_calibration
 AR_DICT = cv2.aruco.Dictionary_create(1, 3)
 AR_PARAMS = cv2.aruco.DetectorParameters_create()
 
+# The actual tag size is 3 in (white border) or 2.25 in (black border)
+# but this gave better numbers for translation estimates
+TAG_SIZE = 2.135  # inches
 
 class PreciseLocation(object):
     """Represents a precise location of a tag within an image.
@@ -82,10 +85,11 @@ def rotationMatrixToEulerAngles(R):
 def estimate_pose(frame):
     """Estimate the position of the tag.
     If tag not found, returns None.
-    Otherwise, returns (vector of euler angles, vector of translations), both in order [x, y, z]"""
-    # The actual tag size is 3 in (white border) or 2.25 in (black border)
-    # but this gave better numbers for translation estimates
-    TAG_SIZE = 2.135  # inches
+    Otherwise, returns a tuple:
+        (vector of euler angles [x, y, z] for first detected tag,
+         vector of translations [x, y, z] for first detected tag,
+         rvecs from opencv,
+         tvecs from opencv)"""
 
     cam_mtx, dist = get_calibration()
 
@@ -140,4 +144,16 @@ def estimate_pose(frame):
     ry = euler_angles[1]
     rz = euler_angles[2]
 
-    return [rx, ry, rz], [tx, ty, tz]
+    return [rx, ry, rz], [tx, ty, tz], rvecs, tvecs
+
+
+def decorate_frame(frame):
+    """Do pose estimation, then draw opencv tag detection on the frame."""
+    pose = estimate_pose(frame)
+    if pose is not None:
+        _, _, rvecs, tvecs = pose
+
+        cam_mtx, dist = get_calibration()
+        cv2.aruco.drawAxis(frame, cam_mtx, dist, rvecs, tvecs, TAG_SIZE)
+
+    return frame, pose

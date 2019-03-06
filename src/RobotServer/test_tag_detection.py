@@ -45,7 +45,7 @@ def from_file():
     fname = "C:/picar/train/tag_orientation_00440.jpg"
     image = cv2.imread(fname)
     print(fname)
-    ret = normal_vector(image)
+    ret = estimate_pose(image)
 
 if __name__ == '__main__':
     #from_file()
