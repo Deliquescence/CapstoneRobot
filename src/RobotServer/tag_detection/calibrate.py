@@ -65,7 +65,7 @@ def save_calibration(mtx, dist, file_name=DEFAULT_FILE_NAME):
 
 def load_calibration(file_name=DEFAULT_FILE_NAME):
     """Returns the calibration saved in the file at the given path."""
-    files = np.load(file_name).files
+    files = np.load(file_name)
     return files['mtx'], files['dist']
 
 
