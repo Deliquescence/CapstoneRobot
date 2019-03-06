@@ -24,6 +24,11 @@ def calibrate():
     count = 0
 
     while True:
+        # .read() sometimes lags behind present,
+        # making it more difficult to take the images expected
+        # https://stackoverflow.com/a/48297397
+        for _ in range(5):
+            camera.grab()
         _, img = camera.read()
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         ret, corners = cv2.findChessboardCorners(gray, (7, 7), None)
