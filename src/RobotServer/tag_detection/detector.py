@@ -133,7 +133,7 @@ def estimate_pose(frame):
     # print(tvecs)
     # print(_objPoints)
 
-    rodrigues, _jacobian = cv2.Rodrigues(rvecs)
+    rodrigues, _jacobian = cv2.Rodrigues(rvecs[0])
     # print(rodrigues)
 
     euler_angles = rotationMatrixToEulerAngles(rodrigues)
@@ -154,6 +154,7 @@ def decorate_frame(frame):
         _, _, rvecs, tvecs = pose
 
         cam_mtx, dist = get_calibration()
-        cv2.aruco.drawAxis(frame, cam_mtx, dist, rvecs, tvecs, TAG_SIZE)
+        for (rvec, tvec) in zip(rvecs, tvecs):
+            cv2.aruco.drawAxis(frame, cam_mtx, dist, rvec, tvec, TAG_SIZE)
 
     return frame, pose
