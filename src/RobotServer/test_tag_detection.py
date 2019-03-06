@@ -22,11 +22,11 @@ def main():
                   .format(frame_time - start_time, detect_time - frame_time))
 
             if ret is not None:
-                rvecs = ret[0]
-                tvecs = ret[1]
+                rotation = ret[0]
+                translation = ret[1]
 
-                print(rvecs)
-                print(tvecs)
+                print(rotation)
+                print(translation)
 
             else:
                 print('Could not detect marker')
