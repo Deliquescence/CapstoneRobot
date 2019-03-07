@@ -3,8 +3,10 @@ from PIL import Image
 import cv2
 import time
 import pickle
+import math
 
 from RL import states, states, actions, learn
+from tag_detection.detector import estimate_pose
 
 
 # From
@@ -79,7 +81,42 @@ class Follower:
         return np.zeros(2)  # Todo
 
     def get_reward(self, frame):
-        return 0  # Todo
+        IDEAL_DISTANCE = 4
+        X_THRESHOLD = 10
+        Z_THRESHOLD = 30
+
+        weight_tz = 0.9
+        weight_tx = 0.075
+        weight_ry = 0.025
+
+        pose = estimate_pose(frame)
+        if pose is None:
+            return 0
+
+        rotation, translation, _, _ = pose
+        [_rx, ry, _rz] = rotation
+        [tx, _ty, tz] = translation
+
+        # rotation should be 0 (most bad we could actually see is about +/- pi/2)
+        ry_error = abs(ry) / (math.pi / 2)
+        ry_reward = 1 - ry_error
+
+        # x translation should be 0
+        tx = abs(tx)
+        if tx > X_THRESHOLD:
+            tx_reward = 0
+        else:
+            tx_reward = 1 - (tx / X_THRESHOLD)
+
+        # follow distance should be reasonable
+        if tz > Z_THRESHOLD:
+            tz_reward = 0
+        else:
+            tz_error = abs(IDEAL_DISTANCE - tz) / Z_THRESHOLD
+            tz_reward = 1 - tz_error
+
+        return (tz_reward * weight_tz) + (tx_reward * weight_tx) + (ry_reward * weight_ry)
+
 
 
 if __name__ == '__main__':
@@ -89,5 +126,7 @@ if __name__ == '__main__':
 
     while True:
         _, image = camera.read()
-        action = follower.get_action(image)
-        print(action[0], '\t', action[1])
+        #action = follower.get_action(image)
+        #print(action[0], '\t', action[1])
+        reward = follower.get_reward(image)
+        print(reward)
