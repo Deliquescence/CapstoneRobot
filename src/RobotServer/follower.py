@@ -86,20 +86,14 @@ class Follower:
         Z_THRESHOLD = 30
 
         weight_tz = 0.9
-        weight_tx = 0.075
-        weight_ry = 0.025
+        weight_tx = 0.1
 
         pose = estimate_pose(frame)
         if pose is None:
             return 0
 
-        rotation, translation, _, _ = pose
-        [_rx, ry, _rz] = rotation
+        _rotation, translation, _, _ = pose
         [tx, _ty, tz] = translation
-
-        # rotation should be 0 (most bad we could actually see is about +/- pi/2)
-        ry_error = abs(ry) / (math.pi / 2)
-        ry_reward = 1 - ry_error
 
         # x translation should be 0
         tx = abs(tx)
@@ -115,7 +109,7 @@ class Follower:
             tz_error = abs(IDEAL_DISTANCE - tz) / Z_THRESHOLD
             tz_reward = 1 - tz_error
 
-        return (tz_reward * weight_tz) + (tx_reward * weight_tx) + (ry_reward * weight_ry)
+        return (tz_reward * weight_tz) + (tx_reward * weight_tx)
 
 
 
