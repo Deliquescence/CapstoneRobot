@@ -8,7 +8,7 @@ import math
 from RL import states, states, actions, learn
 from tag_detection.detector import estimate_pose
 
-NUM_FEATURES = 6
+NUM_FEATURES = 7
 
 # From
 # https://github.com/dennybritz/reinforcement-learning/blob/master/TD/Q-Learning%20Solution.ipynb
@@ -88,6 +88,7 @@ class Follower:
         3: x axis translation (from tag pose)
         4: y axis translation (from tag pose)
         5: z axis translation (from tag pose)
+        6: 1 if tag was detected, 0 otherwise
         """
         # Don't forget to update NUM_FEATURES
 
@@ -104,10 +105,11 @@ class Follower:
             features[3] = tx
             features[4] = ty
             features[5] = tz
+            features[6] = 1
 
         return features
 
-    def get_reward(self, frame):
+    def get_reward(self, feature_vector):
         IDEAL_DISTANCE = 4
         X_THRESHOLD = 10
         Z_THRESHOLD = 30
@@ -115,12 +117,11 @@ class Follower:
         weight_tz = 0.9
         weight_tx = 0.1
 
-        pose = estimate_pose(frame)
-        if pose is None:
+        if feature_vector[6] == 0: # Tag not found
             return 0
 
-        _rotation, translation, _, _ = pose
-        [tx, _ty, tz] = translation
+        tx = feature_vector[3]
+        tz = feature_vector[5]
 
         # x translation should be 0
         tx = abs(tx)
