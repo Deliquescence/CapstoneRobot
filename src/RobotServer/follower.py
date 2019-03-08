@@ -8,7 +8,7 @@ import math
 from RL import states, states, actions, learn
 from tag_detection.detector import estimate_pose
 
-NUM_FEATURES = 2
+NUM_FEATURES = 6
 
 # From
 # https://github.com/dennybritz/reinforcement-learning/blob/master/TD/Q-Learning%20Solution.ipynb
@@ -79,7 +79,33 @@ class Follower:
         return throttle, direction
 
     def get_features(self, frame):
-        return np.zeros(2)  # Todo
+        """
+        Return numpy array of features.
+        Indexes:
+        0: x axis rotation (from tag pose)
+        1: y axis rotation (from tag pose)
+        2: z axis rotation (from tag pose)
+        3: x axis translation (from tag pose)
+        4: y axis translation (from tag pose)
+        5: z axis translation (from tag pose)
+        """
+        # Don't forget to update NUM_FEATURES
+
+        features = np.zeros(NUM_FEATURES)
+
+        pose = estimate_pose(frame)
+        if pose is not None:
+            rotation, translation, _, _ = pose
+            [rx, ry, rz] = rotation
+            [tx, ty, tz] = translation
+            features[0] = rx
+            features[1] = ry
+            features[2] = rz
+            features[3] = tx
+            features[4] = ty
+            features[5] = tz
+
+        return features
 
     def get_reward(self, frame):
         IDEAL_DISTANCE = 4
