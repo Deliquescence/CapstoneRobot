@@ -8,7 +8,7 @@ import math
 from RL import states, states, actions, learn
 from tag_detection.detector import estimate_pose
 
-NUM_FEATURES = 7
+NUM_FEATURES = 9
 
 # From
 # https://github.com/dennybritz/reinforcement-learning/blob/master/TD/Q-Learning%20Solution.ipynb
@@ -82,13 +82,15 @@ class Follower:
         """
         Return numpy array of features.
         Indexes:
-        0: x axis rotation (from tag pose)
-        1: y axis rotation (from tag pose)
-        2: z axis rotation (from tag pose)
-        3: x axis translation (from tag pose)
-        4: y axis translation (from tag pose)
-        5: z axis translation (from tag pose)
+        0: x axis rotation
+        1: y axis rotation
+        2: z axis rotation
+        3: x axis translation
+        4: y axis translation
+        5: z axis translation
         6: 1 if tag was detected, 0 otherwise
+        7: Angle to tag
+        8: Straight line distance to tag
         """
         # Don't forget to update NUM_FEATURES
 
@@ -106,6 +108,8 @@ class Follower:
             features[4] = ty
             features[5] = tz
             features[6] = 1
+            features[7] = math.atan(tz / tx)
+            features[8] = math.hypot(tz, tx)
 
         return features
 
