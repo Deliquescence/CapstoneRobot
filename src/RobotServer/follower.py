@@ -8,6 +8,7 @@ import math
 from RL import states, states, actions, learn
 from tag_detection.detector import estimate_pose
 
+NUM_FEATURES = 2
 
 # From
 # https://github.com/dennybritz/reinforcement-learning/blob/master/TD/Q-Learning%20Solution.ipynb
@@ -56,7 +57,7 @@ def unknown_state_cache(previous_state, state):
 class Follower:
     def __init__(self):
         # Todo serialization
-        self.learner = learn.ActorCritic(np.repeat(0.02, 6), np.repeat(0.8, 5))
+        self.learner = learn.ActorCritic(np.repeat(0.02, 6), np.repeat(0.8, 5), NUM_FEATURES)
         self.last_state = None
 
     def get_action(self, frame):

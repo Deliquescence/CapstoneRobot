@@ -1,21 +1,18 @@
 import numpy as np
 import math
 
-NUM_FEATURES = 2  # Todo fix
-
-
 class ActorCritic:
 
-    def __init__(self, lr, lamb):
+    def __init__(self, lr, lamb, num_features):
         self.lr = lr  # For each of the arrays in the following order
         self.lamb = lamb
 
         # throttle_mu, throttle_sigma, dir_mu, dir_sigma
-        self.pol_weights = [np.zeros(sz) for sz in [NUM_FEATURES] * 4]
-        self.pol_traces = [np.zeros(sz) for sz in [NUM_FEATURES] * 4]
+        self.pol_weights = [np.zeros(sz) for sz in [num_features] * 4]
+        self.pol_traces = [np.zeros(sz) for sz in [num_features] * 4]
 
-        self.val_weights = np.zeros(NUM_FEATURES)
-        self.val_trace = np.zeros(NUM_FEATURES)
+        self.val_weights = np.zeros(num_features)
+        self.val_trace = np.zeros(num_features)
         self.rbar = 0  # Average reward
 
     def sample_action(self, features):
