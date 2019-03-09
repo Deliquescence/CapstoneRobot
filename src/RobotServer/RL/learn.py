@@ -4,6 +4,7 @@ import math
 class ActorCritic:
 
     def __init__(self, lr, lamb, num_features):
+        self.num_features = num_features
         self.lr = lr  # For each of the arrays in the following order
         self.lamb = lamb
 
@@ -66,6 +67,28 @@ class ActorCritic:
 
         for index in range(len(self.pol_weights)):
             self.pol_weights[index] += self.lr[index] * delta * self.pol_traces[index]
+
+    def save(self, file_name):
+        np.savez(file_name,
+                 num_features=self.num_features,
+                 lr=self.lr,
+                 lamb=self.lamb,
+                 pol_weights=self.pol_weights,
+                 pol_traces=self.pol_traces,
+                 val_weights=self.val_weights,
+                 val_trace=self.val_trace,
+                 rbar=self.rbar)
+
+    @staticmethod
+    def load(file_name):
+        d = np.load(file_name)
+        o = ActorCritic(d['lr'], d['lamb'], d['num_features'])
+        o.pol_weights = d['pol_weights']
+        o.pol_traces = d['pol_traces']
+        o.val_weights = d['val_weights']
+        o.val_trace = d['val_trace']
+        o.rbar = d['rbar']
+        return o
 
     @staticmethod
     def _mean_grad(mu, sigma, action, feature):

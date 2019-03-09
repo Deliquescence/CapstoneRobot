@@ -10,6 +10,7 @@ from tag_detection.detector import estimate_pose
 
 NUM_FEATURES = 20
 IDEAL_DISTANCE = 4
+DEFAULT_FILE_NAME = 'follower.npz'
 
 # From
 # https://github.com/dennybritz/reinforcement-learning/blob/master/TD/Q-Learning%20Solution.ipynb
@@ -151,6 +152,14 @@ class Follower:
 
         return (tz_reward * weight_tz) + (tx_reward * weight_tx)
 
+    def save(self, file_name=DEFAULT_FILE_NAME):
+        self.learner.save(file_name)
+
+    @staticmethod
+    def load(file_name=DEFAULT_FILE_NAME):
+        f = Follower()
+        f.learner = learn.ActorCritic.load(file_name)
+        return f
 
 
 if __name__ == '__main__':
