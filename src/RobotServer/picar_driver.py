@@ -6,8 +6,7 @@ import picar_helper
 from queue import Queue
 import socket
 import numpy as np
-import follower
-from follower import default_action_values
+from follower import Follower
 from tag_detection.detector import decorate_frame
 
 picar.setup()
@@ -26,23 +25,32 @@ camera = cv2.VideoCapture(0)
 
 
 def main():
-    driver = PiCarDriver()
+    try:
+        follower = Follower.load()
+    except IOError:  # file does not exist
+        follower = Follower()
+    
+    driver = PiCarDriver(follower)
 
-    # start the server
-    server = picar_server.getServer(driver)
-    server.start()
+    try:
+        # start the server
+        server = picar_server.getServer(driver)
+        server.start()
 
-    print('Server Started on' + socket.gethostname() + '\n')
-    print('Press Ctrl-C to quit')
+        print('Server Started on' + socket.gethostname() + '\n')
+        print('Press Ctrl-C to quit')
 
-    # start the driver
-    driver.run()
+        # start the driver
+        driver.run()
+    finally:
+        driver.follower.save()  # Save follower when done
+        destroy()
 
 
 class PiCarDriver(object):
-    def __init__(self):
+    def __init__(self, follower):
         self.mode = 0
-        self.follower = follower.Follower()
+        self.follower = follower
         self.next_throttle_and_dir = (0.0, 0.0)
         self._streaming = False
         self.stream_queue = Queue(maxsize=20)
@@ -68,14 +76,6 @@ class PiCarDriver(object):
 
         # loop unless break occurs
         while True:
-            # check if key pressed
-            k = cv2.waitKey(1) & 0xFF
-
-            # if q key is pressed we break loop
-            if k == ord('q'):
-                self._move(0.0, 0.0)
-                break
-
             # get the current frame
             _, frame = camera.read()
 
@@ -221,7 +221,4 @@ def destroy():
 
 
 if __name__ == '__main__':
-    try:
-        main()
-    finally:
-        destroy()
+    main()
