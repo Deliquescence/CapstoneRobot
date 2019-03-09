@@ -1,6 +1,9 @@
 import cv2
 import numpy as np
 import math
+import PIL
+from PIL import Image, ImageFilter
+
 from .calibrate import get_calibration
 
 AR_DICT = cv2.aruco.Dictionary_create(1, 3)
@@ -145,6 +148,32 @@ def estimate_pose(frame):
     rz = euler_angles[2]
 
     return [rx, ry, rz], [tx, ty, tz], rvecs, tvecs
+
+
+def process_color(frame):
+    """Returns percentage of total pixels that are the same color"""
+
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    img = PIL.Image.fromarray(gray)
+
+    shape = [80, 60]
+    img = img.resize((shape[0], shape[1]), Image.NEAREST)
+
+    # Increase filter size each iteration
+    for i in range(3, 10, 2):
+        img = img.filter(ImageFilter.MedianFilter(i))
+
+    #img.show()
+
+    arr = np.array(img)
+
+    _, counts = np.unique(arr, return_counts=True)
+    counts[::-1].sort()
+
+    total_pixels = np.product(shape[:2])
+    # Use a few of the most common values
+    top_n = 3
+    return np.sum(counts[:top_n]) / total_pixels
 
 
 def decorate_frame(frame):
