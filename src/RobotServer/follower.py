@@ -9,7 +9,7 @@ from RL import states, actions, learn
 from tag_detection.detector import estimate_pose, process_color
 
 NUM_FEATURES = 22
-IDEAL_DISTANCE = 4
+IDEAL_DISTANCE = 5
 
 # From
 # https://github.com/dennybritz/reinforcement-learning/blob/master/TD/Q-Learning%20Solution.ipynb
