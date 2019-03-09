@@ -160,7 +160,7 @@ if __name__ == '__main__':
     while True:
         _, image = camera.read()
         features = follower.get_features(image)
-        print(f"Color value: {features[9]}")
+        print("Color value: %f" % features[9])
         #action = follower.get_action(image)
         #print(action[0], '\t', action[1])
         #reward = follower.get_reward(image)
