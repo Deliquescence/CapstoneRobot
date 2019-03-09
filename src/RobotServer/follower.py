@@ -127,8 +127,8 @@ class Follower:
         return features
 
     def get_reward(self, feature_vector):
-        X_THRESHOLD = 10
-        Z_THRESHOLD = 30
+        scale_x = 0.1
+        scale_z = 0.1
 
         weight_tz = 0.9
         weight_tx = 0.1
@@ -145,18 +145,12 @@ class Follower:
         tz = feature_vector[5]
 
         # x translation should be 0
-        tx = abs(tx)
-        if tx > X_THRESHOLD:
-            tx_reward = 0
-        else:
-            tx_reward = 1 - (tx / X_THRESHOLD)
+        tx_error = abs(tx) * scale_x
+        tx_reward = max(0, 1 - tx_error)
 
         # follow distance should be reasonable
-        if tz > Z_THRESHOLD:
-            tz_reward = 0
-        else:
-            tz_error = abs(IDEAL_DISTANCE - tz) / Z_THRESHOLD
-            tz_reward = 1 - tz_error
+        tz_error = abs(tz) * scale_z
+        tz_reward = max(0, 1 - tz_error)
 
         return (tz_reward * weight_tz) + (tx_reward * weight_tx) + color_reward
 
