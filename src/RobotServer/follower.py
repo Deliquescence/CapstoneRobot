@@ -6,9 +6,9 @@ import pickle
 import math
 
 from RL import states, actions, learn
-from tag_detection.detector import estimate_pose
+from tag_detection.detector import estimate_pose, process_color
 
-NUM_FEATURES = 20
+NUM_FEATURES = 22
 IDEAL_DISTANCE = 4
 
 # From
@@ -100,7 +100,7 @@ class Follower:
         features = np.zeros(NUM_FEATURES)
 
         pose = estimate_pose(frame)
-        features[9] = 1  # Bias
+        features[10] = 1  # Bias
         if pose is not None:
             rotation, translation, _, _ = pose
             [rx, ry, rz] = rotation
@@ -114,11 +114,12 @@ class Follower:
             features[6] = 1
             features[7] = math.atan(tz / tx)
             features[8] = IDEAL_DISTANCE - math.hypot(tz, tx)
-            self.last_tag_state = np.array(features[0:10])
+            features[9] = process_color(frame)
+            self.last_tag_state = np.array(features[0:NUM_FEATURES / 2])
             # Leave last_tag features as zeros
         else:
             self.last_tag_state *= math.exp(-1 * self.age_decay)
-            features[10:] = self.last_tag_state
+            features[NUM_FEATURES / 2:] = self.last_tag_state
 
         return features
 
@@ -152,15 +153,15 @@ class Follower:
         return (tz_reward * weight_tz) + (tx_reward * weight_tx)
 
 
-
 if __name__ == '__main__':
     follower = Follower()
     #image = cv2.imread("~/Pictures/mirrorB_2605.jpg")
     camera = cv2.VideoCapture(0)
-
     while True:
         _, image = camera.read()
+        features = follower.get_features(image)
+        print(f"Color value: {features[9]}")
         #action = follower.get_action(image)
         #print(action[0], '\t', action[1])
-        reward = follower.get_reward(image)
-        print(reward)
+        #reward = follower.get_reward(image)
+        #print(reward)
