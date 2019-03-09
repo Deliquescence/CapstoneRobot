@@ -117,7 +117,7 @@ class Follower:
             features[9] = process_color(frame)
             self.last_tag_state = np.array(features[0:NUM_FEATURES / 2])
             # Leave last_tag features as zeros
-        else:
+        elif self.last_tag_state is not None:
             self.last_tag_state *= math.exp(-1 * self.age_decay)
             features[NUM_FEATURES / 2:] = self.last_tag_state
 
@@ -159,8 +159,8 @@ if __name__ == '__main__':
     camera = cv2.VideoCapture(0)
     while True:
         _, image = camera.read()
-        features = follower.get_features(image)
-        print("Color value: %f" % features[9])
+        col = process_color(image)
+        print("Color value: %f" % col)
         #action = follower.get_action(image)
         #print(action[0], '\t', action[1])
         #reward = follower.get_reward(image)
