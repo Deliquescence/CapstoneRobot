@@ -103,6 +103,7 @@ class Follower:
         features = np.zeros(NUM_FEATURES)
 
         pose = estimate_pose(frame)
+        features[9] = max(0, process_color(frame) - 0.25)
         features[10] = 1  # Bias
         if pose is not None:
             rotation, translation, _, _ = pose
@@ -117,12 +118,11 @@ class Follower:
             features[6] = 1
             features[7] = math.atan(tz / tx)
             features[8] = IDEAL_DISTANCE - math.hypot(tz, tx)
-            features[9] = process_color(frame)**3
-            self.last_tag_state = np.array(features[0:NUM_FEATURES / 2])
+            self.last_tag_state = np.array(features[0:NUM_FEATURES // 2])
             # Leave last_tag features as zeros
         elif self.last_tag_state is not None:
             self.last_tag_state *= math.exp(-1 * self.age_decay)
-            features[NUM_FEATURES / 2:] = self.last_tag_state
+            features[NUM_FEATURES // 2:] = self.last_tag_state
 
         return features
 
@@ -133,7 +133,7 @@ class Follower:
         weight_tz = 0.9
         weight_tx = 0.1
 
-        if feature_vector[9] >= 0.512:  # 0.8^3
+        if feature_vector[9] >= 0.35:  # Raw value 0.6
             color_reward = -5
         else:
             color_reward = 0
@@ -171,5 +171,6 @@ if __name__ == '__main__':
         # print("Color value: %f" % col)
         # action = follower.get_action(image)
         # print(action[0], '\t', action[1])
-        reward = follower.get_reward(image)
+        features = follower.get_features(image)
+        reward = follower.get_reward(features)
         print(reward)
