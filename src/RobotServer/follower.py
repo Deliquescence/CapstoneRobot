@@ -5,10 +5,11 @@ import time
 import pickle
 import math
 
-from RL import states, states, actions, learn
+from RL import states, actions, learn
 from tag_detection.detector import estimate_pose
 
-NUM_FEATURES = 9
+NUM_FEATURES = 20
+IDEAL_DISTANCE = 4
 
 # From
 # https://github.com/dennybritz/reinforcement-learning/blob/master/TD/Q-Learning%20Solution.ipynb
@@ -59,6 +60,8 @@ class Follower:
         # Todo serialization
         self.learner = learn.ActorCritic(np.repeat(0.02, 6), np.repeat(0.8, 5), NUM_FEATURES)
         self.last_state = None
+        self.last_tag_state = None
+        self.age_decay = 0.9  # Todo determine good value
 
     def get_action(self, frame):
         start_time = time.time()
@@ -97,6 +100,7 @@ class Follower:
         features = np.zeros(NUM_FEATURES)
 
         pose = estimate_pose(frame)
+        features[9] = 1  # Bias
         if pose is not None:
             rotation, translation, _, _ = pose
             [rx, ry, rz] = rotation
@@ -106,15 +110,19 @@ class Follower:
             features[2] = rz
             features[3] = tx
             features[4] = ty
-            features[5] = tz
+            features[5] = IDEAL_DISTANCE - tz
             features[6] = 1
             features[7] = math.atan(tz / tx)
-            features[8] = math.hypot(tz, tx)
+            features[8] = IDEAL_DISTANCE - math.hypot(tz, tx)
+            self.last_tag_state = np.array(features[0:10])
+            # Leave last_tag features as zeros
+        else:
+            self.last_tag_state *= math.exp(-1 * self.age_decay)
+            features[10:] = self.last_tag_state
 
         return features
 
     def get_reward(self, feature_vector):
-        IDEAL_DISTANCE = 4
         X_THRESHOLD = 10
         Z_THRESHOLD = 30
 

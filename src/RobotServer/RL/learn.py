@@ -137,7 +137,7 @@ class TD:
         return np.dot(self.theta, phi)
 
 if __name__ == '__main__':
-    ac = ActorCritic(1e-2, 0.8)
+    ac = ActorCritic(np.repeat(1e-2, 6), np.repeat(0.8, 6), 2)
     st1 = np.array([0.8, 0.8])
     st2 = np.array([0.9, 0.9])
     throttle, direction = ac.sample_action(st1)
