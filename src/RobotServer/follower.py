@@ -6,10 +6,10 @@ import pickle
 import math
 
 from RL import states, actions, learn
-from tag_detection.detector import estimate_pose
+from tag_detection.detector import estimate_pose, process_color
 
-NUM_FEATURES = 20
-IDEAL_DISTANCE = 4
+NUM_FEATURES = 22
+IDEAL_DISTANCE = 5
 DEFAULT_FILE_NAME = 'follower.npz'
 
 # From
@@ -95,13 +95,17 @@ class Follower:
         6: 1 if tag was detected, 0 otherwise
         7: Angle to tag
         8: Straight line distance to tag
+        9: Image color homogeneity
+        10: Bias
+        11-20: Features of last tag state if this state is unknown
         """
         # Don't forget to update NUM_FEATURES
 
         features = np.zeros(NUM_FEATURES)
 
         pose = estimate_pose(frame)
-        features[9] = 1  # Bias
+        features[9] = max(0, process_color(frame) - 0.25)
+        features[10] = 1  # Bias
         if pose is not None:
             rotation, translation, _, _ = pose
             [rx, ry, rz] = rotation
@@ -115,42 +119,42 @@ class Follower:
             features[6] = 1
             features[7] = math.atan(tz / tx)
             features[8] = IDEAL_DISTANCE - math.hypot(tz, tx)
-            self.last_tag_state = np.array(features[0:10])
+            self.last_tag_state = np.array(features[0:NUM_FEATURES // 2])
             # Leave last_tag features as zeros
-        else:
+        elif self.last_tag_state is not None:
             self.last_tag_state *= math.exp(-1 * self.age_decay)
-            features[10:] = self.last_tag_state
+            features[NUM_FEATURES // 2:] = self.last_tag_state
 
         return features
 
     def get_reward(self, feature_vector):
-        X_THRESHOLD = 10
-        Z_THRESHOLD = 30
+        scale_x = 0.1
+        scale_z = 0.1
 
         weight_tz = 0.9
         weight_tx = 0.1
 
-        if feature_vector[6] == 0: # Tag not found
-            return 0
+        if feature_vector[9] >= 0.35:  # Raw value 0.6
+            color_reward = -5
+        else:
+            color_reward = 0
+
+        if feature_vector[6] == 0:  # Tag not found
+            return color_reward
 
         tx = feature_vector[3]
         tz = feature_vector[5]
 
         # x translation should be 0
-        tx = abs(tx)
-        if tx > X_THRESHOLD:
-            tx_reward = 0
-        else:
-            tx_reward = 1 - (tx / X_THRESHOLD)
+        tx_error = abs(tx) * scale_x
+        tx_reward = max(0, 1 - tx_error)
 
         # follow distance should be reasonable
-        if tz > Z_THRESHOLD:
-            tz_reward = 0
-        else:
-            tz_error = abs(IDEAL_DISTANCE - tz) / Z_THRESHOLD
-            tz_reward = 1 - tz_error
+        tz_error = abs(tz) * scale_z
+        tz_reward = max(0, 1 - tz_error)
 
-        return (tz_reward * weight_tz) + (tx_reward * weight_tx)
+        return (tz_reward * weight_tz) + (tx_reward * weight_tx) + color_reward
+
 
     def save(self, file_name=DEFAULT_FILE_NAME):
         self.learner.save(file_name)
@@ -166,10 +170,12 @@ if __name__ == '__main__':
     follower = Follower()
     #image = cv2.imread("~/Pictures/mirrorB_2605.jpg")
     camera = cv2.VideoCapture(0)
-
     while True:
         _, image = camera.read()
-        #action = follower.get_action(image)
-        #print(action[0], '\t', action[1])
-        reward = follower.get_reward(image)
+        # col = process_color(image)
+        # print("Color value: %f" % col)
+        # action = follower.get_action(image)
+        # print(action[0], '\t', action[1])
+        features = follower.get_features(image)
+        reward = follower.get_reward(features)
         print(reward)

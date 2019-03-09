@@ -1,6 +1,6 @@
 import time
 import cv2
-from tag_detection.detector import estimate_pose
+from tag_detection.detector import estimate_pose, process_color
 
 
 def main():
@@ -15,21 +15,27 @@ def main():
             _, frame = camera.read()
             frame_time = time.time()
 
-            ret = estimate_pose(frame)
+            pose = estimate_pose(frame)
+            pose_time = time.time()
 
-            detect_time = time.time()
-            print('Got frame in {0} sec and detection ran in {1} sec'
-                  .format(frame_time - start_time, detect_time - frame_time))
+            pct_pixels = process_color(frame)
+            color_time = time.time()
 
-            if ret is not None:
-                rotation = ret[0]
-                translation = ret[1]
+            print('Timings: frame={0} sec\t pose={1} sec\t color={2} sec'
+                  .format(frame_time - start_time, pose_time - frame_time, color_time - pose_time))
 
+            if pose is not None:
+                rotation = pose[0]
+                translation = pose[1]
+
+                print('Pose data:')
                 print(rotation)
                 print(translation)
 
             else:
                 print('Could not detect marker')
+
+            print('Color data {}:'.format(pct_pixels))
 
             #time.sleep(1)
             s = input('Press q <Enter> to quit or c <Enter> to continue: ')
@@ -42,10 +48,12 @@ def main():
 
 def from_file():
 
-    fname = "C:/picar/train/tag_orientation_00440.jpg"
-    image = cv2.imread(fname)
-    print(fname)
-    ret = estimate_pose(image)
+    fnames = []
+    for fname in fnames:
+        image = cv2.imread(fname)
+        print(fname)
+        print(process_color(image))
+        #pose = estimate_pose(image)
 
 if __name__ == '__main__':
     #from_file()
