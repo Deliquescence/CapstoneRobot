@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,10 +23,18 @@ namespace RobotClient
         public SaveStreamSetup()
         {
             InitializeComponent();
+            DirectoryText.Text = _mainWindow.getPathName();
+            SessionText.Text = _mainWindow.getSessionName();
+            
+            //pressing the enter key starts the saving
+            var submit = new RoutedCommand();
+            submit.InputGestures.Add(new KeyGesture(Key.Enter));
+            CommandBindings.Add(new CommandBinding(submit, StartSaving));
         }
         //after clicking OK the directory name and session prefix will be set for HandleStream() 
         private void StartSaving(object sender, RoutedEventArgs e)
         {
+            
             //okButton.IsEnabled = false;
             _mainWindow.setPathName(DirectoryText.Text);
             _mainWindow.setSessionName(SessionText.Text);
@@ -41,6 +49,21 @@ namespace RobotClient
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             _mainWindow.SaveStreamSetup = null;
+        }
+
+        private void DirectoryText_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            
+        }
+
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void DirectoryText_TextChanged_1(object sender, TextChangedEventArgs e)
+        {
+
         }
     }
 }
