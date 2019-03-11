@@ -32,18 +32,18 @@ namespace RobotClient {
             "KA4yHy5DYXBzdG9uZVJvYm90Lk1vZGVSZXF1ZXN0Lk1vZGUiJgoETW9kZRII",
             "CgRJRExFEAASCAoETEVBRBABEgoKBkZPTExPVxACIhoKB01vZGVBY2sSDwoH",
             "c3VjY2VzcxgBIAEoCCIwCglTZXRNb3Rpb24SEAoIdGhyb3R0bGUYASABKAES",
-            "EQoJZGlyZWN0aW9uGAIgASgBIhAKDlN0YXJ0U3RyZWFtaW5nIg8KDVN0b3BT",
-            "dHJlYW1pbmciRQoKU3RyZWFtRGF0YRINCgVpbWFnZRgBIAEoDBIoCgZhY3Rp",
-            "b24YAiABKAsyGC5DYXBzdG9uZVJvYm90LlNldE1vdGlvbjLyAgoFUGlDYXIS",
-            "TwoRUmVjZWl2ZUNvbm5lY3Rpb24SHS5DYXBzdG9uZVJvYm90LkNvbm5lY3RS",
-            "ZXF1ZXN0GhkuQ2Fwc3RvbmVSb2JvdC5Db25uZWN0QWNrIgASQgoKU3dpdGNo",
-            "TW9kZRIaLkNhcHN0b25lUm9ib3QuTW9kZVJlcXVlc3QaFi5DYXBzdG9uZVJv",
-            "Ym90Lk1vZGVBY2siABJDCg1SZW1vdGVDb250cm9sEhguQ2Fwc3RvbmVSb2Jv",
-            "dC5TZXRNb3Rpb24aFC5DYXBzdG9uZVJvYm90LkVtcHR5IgAoARJLCgtTdGFy",
-            "dFN0cmVhbRIdLkNhcHN0b25lUm9ib3QuU3RhcnRTdHJlYW1pbmcaGS5DYXBz",
-            "dG9uZVJvYm90LlN0cmVhbURhdGEiADABEkIKClN0b3BTdHJlYW0SHC5DYXBz",
-            "dG9uZVJvYm90LlN0b3BTdHJlYW1pbmcaFC5DYXBzdG9uZVJvYm90LkVtcHR5",
-            "IgBCDqoCC1JvYm90Q2xpZW50YgZwcm90bzM="));
+            "EQoJZGlyZWN0aW9uGAIgASgBIiIKDlN0YXJ0U3RyZWFtaW5nEhAKCGRlY29y",
+            "YXRlGAEgASgIIg8KDVN0b3BTdHJlYW1pbmciRQoKU3RyZWFtRGF0YRINCgVp",
+            "bWFnZRgBIAEoDBIoCgZhY3Rpb24YAiABKAsyGC5DYXBzdG9uZVJvYm90LlNl",
+            "dE1vdGlvbjLyAgoFUGlDYXISTwoRUmVjZWl2ZUNvbm5lY3Rpb24SHS5DYXBz",
+            "dG9uZVJvYm90LkNvbm5lY3RSZXF1ZXN0GhkuQ2Fwc3RvbmVSb2JvdC5Db25u",
+            "ZWN0QWNrIgASQgoKU3dpdGNoTW9kZRIaLkNhcHN0b25lUm9ib3QuTW9kZVJl",
+            "cXVlc3QaFi5DYXBzdG9uZVJvYm90Lk1vZGVBY2siABJDCg1SZW1vdGVDb250",
+            "cm9sEhguQ2Fwc3RvbmVSb2JvdC5TZXRNb3Rpb24aFC5DYXBzdG9uZVJvYm90",
+            "LkVtcHR5IgAoARJLCgtTdGFydFN0cmVhbRIdLkNhcHN0b25lUm9ib3QuU3Rh",
+            "cnRTdHJlYW1pbmcaGS5DYXBzdG9uZVJvYm90LlN0cmVhbURhdGEiADABEkIK",
+            "ClN0b3BTdHJlYW0SHC5DYXBzdG9uZVJvYm90LlN0b3BTdHJlYW1pbmcaFC5D",
+            "YXBzdG9uZVJvYm90LkVtcHR5IgBCDqoCC1JvYm90Q2xpZW50YgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
@@ -54,7 +54,7 @@ namespace RobotClient {
             new pbr::GeneratedClrTypeInfo(typeof(global::RobotClient.ModeRequest), global::RobotClient.ModeRequest.Parser, new[]{ "Mode" }, null, new[]{ typeof(global::RobotClient.ModeRequest.Types.Mode) }, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::RobotClient.ModeAck), global::RobotClient.ModeAck.Parser, new[]{ "Success" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::RobotClient.SetMotion), global::RobotClient.SetMotion.Parser, new[]{ "Throttle", "Direction" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::RobotClient.StartStreaming), global::RobotClient.StartStreaming.Parser, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::RobotClient.StartStreaming), global::RobotClient.StartStreaming.Parser, new[]{ "Decorate" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::RobotClient.StopStreaming), global::RobotClient.StopStreaming.Parser, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::RobotClient.StreamData), global::RobotClient.StreamData.Parser, new[]{ "Image", "Action" }, null, null, null)
           }));
@@ -1118,7 +1118,7 @@ namespace RobotClient {
   }
 
   /// <summary>
-  ///Message to indicate to begin streaming video and actions
+  /// Message to indicate to begin streaming video and actions
   /// </summary>
   public sealed partial class StartStreaming : pb::IMessage<StartStreaming> {
     private static readonly pb::MessageParser<StartStreaming> _parser = new pb::MessageParser<StartStreaming>(() => new StartStreaming());
@@ -1145,12 +1145,27 @@ namespace RobotClient {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public StartStreaming(StartStreaming other) : this() {
+      decorate_ = other.decorate_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public StartStreaming Clone() {
       return new StartStreaming(this);
+    }
+
+    /// <summary>Field number for the "decorate" field.</summary>
+    public const int DecorateFieldNumber = 1;
+    private bool decorate_;
+    /// <summary>
+    /// Decorate the returned frames
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Decorate {
+      get { return decorate_; }
+      set {
+        decorate_ = value;
+      }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1166,12 +1181,14 @@ namespace RobotClient {
       if (ReferenceEquals(other, this)) {
         return true;
       }
+      if (Decorate != other.Decorate) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
+      if (Decorate != false) hash ^= Decorate.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1185,6 +1202,10 @@ namespace RobotClient {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
+      if (Decorate != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(Decorate);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1193,6 +1214,9 @@ namespace RobotClient {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
+      if (Decorate != false) {
+        size += 1 + 1;
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -1203,6 +1227,9 @@ namespace RobotClient {
     public void MergeFrom(StartStreaming other) {
       if (other == null) {
         return;
+      }
+      if (other.Decorate != false) {
+        Decorate = other.Decorate;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1215,6 +1242,10 @@ namespace RobotClient {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
+          case 8: {
+            Decorate = input.ReadBool();
+            break;
+          }
         }
       }
     }

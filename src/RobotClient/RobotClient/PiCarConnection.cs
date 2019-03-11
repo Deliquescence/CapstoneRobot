@@ -24,7 +24,7 @@ namespace RobotClient
             private readonly AsyncClientStreamingCall<SetMotion, Empty> remoteControlCall;
 
             private const uint _exactMajorVersion = 1;
-            private const uint _atLeastMinorVersion = 0;
+            private const uint _atLeastMinorVersion = 1;
 
             public PiCarClient(PiCar.PiCarClient client)
             {
@@ -102,7 +102,7 @@ namespace RobotClient
             {
                 try
                 {
-                    StartStreaming request = new StartStreaming();
+                    StartStreaming request = new StartStreaming { Decorate = true };
 
                     using (var call = _client.StartStream(request))
                     {
