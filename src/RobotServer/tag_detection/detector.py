@@ -160,10 +160,10 @@ def process_color(frame):
     img = img.resize((shape[0], shape[1]), Image.NEAREST)
 
     # Increase filter size each iteration
-    for i in range(3, 10, 2):
+    for i in range(3, 20, 2):
         img = img.filter(ImageFilter.MedianFilter(i))
 
-    #img.show()
+    # img.show()
 
     arr = np.array(img)
 
@@ -172,7 +172,7 @@ def process_color(frame):
 
     total_pixels = np.product(shape[:2])
     # Use a few of the most common values
-    top_n = 3
+    top_n = 1
     return np.sum(counts[:top_n]) / total_pixels
 
 
