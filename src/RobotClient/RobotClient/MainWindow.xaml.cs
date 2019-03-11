@@ -101,6 +101,10 @@ namespace RobotClient
                 string selectedIP;
                 string selectedName;
                 string[] iPandName;
+
+                string path;
+                string session;
+                string[] path_and_session;
                 for (int i = 0; i < lines.Length; i++)
                 {
 
@@ -112,6 +116,18 @@ namespace RobotClient
                             selectedIP = iPandName[0];
                             selectedName = iPandName[1];
                             await IPConnect(selectedIP, selectedName);
+                            i = i + 1;
+                        }
+                    }
+                    if (lines[i] == "(*stream)")
+                    {
+                        while (lines[i + 1] != "(stream*)")
+                        {
+                            path_and_session = lines[i + 1].Split(',');
+                            path = path_and_session[0];
+                            session = path_and_session[1];
+                            setPathName(path);
+                            setSessionName(session);
                             i = i + 1;
                         }
                     }
@@ -128,7 +144,7 @@ namespace RobotClient
             }
             catch (Exception e)
             {
-                LogField.AppendText($"{DateTime.Now}: Error when initializing configuration: {e}\n");
+                LogField.AppendText($"{DateTime.Now}: Error when initializing configuration\n");
             }
             DeviceListMn.ItemsSource = null;
             DeviceListMn.ItemsSource = deviceListMain;
