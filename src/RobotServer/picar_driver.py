@@ -7,7 +7,6 @@ from queue import Queue
 import socket
 import numpy as np
 from follower import Follower
-from tag_detection.detector import decorate_frame
 
 picar.setup()
 
@@ -98,10 +97,6 @@ class PiCarDriver(object):
 
             # Add frame and move vector to stream queue
             if self.is_streaming():
-                decorate = True #TODO some way to set this since we don't want it there for training data
-                if decorate:
-                    decorate_frame(frame)
-
                 self.stream_queue.put(
                     StreamData(frame, self._prev_throttle,
                                self._prev_direction))

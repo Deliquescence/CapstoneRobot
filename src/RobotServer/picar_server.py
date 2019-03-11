@@ -8,11 +8,13 @@ import cv2
 import picar_pb2
 import picar_pb2_grpc
 
+from tag_detection.detector import decorate_frame
+
 # Increment major version for incompatible protocol API changes
 # Increment minor version for backwards-compatible protocol API additions
 # Increment patch version for backwards-compatible bug fixes
 MAJOR_VERSION = 1
-MINOR_VERSION = 0
+MINOR_VERSION = 1
 PATCH_VERSION = 0
 
 
@@ -65,6 +67,10 @@ class PiCarServicer(picar_pb2_grpc.PiCarServicer):
         print('Starting follower stream')
         while self.driver.is_streaming():
             stream_data = self.driver.stream_queue.get()
+
+            if request.decorate:
+                decorate_frame(stream_data.frame)
+
             _, b = cv2.imencode('.jpg', stream_data.frame)
             b = b.tobytes()
 

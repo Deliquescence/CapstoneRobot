@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='CapstoneRobot',
   syntax='proto3',
   serialized_options=_b('\252\002\013RobotClient'),
-  serialized_pb=_b('\n\x0bpicar.proto\x12\rCapstoneRobot\"\x07\n\x05\x45mpty\"!\n\x0e\x43onnectRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\"E\n\nConnectAck\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12&\n\x07version\x18\x02 \x01(\x0b\x32\x15.CapstoneRobot.SemVer\"5\n\x06SemVer\x12\r\n\x05major\x18\x01 \x01(\r\x12\r\n\x05minor\x18\x02 \x01(\r\x12\r\n\x05patch\x18\x03 \x01(\r\"d\n\x0bModeRequest\x12-\n\x04mode\x18\x01 \x01(\x0e\x32\x1f.CapstoneRobot.ModeRequest.Mode\"&\n\x04Mode\x12\x08\n\x04IDLE\x10\x00\x12\x08\n\x04LEAD\x10\x01\x12\n\n\x06\x46OLLOW\x10\x02\"\x1a\n\x07ModeAck\x12\x0f\n\x07success\x18\x01 \x01(\x08\"0\n\tSetMotion\x12\x10\n\x08throttle\x18\x01 \x01(\x01\x12\x11\n\tdirection\x18\x02 \x01(\x01\"\x10\n\x0eStartStreaming\"\x0f\n\rStopStreaming\"E\n\nStreamData\x12\r\n\x05image\x18\x01 \x01(\x0c\x12(\n\x06\x61\x63tion\x18\x02 \x01(\x0b\x32\x18.CapstoneRobot.SetMotion2\xf2\x02\n\x05PiCar\x12O\n\x11ReceiveConnection\x12\x1d.CapstoneRobot.ConnectRequest\x1a\x19.CapstoneRobot.ConnectAck\"\x00\x12\x42\n\nSwitchMode\x12\x1a.CapstoneRobot.ModeRequest\x1a\x16.CapstoneRobot.ModeAck\"\x00\x12\x43\n\rRemoteControl\x12\x18.CapstoneRobot.SetMotion\x1a\x14.CapstoneRobot.Empty\"\x00(\x01\x12K\n\x0bStartStream\x12\x1d.CapstoneRobot.StartStreaming\x1a\x19.CapstoneRobot.StreamData\"\x00\x30\x01\x12\x42\n\nStopStream\x12\x1c.CapstoneRobot.StopStreaming\x1a\x14.CapstoneRobot.Empty\"\x00\x42\x0e\xaa\x02\x0bRobotClientb\x06proto3')
+  serialized_pb=_b('\n\x0bpicar.proto\x12\rCapstoneRobot\"\x07\n\x05\x45mpty\"!\n\x0e\x43onnectRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\"E\n\nConnectAck\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12&\n\x07version\x18\x02 \x01(\x0b\x32\x15.CapstoneRobot.SemVer\"5\n\x06SemVer\x12\r\n\x05major\x18\x01 \x01(\r\x12\r\n\x05minor\x18\x02 \x01(\r\x12\r\n\x05patch\x18\x03 \x01(\r\"d\n\x0bModeRequest\x12-\n\x04mode\x18\x01 \x01(\x0e\x32\x1f.CapstoneRobot.ModeRequest.Mode\"&\n\x04Mode\x12\x08\n\x04IDLE\x10\x00\x12\x08\n\x04LEAD\x10\x01\x12\n\n\x06\x46OLLOW\x10\x02\"\x1a\n\x07ModeAck\x12\x0f\n\x07success\x18\x01 \x01(\x08\"0\n\tSetMotion\x12\x10\n\x08throttle\x18\x01 \x01(\x01\x12\x11\n\tdirection\x18\x02 \x01(\x01\"\"\n\x0eStartStreaming\x12\x10\n\x08\x64\x65\x63orate\x18\x01 \x01(\x08\"\x0f\n\rStopStreaming\"E\n\nStreamData\x12\r\n\x05image\x18\x01 \x01(\x0c\x12(\n\x06\x61\x63tion\x18\x02 \x01(\x0b\x32\x18.CapstoneRobot.SetMotion2\xf2\x02\n\x05PiCar\x12O\n\x11ReceiveConnection\x12\x1d.CapstoneRobot.ConnectRequest\x1a\x19.CapstoneRobot.ConnectAck\"\x00\x12\x42\n\nSwitchMode\x12\x1a.CapstoneRobot.ModeRequest\x1a\x16.CapstoneRobot.ModeAck\"\x00\x12\x43\n\rRemoteControl\x12\x18.CapstoneRobot.SetMotion\x1a\x14.CapstoneRobot.Empty\"\x00(\x01\x12K\n\x0bStartStream\x12\x1d.CapstoneRobot.StartStreaming\x1a\x19.CapstoneRobot.StreamData\"\x00\x30\x01\x12\x42\n\nStopStream\x12\x1c.CapstoneRobot.StopStreaming\x1a\x14.CapstoneRobot.Empty\"\x00\x42\x0e\xaa\x02\x0bRobotClientb\x06proto3')
 )
 
 
@@ -297,6 +297,13 @@ _STARTSTREAMING = _descriptor.Descriptor(
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
+    _descriptor.FieldDescriptor(
+      name='decorate', full_name='CapstoneRobot.StartStreaming.decorate', index=0,
+      number=1, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -310,7 +317,7 @@ _STARTSTREAMING = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=380,
-  serialized_end=396,
+  serialized_end=414,
 )
 
 
@@ -333,8 +340,8 @@ _STOPSTREAMING = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=398,
-  serialized_end=413,
+  serialized_start=416,
+  serialized_end=431,
 )
 
 
@@ -371,8 +378,8 @@ _STREAMDATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=415,
-  serialized_end=484,
+  serialized_start=433,
+  serialized_end=502,
 )
 
 _CONNECTACK.fields_by_name['version'].message_type = _SEMVER
@@ -470,8 +477,8 @@ _PICAR = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=487,
-  serialized_end=857,
+  serialized_start=505,
+  serialized_end=875,
   methods=[
   _descriptor.MethodDescriptor(
     name='ReceiveConnection',

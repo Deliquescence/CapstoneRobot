@@ -83,8 +83,10 @@ message SetMotion {
 	double direction = 2;
 }
 
+// Message to indicate to begin streaming video and actions
 message StartStreaming {
-	//Message to indicate to begin streaming video and actions
+    // Decorate the returned frames
+	bool decorate = 1;
 }
 
 message StopStreaming {
