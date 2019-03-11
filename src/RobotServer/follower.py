@@ -10,7 +10,7 @@ from tag_detection.detector import estimate_pose, process_color
 
 NUM_FEATURES = 22
 IDEAL_DISTANCE = 5
-DEFAULT_FILE_NAME = 'follower.npz'
+DEFAULT_FILE_NAME = 'weights.npz'
 
 # From
 # https://github.com/dennybritz/reinforcement-learning/blob/master/TD/Q-Learning%20Solution.ipynb
