@@ -57,6 +57,11 @@ class PiCarDriver(object):
         self._prev_throttle = 0.0
         self._prev_direction = 0.0
 
+    def set_mode(self, mode):
+        self.mode = mode
+        if mode == 0:
+            self.follower.reset_state()
+
     def set_throttle_and_dir(self, throttle, direction):
         self.next_throttle_and_dir = (throttle, direction)
 

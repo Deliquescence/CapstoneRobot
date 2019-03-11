@@ -64,6 +64,10 @@ class Follower:
         self.last_tag_state = None
         self.age_decay = 0.9  # Todo determine good value
 
+    def reset_state(self):
+        self.last_state = None
+        self.last_tag_state = None
+
     def get_action(self, frame):
         start_time = time.time()
 

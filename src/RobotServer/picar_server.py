@@ -38,7 +38,7 @@ class PiCarServicer(picar_pb2_grpc.PiCarServicer):
         if self.driver.mode != request.mode:
             # If the request is for a different mode, send a success ack
             print('Switching mode from %s to %s' % (self.driver.mode, request.mode))
-            self.driver.mode = request.mode
+            self.driver.set_mode(request.mode)
             return picar_pb2.ModeAck(success=True)
         else:
             # If the request is for the mode already in, send a failure ack
