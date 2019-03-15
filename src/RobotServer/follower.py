@@ -4,6 +4,7 @@ import cv2
 import time
 import pickle
 import math
+from pid import Controller
 
 from RL import states, actions, learn
 from tag_detection.detector import estimate_pose, process_color
@@ -63,6 +64,8 @@ class Follower:
         self.last_state = None
         self.last_tag_state = None
         self.age_decay = 0.9  # Todo determine good value
+        self.controller = Controller(IDEAL_DISTANCE, 0.01)
+        self.last_action = [0, 0]
 
     def reset_state(self):
         self.last_state = None
@@ -70,16 +73,24 @@ class Follower:
 
     def get_action(self, frame):
         start_time = time.time()
-
-        state = self.get_features(frame)
-        reward = self.get_reward(frame)
-
-        throttle, direction = self.learner.sample_action(state)
-
-        if self.last_state is not None:
-            self.learner.update(self.last_state, state, throttle, direction, reward)
-
-        self.last_state = state
+        pose = estimate_pose(frame)
+        if pose is not None:
+            rotation, translation, _, _ = pose
+            [rx, ry, rz] = rotation
+            [tx, ty, tz] = translation
+            throttle = self.controller.get_action(tz)
+            direction = 0  # Todo allow for turns
+        else:  # continue on current path
+            throttle, direction = self.last_action
+        # state = self.get_features(frame)
+        # reward = self.get_reward(frame)
+        #
+        # throttle, direction = self.learner.sample_action(state)
+        #
+        # if self.last_state is not None:
+        #     self.learner.update(self.last_state, state, throttle, direction, reward)
+        #
+        # self.last_state = state
 
         duration = time.time() - start_time
         #print(f"Prediction took {duration}")
