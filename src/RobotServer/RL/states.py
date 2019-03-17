@@ -11,6 +11,8 @@ angle_states = angle_thresholds + angle_thresholds_negative
 STATES = [x for x in itertools.product(z_thresholds, angle_states)]
 STATES.insert(0, 0)  # Unknown
 
+n = len(STATES)
+
 
 def state_from_pose(pose):
     """Get the integer state from the pose.
@@ -47,4 +49,4 @@ def state_from_translation(tx, tz):
 
 if __name__ == '__main__':
     print(STATES)
-    print(len(STATES))
+    print(n)

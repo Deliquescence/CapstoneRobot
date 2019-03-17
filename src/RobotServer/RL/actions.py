@@ -16,6 +16,8 @@ ACTIONS = [x for x in itertools.product(
     (positive_throttles + negative_throttles), (positive_directions + negative_directions))]
 ACTIONS.insert(0, (0, 0))  # Stop
 
+n = len(ACTIONS)
+
 
 def bucket_throttle(throttle):
     """Return the discretized representation of the given throttle."""
@@ -50,4 +52,4 @@ def action_to_throttle_direction(action):
 
 if __name__ == '__main__':
     print(ACTIONS)
-    print(len(ACTIONS))
+    print(n)
