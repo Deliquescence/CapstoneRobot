@@ -125,6 +125,9 @@ class Q_Learner:
         return np.argmax(self.Q[state])
 
     def update(self, state, action, reward, next_state):
+        if state is None:
+            state = 0
+
         # TD Update
         best_next_action = np.argmax(self.Q[next_state])
         td_target = reward + self.discount_factor * self.Q[next_state][best_next_action]
@@ -166,8 +169,8 @@ class Q_Learner:
             f.write(Q_serialized)
 
     @staticmethod
-    def load(file_name):
-        with open(Q_Learner.FILE_NAME, 'rb') as f:
+    def load(file_name=Q_Learner.FILE_NAME):
+        with open(file_name, 'rb') as f:
             Q = pickle.loads(f)
         return Q_Learner(Q)
 

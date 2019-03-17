@@ -27,28 +27,63 @@ def unknown_state_cache(previous_state, state):
 
 class Follower:
     def __init__(self):
-        self.learner = learn.ActorCritic(np.repeat(0.02, 6), np.repeat(0.8, 5), NUM_FEATURES)
+        self.learner = learn.Q_Learner(epsilon=0)
+        # self.learner = learn.ActorCritic(np.repeat(0.02, 6), np.repeat(0.8, 5), NUM_FEATURES)
         self.last_state = None
         self.last_tag_state = None
         self.age_decay = 0.9  # Todo determine good value
-        self.controller = Controller(IDEAL_DISTANCE, 0.01)
+        # self.controller = Controller(IDEAL_DISTANCE, 0.01)
         self.last_action = [0, 0]
 
     def reset_state(self):
         self.last_state = None
         self.last_tag_state = None
+        self.last_action = [0, 0]
 
     def get_action(self, frame):
         start_time = time.time()
-        pose = estimate_pose(frame)
-        if pose is not None:
-            rotation, translation, _, _ = pose
-            [rx, ry, rz] = rotation
-            [tx, ty, tz] = translation
-            throttle = self.controller.get_action(tz)
-            direction = 0  # Todo allow for turns
-        else:  # continue on current path
-            throttle, direction = self.last_action
+
+        ###
+        # Q LEARNING
+        ###
+        features = self.get_features(frame)
+        if features[6] == 0:  # Tag not found
+            state = 0
+        else:
+            tx = features[3]
+            tz = IDEAL_DISTANCE - features[5]
+            state = states.state_from_translation(tx, tz)
+
+        state = unknown_state_cache(self.last_state, state)
+
+        action = self.learner.policy(state)
+        (throttle, direction) = actions.action_to_throttle_direction(action)
+
+        reward = self.get_reward(features)
+
+        # Online learning
+        self.learner.update(self.last_state, self.last_action, reward, state)
+
+        self.last_action = [throttle, direction]
+        self.last_state = state
+
+
+        ###
+        # PID
+        ###
+        # pose = estimate_pose(frame)
+        # if pose is not None:
+        #     rotation, translation, _, _ = pose
+        #     [rx, ry, rz] = rotation
+        #     [tx, ty, tz] = translation
+        #     throttle = self.controller.get_action(tz)
+        #     direction = 0  # Todo allow for turns
+        # else:  # continue on current path
+        #     throttle, direction = self.last_action
+
+        ###
+        # ACTOR CRITIC
+        ###
         # state = self.get_features(frame)
         # reward = self.get_reward(frame)
         #
@@ -73,7 +108,7 @@ class Follower:
         2: z axis rotation
         3: x axis translation
         4: y axis translation
-        5: z axis translation
+        5: Ideal distance - z axis translation
         6: 1 if tag was detected, 0 otherwise
         7: Angle to tag
         8: Straight line distance to tag
@@ -143,7 +178,8 @@ class Follower:
     @staticmethod
     def load(file_name=DEFAULT_FILE_NAME):
         f = Follower()
-        f.learner = learn.ActorCritic.load(file_name)
+        # f.learner = learn.ActorCritic.load(file_name)
+        f.learner = learn.Q_Learner.load()
         return f
 
 
