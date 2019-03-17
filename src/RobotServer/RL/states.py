@@ -1,61 +1,44 @@
-from enum import Enum
-from tag_detection.detector import tag_loc
+import math
+import itertools
+from bisect import bisect_right
 
-LEFT_THRESHOLD = -50
-RIGHT_THRESHOLD = 50
-# These were chosen based on 640 width image
-NEAR_THRESHOLD = 125 / 640
-FAR_THRESHOLD = 70 / 640
+z_thresholds = [0, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 25, 30]
+angle_thresholds = [0, 10, 20, 30, 40, 50, 60]
+angle_thresholds_negative = list(map(lambda x: x * -1, angle_thresholds))
+angle_states = angle_thresholds + angle_thresholds_negative
 
-n = 10
-
-
-class State(Enum):
-    unknown = 0
-
-    # distance_angle (of lead car)
-    good_straight = 1
-    near_straight = 2
-    far_straight = 3
-
-    good_left = 4
-    near_left = 5
-    far_left = 6
-
-    good_right = 7
-    near_right = 8
-    far_right = 9
+STATES = [x for x in itertools.product(z_thresholds, angle_states)]
+STATES.insert(0, 0)  # Unknown
 
 
-def state_from_frame(frame):
-    """Returns a State indicating the approximate location of the tag in the given frame."""
-    return state_from_loc(tag_loc(frame))
+def state_from_pose(pose):
+    """Get the integer state from the pose.
+    If pose is None, state == 0.
+    Otherwise, it indexes into the list of states, which is generated based on the thresholds."""
+    if pose is None:
+        return 0
+
+    rotation, translation, _, _ = pose
+    [_rx, _ry, _rz] = rotation
+    [tx, _ty, tz] = translation
+
+    return state_from_translation(tx, tz)
 
 
-def state_from_loc(loc):
-    """Returns a State indicating the approximate location of the tag in the given PreciseLocation."""
+def state_from_translation(tx, tz):
+    # Translations to the right are negative angles
+    # 0 translation is 0 angle
+    angle = math.degrees(math.atan2(tz, tx)) - 90
+    print(angle)
 
-    if loc is None:
-        return State.unknown
+    # Get the lower bound of the threshold bucket.
+    # i.e. get largest threshold \in thresholds such that threshold <= tz
+    z_state = z_thresholds[bisect_right(z_thresholds, tz) - 1]
+    angle_bucket = angle_thresholds[bisect_right(angle_thresholds, abs(angle)) - 1]
+
+    if angle < 0:
+        angle_state = -1 * angle_bucket
     else:
-        # Select direction
-        if loc.x_pos <= LEFT_THRESHOLD:
-            states = [State.far_left, State.good_left, State.near_left]
-        elif loc.x_pos >= RIGHT_THRESHOLD:
-            states = [State.far_right, State.good_right, State.near_right]
-        else:
-            states = [State.far_straight, State.good_straight, State.near_straight]
+        angle_state = angle_bucket
 
-        # Select distance
-        if loc.avg_edge_len >= NEAR_THRESHOLD:
-            return states[2]
-        elif loc.avg_edge_len <= FAR_THRESHOLD:
-            return states[0]
-        else:
-            return states[1]
-
-
-if __name__ == '__main__':
-    print(State.near_straight)
-    print(State.near_straight.value)
-    print(State(0))
+    return STATES.index((z_state, angle_state))
