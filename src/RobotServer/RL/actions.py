@@ -33,7 +33,7 @@ def bucket_direction(direction):
         return positive_directions[bisect_right(positive_directions, direction) - 1]
 
 
-def from_throttle_direction(throttle, direction):
+def action_from_throttle_direction(throttle, direction):
     """Return the integer action representing the given throttle and direction."""
     throttle = bucket_throttle(throttle)
     if throttle == 0:
@@ -42,7 +42,7 @@ def from_throttle_direction(throttle, direction):
         return ACTIONS.index((throttle, bucket_direction(direction)))
 
 
-def to_throttle_direction(action):
+def action_to_throttle_direction(action):
     """Return tuple of (throttle, direction) as corresponding to the given integer action index."""
 
     return ACTIONS[action]
