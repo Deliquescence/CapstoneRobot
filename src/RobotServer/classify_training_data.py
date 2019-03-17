@@ -4,11 +4,12 @@ import pandas as pd
 import os
 from PIL import Image
 
-from ..tag_detection.detector import tag_loc
-from .states import State, NEAR_THRESHOLD, FAR_THRESHOLD, state_from_loc
-from . import actions
+from tag_detection.detector import estimate_pose
+import follower
+import RL.states
+import RL.actions
 
-BASE_PATH = "../../../../train_data"
+BASE_PATH = "../../../train_data"
 IMAGE_DIR = "train"
 IN_CSV = "labels.csv"  # For the action done
 OUT_CSV = "rl_Labels.csv"
