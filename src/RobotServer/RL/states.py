@@ -5,6 +5,7 @@ from bisect import bisect_right
 z_thresholds = [0, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 25, 30]
 angle_thresholds = [0, 10, 20, 30, 40, 50, 60]
 angle_thresholds_negative = list(map(lambda x: x * -1, angle_thresholds))
+angle_thresholds_negative.remove(0)
 angle_states = angle_thresholds + angle_thresholds_negative
 
 STATES = [x for x in itertools.product(z_thresholds, angle_states)]
