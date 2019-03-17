@@ -3,11 +3,11 @@ from bisect import bisect_right
 
 
 # Exclude 0 so action product doesn't include turns with 0 throttle
-positive_throttles = [0.2, 0.4, 0.6, 0.8, 1]
+positive_throttles = [0.25, 0.5, 0.75, 1]
 negative_throttles = list(map(lambda x: x * -1, positive_throttles))
 nonnegative_throttles = [0] + positive_throttles
 
-positive_directions = [0, 0.2, 0.4, 0.6, 0.8, 1]
+positive_directions = [0, 0.25, 0.5, 0.75, 1]
 negative_directions = list(map(lambda x: x * -1, positive_directions))
 negative_directions.remove(0)
 directions = positive_directions + negative_directions
@@ -46,3 +46,8 @@ def to_throttle_direction(action):
     """Return tuple of (throttle, direction) as corresponding to the given integer action index."""
 
     return ACTIONS[action]
+
+
+if __name__ == '__main__':
+    print(ACTIONS)
+    print(len(ACTIONS))

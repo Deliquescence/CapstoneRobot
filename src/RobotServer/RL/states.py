@@ -2,8 +2,8 @@ import math
 import itertools
 from bisect import bisect_right
 
-z_thresholds = [0, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 25, 30]
-angle_thresholds = [0, 10, 20, 30, 40, 50, 60]
+z_thresholds = [0, 3, 5, 7, 9, 12, 15, 18, 22, 26, 30]
+angle_thresholds = [0, 10, 20, 40, 60]
 angle_thresholds_negative = list(map(lambda x: x * -1, angle_thresholds))
 angle_thresholds_negative.remove(0)
 angle_states = angle_thresholds + angle_thresholds_negative
@@ -43,3 +43,8 @@ def state_from_translation(tx, tz):
         angle_state = angle_bucket
 
     return STATES.index((z_state, angle_state))
+
+
+if __name__ == '__main__':
+    print(STATES)
+    print(len(STATES))
