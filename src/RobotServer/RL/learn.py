@@ -1,5 +1,10 @@
 import numpy as np
 import math
+import pickle
+import states
+import actions
+from collections import defaultdict
+
 
 class ActorCritic:
 
@@ -100,6 +105,73 @@ class ActorCritic:
         return coeff * feature
 
 
+class Q_Learner:
+    # From or based on
+    # https://github.com/dennybritz/reinforcement-learning/blob/master/TD/Q-Learning%20Solution.ipynb
+    # Under MIT License by Denny Britz
+
+    FILE_NAME = 'models/q.pkl'
+
+    def __init__(self, Q=None, discount_factor=0.9, alpha=0.5, epsilon=0):
+        if Q is None:
+            Q = defaultdict(self.default_action_values)
+        self.Q = Q
+        self.epsilon = epsilon
+        self.discount_factor = discount_factor
+        self.alpha = alpha
+
+    def policy(self, state):
+        """Return greedy best action with respect to Q"""
+        return np.argmax(self.Q[state])
+
+    def update(self, state, action, reward, next_state):
+        # TD Update
+        best_next_action = np.argmax(self.Q[next_state])
+        td_target = reward + self.discount_factor * self.Q[next_state][best_next_action]
+        td_delta = td_target - self.Q[state][action]
+        self.Q[state][action] += self.alpha * td_delta
+
+    @staticmethod
+    def make_epsilon_greedy_policy(Q, epsilon, nA):
+        """
+        Creates an epsilon-greedy policy based on a given Q-function and epsilon.
+
+        Args:
+            Q: A dictionary that maps from state -> action-values.
+                Each value is a numpy array of length nA (see below)
+            epsilon: The probability to select a random action . float between 0 and 1.
+            nA: Number of actions in the environment.
+
+        Returns:
+            A function that takes the observation as an argument and returns
+            an action chosen by epsilon greedy.
+
+        """
+        def policy_fn(observation):
+            A = np.ones(nA, dtype=float) * epsilon / nA
+            best_action = np.argmax(Q[observation])
+            A[best_action] += (1.0 - epsilon)
+
+            action = np.random.choice(np.arange(len(A)), p=A)
+            return action
+        return policy_fn
+
+    @staticmethod
+    def default_action_values():
+        return np.zeros(actions.n)
+
+    def save(self, file_name):
+        Q_serialized = pickle.dumps(Q)
+        with open(Q_Learner.FILE_NAME, "bw") as f:
+            f.write(Q_serialized)
+
+    @staticmethod
+    def load(file_name):
+        with open(Q_Learner.FILE_NAME, 'rb') as f:
+            Q = pickle.loads(f)
+        return Q_Learner(Q)
+
+
 class TD:
     """
     An implementation of emphatic TD(lambda) as provided by Sutton's True Online Emphatic TD(lambda)
@@ -158,6 +230,7 @@ class TD:
 
     def predict(self, phi):
         return np.dot(self.theta, phi)
+
 
 if __name__ == '__main__':
     ac = ActorCritic(np.repeat(1e-2, 6), np.repeat(0.8, 6), 2)
