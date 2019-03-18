@@ -9,7 +9,7 @@ from RL import states, actions, learn
 from tag_detection.detector import estimate_pose, process_color
 
 NUM_FEATURES = 22
-IDEAL_DISTANCE = 5
+IDEAL_DISTANCE = 20
 DEFAULT_FILE_NAME = 'weights.npz'
 
 
