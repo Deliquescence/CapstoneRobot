@@ -2,17 +2,24 @@ import cv2
 import numpy as np
 import pandas as pd
 import os
+import glob
 from PIL import Image
 
 from tag_detection.detector import estimate_pose
 from follower import Follower
 from RL.states import state_from_pose
 from RL.actions import action_from_throttle_direction
+from RL.learn import Q_Learner
+default_action_values = Q_Learner.default_action_values  # Needed for pickle
 
 BASE_PATH = "../../../train_data"
-IMAGE_DIR = "train"
-IN_CSV = "labels.csv"  # For the action done
-OUT_CSV = "rl_Labels.csv"
+# Data directory:
+# DATA_DIR/episode1.csv
+# DATA_DIR/episode2.csv
+# DATA_DIR/train/episode1_00000.jpg
+# DATA_DIR/train/episode2_00000.jpg
+DATA_DIR = "data"
+OUT_CSV_DIR = "classified"
 
 
 def offset_state(df, row, offset):
@@ -49,6 +56,33 @@ def unknown_state_cache(previous_state, state):
         return previous_state
     else:
         return state
+
+
+def state_from_image(image):
+    image = np.array(image)
+    pose = estimate_pose(image)
+
+    return state_from_pose(pose)
+
+
+def classify_episode(episode_name):
+    os.chdir(BASE_PATH)
+
+    csv_path = os.path.join(DATA_DIR, episode_name + '.csv')
+    if not os.path.isfile(csv_path):
+        print(f"No csv for episode '{episode_name}'")
+        return None
+
+    episode_df = pd.read_csv(csv_path)
+
+    def row_to_state(row):
+        image_path = os.path.join(DATA_DIR, *row['image_file'].split('/'))
+        return state_from_image(Image.open(image_path))
+
+    episode_df['state'] = episode_df.apply(row_to_state, axis=1)
+    episode_df.to_csv(os.path.join(OUT_CSV_DIR, episode_name + '.csv'), index=False)
+
+    return episode_df
 
 
 def main():
