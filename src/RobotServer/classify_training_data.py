@@ -3,11 +3,11 @@ import numpy as np
 import pandas as pd
 import os
 import glob
-from PIL import Image
 
 from tag_detection.detector import estimate_pose
+import follower
 from follower import Follower
-from RL.states import state_from_pose
+from RL.states import state_from_pose, state_from_translation
 from RL.actions import action_from_throttle_direction
 from RL.learn import Q_Learner
 default_action_values = Q_Learner.default_action_values  # Needed for pickle
@@ -68,6 +68,7 @@ def state_from_image(image):
 def classify_episode(episode_name):
     os.chdir(BASE_PATH)
 
+    # Read csv
     csv_path = os.path.join(DATA_DIR, episode_name + '.csv')
     if not os.path.isfile(csv_path):
         print(f"No csv for episode '{episode_name}'")
@@ -75,17 +76,42 @@ def classify_episode(episode_name):
 
     episode_df = pd.read_csv(csv_path)
 
-    def row_to_state(row):
+    # Features
+    f = Follower()
+
+    def row_to_features(row):
         image_path = os.path.join(DATA_DIR, *row['image_file'].split('/'))
-        return state_from_image(Image.open(image_path))
+        return f.get_features(cv2.imread(image_path))
+
+    episode_df['features'] = episode_df.apply(row_to_features, axis=1)
+
+    # State
+    def row_to_state(row):
+        features = row['features']
+        tx = features[3]
+        tz = follower.IDEAL_DISTANCE - features[5]
+
+        return state_from_translation(tx, tz)
 
     episode_df['state'] = episode_df.apply(row_to_state, axis=1)
-    episode_df.to_csv(os.path.join(OUT_CSV_DIR, episode_name + '.csv'), index=False)
 
+    # Action
+    # When streaming, the driver sends previous action with the frame
+    episode_df['previous_action'] = episode_df.apply(lambda row: action_from_throttle_direction(
+        row['throttle'], row['direction']), axis=1)
+
+    # Reward
+    episode_df['reward'] = episode_df.apply(lambda row: f.get_reward(row['features']), axis=1)
+
+    episode_df[['image_file', 'state', 'action', 'reward']].to_csv(os.path.join(OUT_CSV_DIR, episode_name + '.csv'), index=False)
     return episode_df
 
 
 def main():
+    classify_episode('lineA')
+
+
+def main_():
     os.chdir(BASE_PATH)
 
     df = pd.DataFrame(columns=['file_name', 'state', 'tz', 'tx'])
