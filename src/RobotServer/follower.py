@@ -54,15 +54,15 @@ class Follower:
             tz = IDEAL_DISTANCE - features[5]
             state = states.state_from_translation(tx, tz)
 
-        state = unknown_state_cache(self.last_state, state)
+        buffered_state = unknown_state_cache(self.last_state, state)
 
-        action = self.learner.policy(state)
+        action = self.learner.policy(buffered_state)
         (throttle, direction) = actions.action_to_throttle_direction(action)
 
         reward = self.get_reward(features)
 
-        if online:
-            self.learner.update(self.last_state, self.last_action, reward, state)
+        if online and self.last_state is not None:
+            self.learner.update(self.last_state, self.last_action, reward, buffered_state)
 
         self.last_action = [throttle, direction]
         self.last_state = state
