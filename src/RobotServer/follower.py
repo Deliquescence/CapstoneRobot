@@ -40,7 +40,7 @@ class Follower:
         self.last_tag_state = None
         self.last_action = [0, 0]
 
-    def get_action(self, frame):
+    def get_action(self, frame, online=True):
         start_time = time.time()
 
         ###
@@ -61,8 +61,8 @@ class Follower:
 
         reward = self.get_reward(features)
 
-        # Online learning
-        self.learner.update(self.last_state, self.last_action, reward, state)
+        if online:
+            self.learner.update(self.last_state, self.last_action, reward, state)
 
         self.last_action = [throttle, direction]
         self.last_state = state
