@@ -32,7 +32,6 @@ def state_from_translation(tx, tz):
     # Translations to the right are negative angles
     # 0 translation is 0 angle
     angle = math.degrees(math.atan2(tz, tx)) - 90
-    print(angle)
 
     # Get the lower bound of the threshold bucket.
     # i.e. get largest threshold \in thresholds such that threshold <= tz
