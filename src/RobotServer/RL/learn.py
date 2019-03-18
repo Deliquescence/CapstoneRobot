@@ -1,8 +1,6 @@
 import numpy as np
 import math
 import pickle
-import states
-import actions
 from collections import defaultdict
 
 
@@ -161,7 +159,9 @@ class Q_Learner:
 
     @staticmethod
     def default_action_values():
-        return np.zeros(actions.n)
+        import RL.actions
+
+        return np.zeros(RL.actions.n)
 
     def save(self, file_name):
         Q_serialized = pickle.dumps(self.Q)
@@ -169,9 +169,12 @@ class Q_Learner:
             f.write(Q_serialized)
 
     @staticmethod
-    def load(file_name=Q_Learner.FILE_NAME):
+    def load(file_name=None):
+        if file_name is None:
+            file_name = Q_Learner.FILE_NAME
+
         with open(file_name, 'rb') as f:
-            Q = pickle.loads(f)
+            Q = pickle.loads(f.read())
         return Q_Learner(Q)
 
 
