@@ -7,7 +7,7 @@ import glob
 from tag_detection.detector import estimate_pose
 import follower
 from follower import Follower
-from RL.states import state_from_pose, state_from_translation
+from RL.states import tag_state_from_pose, tag_state_from_translation
 from RL.actions import action_from_throttle_direction
 from RL.learn import Q_Learner
 default_action_values = Q_Learner.default_action_values  # Needed for pickle
@@ -62,7 +62,7 @@ def state_from_image(image):
     image = np.array(image)
     pose = estimate_pose(image)
 
-    return state_from_pose(pose)
+    return tag_state_from_pose(pose)
 
 
 def classify_episode(episode_name):
@@ -91,7 +91,7 @@ def classify_episode(episode_name):
         tx = features[3]
         tz = follower.IDEAL_DISTANCE - features[5]
 
-        return state_from_translation(tx, tz)
+        return tag_state_from_translation(tx, tz)
 
     episode_df['state'] = episode_df.apply(row_to_state, axis=1)
 
@@ -123,7 +123,7 @@ def main_():
 
         # TODO save and load the pose for each image so we don't have to recalculate every time
         pose = estimate_pose(img)
-        state = state_from_pose(pose)
+        state = tag_state_from_pose(pose)
 
         if pose is None:
             tz = None
