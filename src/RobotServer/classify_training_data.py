@@ -62,10 +62,12 @@ def classify_episode(episode_name):
     # State
     def row_to_state(row):
         features = row['features']
-        tx = features[3]
-        tz = follower.IDEAL_DISTANCE - features[5]
-
-        return tag_state_from_translation(tx, tz)
+        if features[6] == 0:  # Tag not found
+            return 0
+        else:
+            tx = features[3]
+            tz = follower.IDEAL_DISTANCE - features[5]
+            return tag_state_from_translation(tx, tz)
 
     episode_df['state'] = episode_df.apply(row_to_state, axis=1)
 
@@ -79,7 +81,7 @@ def classify_episode(episode_name):
     episode_df[['image_file', 'state', 'action', 'reward']].to_csv(os.path.join(CLASSIFIED_CSV_DIR, episode_name + '.csv'), index=False)
     duration = time.time() - start_time
     print(f"Classification took {duration}s\t for '{episode_name}'")
-    print("State counts:\n", episode_df['state'].value_counts())
+    print("State counts:", episode_df['state'].value_counts(), sep='\n')
 
     return episode_df
 
