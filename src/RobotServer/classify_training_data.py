@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import os
 import glob
+import time
 
 from tag_detection.detector import estimate_pose
 import follower
@@ -66,6 +67,7 @@ def state_from_image(image):
 
 
 def classify_episode(episode_name):
+    start_time = time.time()
     os.chdir(BASE_PATH)
 
     # Read csv
@@ -103,7 +105,22 @@ def classify_episode(episode_name):
     episode_df['reward'] = episode_df.apply(lambda row: f.get_reward(row['features']), axis=1)
 
     episode_df[['image_file', 'state', 'action', 'reward']].to_csv(os.path.join(OUT_CSV_DIR, episode_name + '.csv'), index=False)
+    duration = time.time() - start_time
+    print(f"Classification took {duration}s\t for '{episode_name}'")
+
     return episode_df
+
+
+def load_classified_episode_df(episode_name):
+    os.chdir(BASE_PATH)
+
+    # Read csv
+    csv_path = os.path.join(OUT_CSV_DIR, episode_name + '.csv')
+    if not os.path.isfile(csv_path):
+        print(f"No csv for episode '{episode_name}'")
+        return None
+
+    return pd.read_csv(csv_path)
 
 
 def learn_episode(learner, episode_df):
@@ -137,7 +154,8 @@ def print_best_action(action_values):
 def main():
     learner = Q_Learner()
 
-    df = classify_episode('lineA')
+    # df = classify_episode('lineA')
+    df = load_classified_episode_df('lineA')
 
     learn_episode(learner, df)
 
