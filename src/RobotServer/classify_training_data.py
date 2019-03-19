@@ -8,7 +8,7 @@ from tag_detection.detector import estimate_pose
 import follower
 from follower import Follower
 from RL.states import tag_state_from_pose, tag_state_from_translation
-from RL.actions import action_from_throttle_direction
+from RL.actions import action_from_throttle_direction, action_to_throttle_direction
 from RL.learn import Q_Learner
 default_action_values = Q_Learner.default_action_values  # Needed for pickle
 
@@ -106,8 +106,42 @@ def classify_episode(episode_name):
     return episode_df
 
 
+def learn_episode(learner, episode_df):
+    # Initial state
+    previous_state = episode_df.iloc[0]['state']
+    previous_action = episode_df.iloc[0]['action']
+
+    for index, row in episode_df.iloc[1:].iterrows():
+        state = row['state']
+        action = row['action']
+        reward = row['reward']
+
+        buffered_state = unknown_state_cache(previous_state, state)
+
+        learner.update(previous_state, previous_action, reward, buffered_state)
+
+        previous_action = action
+        previous_state = state
+
+
+def print_action_values(action_values):
+    for a, v in enumerate(action_values):
+        print("{0}\t{1}".format(action_to_throttle_direction(a), v))
+    print_best_action(action_values)
+
+
+def print_best_action(action_values):
+    print("Best: {0}".format(action_to_throttle_direction(np.argmax(action_values))))
+
+
 def main():
-    classify_episode('lineA')
+    learner = Q_Learner()
+
+    df = classify_episode('lineA')
+
+    learn_episode(learner, df)
+
+    print_action_values(learner.Q[0])
 
 
 def main_():
