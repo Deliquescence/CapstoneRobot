@@ -163,9 +163,11 @@ class Q_Learner:
 
         return np.zeros(RL.actions.n)
 
-    def save(self, file_name):
+    def save(self, file_name=None):
         Q_serialized = pickle.dumps(self.Q)
-        with open(Q_Learner.FILE_NAME, "bw") as f:
+        if file_name is None:
+            file_name = Q_Learner.FILE_NAME
+        with open(file_name, "bw") as f:
             f.write(Q_serialized)
 
     @staticmethod

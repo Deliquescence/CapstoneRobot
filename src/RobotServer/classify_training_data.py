@@ -178,7 +178,7 @@ def main():
     for _ in range(1):
         learn_episodes(learner, dfs)
 
-    debug_print_Q_state(learner.Q, 64)  # tag_state_from_translation(0,0)
+    debug_print_Q_state(learner.Q, tag_state_from_translation(0, 30))  # tag_state_from_translation(0, 1)
 
     n_states = len(TAG_STATES)
     n_unseen_states = 0
@@ -187,6 +187,7 @@ def main():
             n_unseen_states += 1
 
     print(f"{n_unseen_states} states have not been seen (out of {n_states})")
+    learner.save("q.pkl")
 
 
 if __name__ == '__main__':
