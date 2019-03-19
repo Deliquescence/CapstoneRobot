@@ -109,7 +109,10 @@ def load_episode_df(episode):
         print(f"No csv for episode '{episode}'")
         return None
 
-    return pd.read_csv(csv_path)
+    episode_df = pd.read_csv(csv_path)
+    # print("State counts:\n", episode_df['state'].value_counts())
+
+    return episode_df
 
 
 def load_all_classified_df():
@@ -174,6 +177,14 @@ def main():
         learn_episodes(learner, dfs)
 
     debug_print_Q_state(learner.Q, 64)  # tag_state_from_translation(0,0)
+
+    n_states = len(TAG_STATES)
+    n_unseen_states = 0
+    for s in range(n_states):
+        if np.array_equal(learner.Q[s], default_action_values()):
+            n_unseen_states += 1
+
+    print(f"{n_unseen_states} states have not been seen (out of {n_states})")
 
 
 if __name__ == '__main__':
