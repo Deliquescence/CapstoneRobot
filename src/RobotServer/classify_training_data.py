@@ -20,7 +20,7 @@ BASE_PATH = "../../../train_data"
 # DATA_DIR/train/episode1_00000.jpg
 # DATA_DIR/train/episode2_00000.jpg
 DATA_DIR = "data"
-OUT_CSV_DIR = "classified"
+CLASSIFIED_CSV_DIR = "classified"
 
 
 def unknown_state_cache(previous_state, state):
@@ -37,7 +37,6 @@ def unknown_state_cache(previous_state, state):
 
 def classify_episode(episode_name):
     start_time = time.time()
-    os.chdir(BASE_PATH)
 
     # Read csv
     csv_path = os.path.join(DATA_DIR, episode_name + '.csv')
@@ -73,23 +72,48 @@ def classify_episode(episode_name):
     # Reward
     episode_df['reward'] = episode_df.apply(lambda row: f.get_reward(row['features']), axis=1)
 
-    episode_df[['image_file', 'state', 'action', 'reward']].to_csv(os.path.join(OUT_CSV_DIR, episode_name + '.csv'), index=False)
+    episode_df[['image_file', 'state', 'action', 'reward']].to_csv(os.path.join(CLASSIFIED_CSV_DIR, episode_name + '.csv'), index=False)
     duration = time.time() - start_time
     print(f"Classification took {duration}s\t for '{episode_name}'")
 
     return episode_df
 
 
-def load_classified_episode_df(episode_name):
-    os.chdir(BASE_PATH)
+def classify_all_csvs():
+    start_time = time.time()
 
-    # Read csv
-    csv_path = os.path.join(OUT_CSV_DIR, episode_name + '.csv')
+    dfs = []
+
+    for csv_path in glob.glob(os.path.join(DATA_DIR, '*.csv')):
+        episode_name = csv_path.split('\\')[-1].replace('.csv', '')
+        dfs.append(classify_episode(episode_name))
+
+    duration = time.time() - start_time
+    print(f"Classification took {duration}s\t total for {len(dfs)} episodes")
+    return dfs
+
+
+def load_episode_df(episode):
+
+    if episode.endswith('.csv'):
+        csv_path = episode
+    else:
+        csv_path = os.path.join(CLASSIFIED_CSV_DIR, episode + '.csv')
+
     if not os.path.isfile(csv_path):
-        print(f"No csv for episode '{episode_name}'")
+        print(f"No csv for episode '{episode}'")
         return None
 
     return pd.read_csv(csv_path)
+
+
+def load_all_classified_df():
+    dfs = []
+
+    for csv_path in glob.glob(os.path.join(CLASSIFIED_CSV_DIR, '*.csv')):
+        dfs.append(load_episode_df(csv_path))
+
+    return dfs
 
 
 def learn_episode(learner, episode_df):
@@ -121,14 +145,19 @@ def print_best_action(action_values):
 
 
 def main():
+    os.chdir(BASE_PATH)
+
     learner = Q_Learner()
 
+    classify_all_csvs()
+    load_all_classified_df()
+
     # df = classify_episode('lineA')
-    df = load_classified_episode_df('lineA')
+    # df = load_episode_df('lineA')
 
-    learn_episode(learner, df)
+    # learn_episode(learner, df)
 
-    print_action_values(learner.Q[0])
+    # print_action_values(learner.Q[0])
 
 
 if __name__ == '__main__':
