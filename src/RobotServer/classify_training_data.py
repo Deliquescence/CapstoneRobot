@@ -96,8 +96,7 @@ def classify_episode(episode_name):
     episode_df['state'] = episode_df.apply(row_to_state, axis=1)
 
     # Action
-    # When streaming, the driver sends previous action with the frame
-    episode_df['previous_action'] = episode_df.apply(lambda row: action_from_throttle_direction(
+    episode_df['action'] = episode_df.apply(lambda row: action_from_throttle_direction(
         row['throttle'], row['direction']), axis=1)
 
     # Reward
