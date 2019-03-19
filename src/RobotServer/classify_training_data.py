@@ -8,7 +8,7 @@ import time
 from tag_detection.detector import estimate_pose
 import follower
 from follower import Follower
-from RL.states import tag_state_from_pose, tag_state_from_translation
+from RL.states import tag_state_from_translation, TAG_STATES
 from RL.actions import action_from_throttle_direction, action_to_throttle_direction
 from RL.learn import Q_Learner
 default_action_values = Q_Learner.default_action_values  # Needed for pickle
@@ -51,6 +51,10 @@ def classify_episode(episode_name):
 
     def row_to_features(row):
         image_path = os.path.join(DATA_DIR, *row['image_file'].split('/'))
+        # print(image_path)
+        if not os.path.isfile(image_path):
+            print(f"Image file '{image_path}' is missing!")
+            return None
         return f.get_features(cv2.imread(image_path))
 
     episode_df['features'] = episode_df.apply(row_to_features, axis=1)
@@ -75,6 +79,7 @@ def classify_episode(episode_name):
     episode_df[['image_file', 'state', 'action', 'reward']].to_csv(os.path.join(CLASSIFIED_CSV_DIR, episode_name + '.csv'), index=False)
     duration = time.time() - start_time
     print(f"Classification took {duration}s\t for '{episode_name}'")
+    print("State counts:\n", episode_df['state'].value_counts())
 
     return episode_df
 
@@ -134,10 +139,20 @@ def learn_episode(learner, episode_df):
         previous_state = state
 
 
+def learn_episodes(learner, dfs):
+    for df in dfs:
+        learn_episode(learner, df)
+
+
+def debug_print_Q_state(Q, state):
+    print("State", state, TAG_STATES[state])
+    print_action_values(Q[state])
+    print_best_action(Q[state])
+
+
 def print_action_values(action_values):
     for a, v in enumerate(action_values):
         print("{0}\t{1}".format(action_to_throttle_direction(a), v))
-    print_best_action(action_values)
 
 
 def print_best_action(action_values):
@@ -147,17 +162,18 @@ def print_best_action(action_values):
 def main():
     os.chdir(BASE_PATH)
 
-    learner = Q_Learner()
+    learner = Q_Learner(discount_factor=0.9, alpha=0.5)
 
-    classify_all_csvs()
-    load_all_classified_df()
+    # classify_all_csvs()
+    dfs = load_all_classified_df()
 
-    # df = classify_episode('lineA')
+    # df = classify_episode('stillB')
     # df = load_episode_df('lineA')
 
-    # learn_episode(learner, df)
+    for _ in range(1):
+        learn_episodes(learner, dfs)
 
-    # print_action_values(learner.Q[0])
+    debug_print_Q_state(learner.Q, 64)  # tag_state_from_translation(0,0)
 
 
 if __name__ == '__main__':
