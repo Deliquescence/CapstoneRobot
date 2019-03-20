@@ -17,9 +17,9 @@ def unknown_state_cache(previous_state, state):
     """If the current state is not unknown, pass it through.
     If the current state is unknown but the previous state is known, use that.
     If both are unknown, then unknown."""
-    if state != states.UNKNOWN:
+    if states.tag_is_unknown(state):
         return state
-    elif previous_state != states.UNKNOWN:
+    elif states.tag_is_unknown(previous_state):
         return previous_state
     else:
         return state
@@ -34,11 +34,13 @@ class Follower:
         self.age_decay = 0.9  # Todo determine good value
         # self.controller = Controller(IDEAL_DISTANCE, 0.01)
         self.last_action = [0, 0]
+        self.last_turn = 99999 # How many frames ago
 
     def reset_state(self):
         self.last_state = None
         self.last_tag_state = None
         self.last_action = [0, 0]
+        self.last_turn = 99999
 
     def get_action(self, frame, online=True):
         start_time = time.time()
@@ -48,18 +50,25 @@ class Follower:
         ###
         features = self.get_features(frame)
         if features[6] == 0:  # Tag not found
-            state = 0
+            tag_state = 0
         else:
             tx = features[3]
             tz = IDEAL_DISTANCE - features[5]
-            state = states.tag_state_from_translation(tx, tz)
+            tag_state = states.tag_state_from_translation(tx, tz)
 
+        recently_turned = self.last_turn < 5
+        state = (tag_state, recently_turned)
         buffered_state = unknown_state_cache(self.last_state, state)
 
         action = self.learner.policy(buffered_state)
         (throttle, direction) = actions.action_to_throttle_direction(action)
 
         reward = self.get_reward(features)
+
+        if abs(direction) > 0.001:
+            self.last_turn = 0
+        else:
+            self.last_turn += 1
 
         if online and self.last_state is not None:
             self.learner.update(self.last_state, self.last_action, reward, buffered_state)

@@ -12,12 +12,19 @@ TAG_STATES = [x for x in itertools.product(z_thresholds, angle_states)]
 UNKNOWN = 0
 TAG_STATES.insert(0, UNKNOWN)  # Unknown
 
-n = len(TAG_STATES)
+"""((z, angle), recently_turned)"""
+STATES = [x for x in itertools.product(TAG_STATES, [True, False])]
 
+n = len(STATES)
+
+
+def tag_is_unknown(state):
+    """Check if in the given state, the tag is unknown."""
+    return state[0] == UNKNOWN
 
 
 def tag_state_from_pose(pose):
-    """Get representation of state from pose."""
+    """Get representation of tag state from pose."""
     if pose is None:
         return 0
 
@@ -29,7 +36,7 @@ def tag_state_from_pose(pose):
 
 
 def tag_state_from_translation(tx, tz):
-    """Get representation of state from given tx, tz."""
+    """Get representation of tag state from given tx, tz."""
     # Translations to the right are negative angles
     # 0 translation is 0 angle
     angle = math.degrees(math.atan2(tz, tx)) - 90
@@ -48,5 +55,5 @@ def tag_state_from_translation(tx, tz):
 
 
 if __name__ == '__main__':
-    print(TAG_STATES)
+    print(STATES)
     print(n)

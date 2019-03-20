@@ -10,7 +10,7 @@ from tag_detection.detector import estimate_pose
 import follower
 from follower import Follower
 from RL import states
-from RL.states import tag_state_from_translation, TAG_STATES
+from RL.states import tag_state_from_translation, STATES
 from RL.actions import action_from_throttle_direction, action_to_throttle_direction
 from RL.learn import Q_Learner
 default_action_values = Q_Learner.default_action_values  # Needed for pickle
@@ -23,18 +23,6 @@ BASE_PATH = "../../../train_data"
 # DATA_DIR/train/episode2_00000.jpg
 DATA_DIR = "data"
 CLASSIFIED_CSV_DIR = "classified"
-
-
-def unknown_state_cache(previous_state, state):
-    """If the current state is not unknown, pass it through.
-    If the current state is unknown but the previous state is known, use that.
-    If both are unknown, then unknown."""
-    if state != states.UNKNOWN:
-        return state
-    elif previous_state != states.UNKNOWN:
-        return previous_state
-    else:
-        return state
 
 
 def classify_episode(episode_name):
@@ -62,14 +50,26 @@ def classify_episode(episode_name):
     episode_df['features'] = episode_df.apply(row_to_features, axis=1)
 
     # State
+    last_turn = 99999  # How many frames ago
+
     def row_to_state(row):
+        nonlocal last_turn
+
         features = row['features']
         if features[6] == 0:  # Tag not found
-            return 0
+            tag_state = states.UNKNOWN
         else:
             tx = features[3]
             tz = follower.IDEAL_DISTANCE - features[5]
-            return tag_state_from_translation(tx, tz)
+            tag_state = tag_state_from_translation(tx, tz)
+
+        if abs(row['direction']) > 0.001:
+            last_turn = 0
+        else:
+            last_turn += 1
+
+        recently_turned = last_turn < 5
+        return (tag_state, recently_turned)
 
     episode_df['state'] = episode_df.apply(row_to_state, axis=1)
 
@@ -138,7 +138,7 @@ def learn_episode(learner, episode_df):
         action = row['action']
         reward = row['reward']
 
-        buffered_state = unknown_state_cache(previous_state, state)
+        buffered_state = follower.unknown_state_cache(previous_state, state)
 
         learner.update(previous_state, previous_action, reward, buffered_state)
 
@@ -152,7 +152,7 @@ def learn_episodes(learner, dfs):
 
 
 def debug_print_turns(Q):
-    check_states = [
+    check_tag_states = [
         states.UNKNOWN,
         tag_state_from_translation(-20, 30),
         tag_state_from_translation(0, 30),
@@ -164,14 +164,25 @@ def debug_print_turns(Q):
         tag_state_from_translation(0, 10),
         tag_state_from_translation(2, 10),
     ]
-    for s in check_states:
-        print_best_action(Q, s)
+    for s in check_tag_states:
+        print_best_action(Q, (s, False))
 
 
 def debug_print_Q_state(Q, state):
     print("State", state)
     print_action_values(Q[state])
     print_best_action(Q, state)
+
+
+def debug_unknown_states(Q):
+    n_states = len(STATES)
+    unseen_states = []
+    for s in STATES:
+        if np.array_equal(Q[s], default_action_values()):
+            unseen_states.append(s)
+
+    print("Unseen states:", unseen_states, sep='\n')
+    print(f"{len(unseen_states)} states have not been seen (out of {n_states})")
 
 
 def print_action_values(action_values):
@@ -200,15 +211,8 @@ def main():
 
     # debug_print_Q_state(learner.Q, tag_state_from_translation(0, 30))  # tag_state_from_translation(0, 1)
     debug_print_turns(learner.Q)
+    debug_unknown_states(learner.Q)
 
-    n_states = len(TAG_STATES)
-    unseen_states = []
-    for s in TAG_STATES:
-        if np.array_equal(learner.Q[s], default_action_values()):
-            unseen_states.append(s)
-
-    print("Unseen states:", unseen_states, sep='\n')
-    print(f"{len(unseen_states)} states have not been seen (out of {n_states})")
     learner.save("q.pkl")
 
 
