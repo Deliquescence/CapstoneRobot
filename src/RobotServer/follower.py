@@ -17,9 +17,9 @@ def unknown_state_cache(previous_state, state):
     """If the current state is not unknown, pass it through.
     If the current state is unknown but the previous state is known, use that.
     If both are unknown, then unknown."""
-    if state != 0:
+    if state != states.UNKNOWN:
         return state
-    elif previous_state != 0:
+    elif previous_state != states.UNKNOWN:
         return previous_state
     else:
         return state
@@ -52,7 +52,7 @@ class Follower:
         else:
             tx = features[3]
             tz = IDEAL_DISTANCE - features[5]
-            state = states.state_from_translation(tx, tz)
+            state = states.tag_state_from_translation(tx, tz)
 
         buffered_state = unknown_state_cache(self.last_state, state)
 

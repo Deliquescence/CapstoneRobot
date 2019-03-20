@@ -4,10 +4,12 @@ import pandas as pd
 import os
 import glob
 import time
+import ast  # Read tuple state from csv
 
 from tag_detection.detector import estimate_pose
 import follower
 from follower import Follower
+from RL import states
 from RL.states import tag_state_from_translation, TAG_STATES
 from RL.actions import action_from_throttle_direction, action_to_throttle_direction
 from RL.learn import Q_Learner
@@ -27,9 +29,9 @@ def unknown_state_cache(previous_state, state):
     """If the current state is not unknown, pass it through.
     If the current state is unknown but the previous state is known, use that.
     If both are unknown, then unknown."""
-    if state != 0:
+    if state != states.UNKNOWN:
         return state
-    elif previous_state != 0:
+    elif previous_state != states.UNKNOWN:
         return previous_state
     else:
         return state
@@ -111,7 +113,7 @@ def load_episode_df(episode):
         print(f"No csv for episode '{episode}'")
         return None
 
-    episode_df = pd.read_csv(csv_path)
+    episode_df = pd.read_csv(csv_path, converters={"state": ast.literal_eval})
     # print("State counts:\n", episode_df['state'].value_counts())
 
     return episode_df
@@ -149,10 +151,27 @@ def learn_episodes(learner, dfs):
         learn_episode(learner, df)
 
 
+def debug_print_turns(Q):
+    check_states = [
+        states.UNKNOWN,
+        tag_state_from_translation(-20, 30),
+        tag_state_from_translation(0, 30),
+        tag_state_from_translation(20, 30),
+        tag_state_from_translation(-10, 20),
+        tag_state_from_translation(0, 20),
+        tag_state_from_translation(10, 20),
+        tag_state_from_translation(-2, 10),
+        tag_state_from_translation(0, 10),
+        tag_state_from_translation(2, 10),
+    ]
+    for s in check_states:
+        print_best_action(Q, s)
+
+
 def debug_print_Q_state(Q, state):
-    print("State", state, TAG_STATES[state])
+    print("State", state)
     print_action_values(Q[state])
-    print_best_action(Q[state])
+    print_best_action(Q, state)
 
 
 def print_action_values(action_values):
@@ -160,8 +179,8 @@ def print_action_values(action_values):
         print("{0}\t{1}".format(action_to_throttle_direction(a), v))
 
 
-def print_best_action(action_values):
-    print("Best: {0}".format(action_to_throttle_direction(np.argmax(action_values))))
+def print_best_action(Q, state):
+    print("Best action for {1}:\t{0}".format(action_to_throttle_direction(np.argmax(Q[state])), state))
 
 
 def main():
@@ -169,24 +188,27 @@ def main():
 
     learner = Q_Learner(discount_factor=0.9, alpha=0.5)
 
-    # classify_all_csvs()
+    # dfs = classify_all_csvs()
     dfs = load_all_classified_df()
 
-    # df = classify_episode('stillB')
+    # df = classify_episode('lineA')
     # df = load_episode_df('lineA')
+    # print(df)
 
     for _ in range(1):
         learn_episodes(learner, dfs)
 
-    debug_print_Q_state(learner.Q, tag_state_from_translation(0, 30))  # tag_state_from_translation(0, 1)
+    # debug_print_Q_state(learner.Q, tag_state_from_translation(0, 30))  # tag_state_from_translation(0, 1)
+    debug_print_turns(learner.Q)
 
     n_states = len(TAG_STATES)
-    n_unseen_states = 0
-    for s in range(n_states):
+    unseen_states = []
+    for s in TAG_STATES:
         if np.array_equal(learner.Q[s], default_action_values()):
-            n_unseen_states += 1
+            unseen_states.append(s)
 
-    print(f"{n_unseen_states} states have not been seen (out of {n_states})")
+    print("Unseen states:", unseen_states, sep='\n')
+    print(f"{len(unseen_states)} states have not been seen (out of {n_states})")
     learner.save("q.pkl")
 
 
