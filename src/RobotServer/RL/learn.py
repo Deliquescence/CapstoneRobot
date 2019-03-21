@@ -2,6 +2,7 @@ import numpy as np
 import math
 import pickle
 from collections import defaultdict
+import RL.states
 
 
 class ActorCritic:
@@ -108,7 +109,7 @@ class Q_Learner:
     # https://github.com/dennybritz/reinforcement-learning/blob/master/TD/Q-Learning%20Solution.ipynb
     # Under MIT License by Denny Britz
 
-    FILE_NAME = 'models/q.pkl'
+    FILE_NAME = '../models/q.pkl'
 
     def __init__(self, Q=None, discount_factor=0.9, alpha=0.5, epsilon=0):
         if Q is None:
@@ -241,12 +242,11 @@ class TD:
 
 
 if __name__ == '__main__':
-    ac = ActorCritic(np.repeat(1e-2, 6), np.repeat(0.8, 6), 2)
-    st1 = np.array([0.8, 0.8])
-    st2 = np.array([0.9, 0.9])
-    throttle, direction = ac.sample_action(st1)
-    print(ac.pol_weights[0])
-    ac.update(st1, st2, throttle, direction, 1)
-    print(throttle)
-    print(direction)
-    print(ac.pol_weights[1])
+    q_learner = Q_Learner().load()
+    for state in RL.states.STATES:
+        greedy = q_learner.policy(state)
+        print("State: {0}, Greedy Action: {1}".format(state, greedy))
+    for key, q in q_learner.Q.items():
+        a = np.argmax(q)
+        if a != 0:
+            print(key)
