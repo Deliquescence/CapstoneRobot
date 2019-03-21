@@ -3,11 +3,11 @@ from bisect import bisect_right
 
 
 # Exclude 0 so action product doesn't include turns with 0 throttle
-positive_throttles = [0.25, 0.75, 1]
+positive_throttles = [1]
 negative_throttles = list(map(lambda x: x * -1, positive_throttles))
 nonnegative_throttles = [0] + positive_throttles
 
-positive_directions = [0, 0.1, 1]
+positive_directions = [0, 1]
 negative_directions = list(map(lambda x: x * -1, positive_directions))
 negative_directions.remove(0)
 directions = positive_directions + negative_directions
