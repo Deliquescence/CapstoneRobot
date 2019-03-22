@@ -29,18 +29,29 @@ class Follower:
     def __init__(self):
         self.learner = learn.Q_Learner(epsilon=0)
         # self.learner = learn.ActorCritic(np.repeat(0.02, 6), np.repeat(0.8, 5), NUM_FEATURES)
-        self.last_state = None
-        self.last_tag_state = None
         self.age_decay = 0.9  # Todo determine good value
         # self.controller = Controller(IDEAL_DISTANCE, 0.01)
-        self.last_action = [0, 0]
-        self.last_turn = 99999 # How many frames ago
+        self.reset_state()
 
     def reset_state(self):
         self.last_state = None
         self.last_tag_state = None
         self.last_action = [0, 0]
         self.last_turn = 99999
+
+    @staticmethod
+    def get_state(features, last_turn):
+        if features[6] == 0:  # Tag not found
+            tag_state = 0
+        else:
+            tx = features[3]
+            tz = IDEAL_DISTANCE - features[5]
+            tag_state = states.tag_state_from_translation(tx, tz)
+
+        recently_turned = last_turn < 5
+        state = (tag_state, recently_turned)
+
+        return state
 
     def get_action(self, frame, online=True):
         start_time = time.time()
@@ -49,15 +60,8 @@ class Follower:
         # Q LEARNING
         ###
         features = self.get_features(frame)
-        if features[6] == 0:  # Tag not found
-            tag_state = 0
-        else:
-            tx = features[3]
-            tz = IDEAL_DISTANCE - features[5]
-            tag_state = states.tag_state_from_translation(tx, tz)
 
-        recently_turned = self.last_turn < 5
-        state = (tag_state, recently_turned)
+        state = Follower.get_state(features, self.last_turn)
         buffered_state = unknown_state_cache(self.last_state, state)
 
         action = self.learner.policy(buffered_state)
@@ -75,7 +79,6 @@ class Follower:
 
         self.last_action = [throttle, direction]
         self.last_state = state
-
 
         ###
         # PID

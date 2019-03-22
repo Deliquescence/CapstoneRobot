@@ -56,20 +56,13 @@ def classify_episode(episode_name):
         nonlocal last_turn
 
         features = row['features']
-        if features[6] == 0:  # Tag not found
-            tag_state = states.UNKNOWN
-        else:
-            tx = features[3]
-            tz = follower.IDEAL_DISTANCE - features[5]
-            tag_state = tag_state_from_translation(tx, tz)
 
         if abs(row['direction']) > 0.001:
             last_turn = 0
         else:
             last_turn += 1
 
-        recently_turned = last_turn < 5
-        return (tag_state, recently_turned)
+        return Follower.get_state(features, last_turn)
 
     episode_df['state'] = episode_df.apply(row_to_state, axis=1)
 
