@@ -37,10 +37,11 @@ class Follower:
         self.last_state = None
         self.last_tag_state = None
         self.last_action = [0, 0]
-        self.last_turn = 99999
+        self.last_turn = 99999  # How many frames ago
+        self.last_turn_direction = 0  # -1 left, 0 straight, 1 right
 
     @staticmethod
-    def get_state(features, last_turn):
+    def get_state(features, last_turn, last_turn_direction):
         if features[6] == 0:  # Tag not found
             tag_state = 0
         else:
@@ -49,7 +50,11 @@ class Follower:
             tag_state = states.tag_state_from_translation(tx, tz)
 
         recently_turned = last_turn < 5
-        state = (tag_state, recently_turned)
+        if recently_turned:
+            turn_state = last_turn_direction
+        else:
+            turn_state = 0
+        state = (tag_state, turn_state)
 
         return state
 
@@ -61,7 +66,7 @@ class Follower:
         ###
         features = self.get_features(frame)
 
-        state = Follower.get_state(features, self.last_turn)
+        state = Follower.get_state(features, self.last_turn, self.last_turn_direction)
         buffered_state = unknown_state_cache(self.last_state, state)
 
         action = self.learner.policy(buffered_state)
@@ -71,6 +76,10 @@ class Follower:
 
         if abs(direction) > 0.001:
             self.last_turn = 0
+            if direction < 0:
+                self.last_turn_direction = -1
+            else:
+                self.last_turn_direction = 1
         else:
             self.last_turn += 1
 

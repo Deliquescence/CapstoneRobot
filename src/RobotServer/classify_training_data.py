@@ -51,18 +51,24 @@ def classify_episode(episode_name):
 
     # State
     last_turn = 99999  # How many frames ago
+    last_turn_direction = 0  # -1 left, 0 straight, 1 right
 
     def row_to_state(row):
-        nonlocal last_turn
+        nonlocal last_turn, last_turn_direction
 
         features = row['features']
+        direction = row['direction']
 
-        if abs(row['direction']) > 0.001:
+        if abs(direction) > 0.001:
             last_turn = 0
+            if direction < 0:
+                last_turn_direction = -1
+            else:
+                last_turn_direction = 1
         else:
             last_turn += 1
 
-        return Follower.get_state(features, last_turn)
+        return Follower.get_state(features, last_turn, last_turn_direction)
 
     episode_df['state'] = episode_df.apply(row_to_state, axis=1)
 
@@ -144,21 +150,12 @@ def learn_episodes(learner, dfs):
         learn_episode(learner, df)
 
 
-def debug_print_turns(Q):
-    check_tag_states = [
-        states.UNKNOWN,
-        tag_state_from_translation(-20, 30),
-        tag_state_from_translation(0, 30),
-        tag_state_from_translation(20, 30),
-        tag_state_from_translation(-10, 20),
-        tag_state_from_translation(0, 20),
-        tag_state_from_translation(10, 20),
-        tag_state_from_translation(-2, 10),
-        tag_state_from_translation(0, 10),
-        tag_state_from_translation(2, 10),
-    ]
-    for s in check_tag_states:
-        print_best_action(Q, (s, False))
+def debug_print_seen_greedy(Q):
+    for state in STATES:
+        if np.array_equal(Q[state], default_action_values()):
+            continue
+        greedy = action_to_throttle_direction(np.argmax(Q[state]))
+        print("State: {0}, Greedy Action: {1}".format(state, greedy))
 
 
 def debug_print_Q_state(Q, state):
@@ -192,8 +189,8 @@ def main():
 
     learner = Q_Learner(discount_factor=0.9, alpha=0.5)
 
-    # dfs = classify_all_csvs()
     dfs = load_all_classified_df()
+    # dfs = classify_all_csvs()
 
     # df = classify_episode('lineA')
     # df = load_episode_df('lineA')
@@ -203,7 +200,7 @@ def main():
         learn_episodes(learner, dfs)
 
     # debug_print_Q_state(learner.Q, tag_state_from_translation(0, 30))  # tag_state_from_translation(0, 1)
-    debug_print_turns(learner.Q)
+    debug_print_seen_greedy(learner.Q)
     debug_unknown_states(learner.Q)
 
     learner.save("q.pkl")

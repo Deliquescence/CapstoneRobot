@@ -12,8 +12,10 @@ TAG_STATES = [x for x in itertools.product(z_thresholds, angle_states)]
 UNKNOWN = 0
 TAG_STATES.insert(0, UNKNOWN)  # Unknown
 
-"""((z, angle), recently_turned)"""
-STATES = [x for x in itertools.product(TAG_STATES, [True, False])]
+TURNING_STATES = [-1, 0, 1] #Left, Straight, Right
+
+"""((z, angle), turning_state)"""
+STATES = [x for x in itertools.product(TAG_STATES, TURNING_STATES)]
 
 n = len(STATES)
 

@@ -124,9 +124,6 @@ class Q_Learner:
         return np.argmax(self.Q[state])
 
     def update(self, state, action, reward, next_state):
-        if state is None:
-            state = 0
-
         # TD Update
         best_next_action = np.argmax(self.Q[next_state])
         td_target = reward + self.discount_factor * self.Q[next_state][best_next_action]
