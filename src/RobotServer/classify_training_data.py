@@ -189,8 +189,8 @@ def main():
 
     learner = Q_Learner(discount_factor=0.9, alpha=0.5)
 
-    dfs = load_all_classified_df()
-    # dfs = classify_all_csvs()
+    #dfs = load_all_classified_df()
+    dfs = classify_all_csvs()
 
     # df = classify_episode('lineA')
     # df = load_episode_df('lineA')

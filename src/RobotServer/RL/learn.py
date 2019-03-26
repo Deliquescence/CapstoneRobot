@@ -3,6 +3,7 @@ import math
 import pickle
 from collections import defaultdict
 import RL.states
+import RL.actions
 
 
 class ActorCritic:
@@ -239,11 +240,18 @@ class TD:
 
 
 if __name__ == '__main__':
-    q_learner = Q_Learner().load()
+    q_learner = Q_Learner().load('../models/q.pkl')
+    acts = [RL.actions.action_to_throttle_direction(i) for i in range(len(RL.actions.ACTIONS))]
+    print(acts)
+    ideals = [set() for _ in range(7)]
     for state in RL.states.STATES:
+        actions = q_learner.Q[state]
         greedy = q_learner.policy(state)
-        print("State: {0}, Greedy Action: {1}".format(state, greedy))
-    for key, q in q_learner.Q.items():
-        a = np.argmax(q)
-        if a != 0:
-            print(key)
+        ideals[greedy].add(state)
+        print("State: {0}, Greedy Action: {1} All Actions: {2}".format(state, greedy, actions))
+
+    for index, s in enumerate(ideals):
+        print(index)
+        for val in s:
+            print(val)
+    print(acts)
