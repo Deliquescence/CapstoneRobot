@@ -6,6 +6,7 @@ import math
 from pid import Controller
 
 from RL import states, actions, learn
+from RL.states import State
 from tag_detection.detector import estimate_pose, process_color
 
 NUM_FEATURES = 22
@@ -17,9 +18,9 @@ def unknown_state_cache(previous_state, state):
     """If the current state is not unknown, pass it through.
     If the current state is unknown but the previous state is known, use that.
     If both are unknown, then unknown."""
-    if states.tag_is_unknown(state):
+    if state.tag_is_unknown():
         return state
-    elif states.tag_is_unknown(previous_state):
+    elif previous_state.tag_is_unknown():
         return previous_state
     else:
         return state
@@ -54,7 +55,7 @@ class Follower:
             turn_state = last_turn_direction
         else:
             turn_state = 0
-        state = (tag_state, turn_state)
+        state = State(tag_state, turn_state)
 
         return state
 

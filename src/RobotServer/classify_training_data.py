@@ -10,7 +10,7 @@ from tag_detection.detector import estimate_pose
 import follower
 from follower import Follower
 from RL import states
-from RL.states import tag_state_from_translation, STATES
+from RL.states import tag_state_from_translation, STATES, State
 from RL.actions import action_from_throttle_direction, action_to_throttle_direction
 from RL.learn import Q_Learner
 default_action_values = Q_Learner.default_action_values  # Needed for pickle
@@ -79,7 +79,13 @@ def classify_episode(episode_name):
     # Reward
     episode_df['reward'] = episode_df.apply(lambda row: f.get_reward(row['features']), axis=1)
 
-    episode_df[['image_file', 'state', 'action', 'reward']].to_csv(os.path.join(CLASSIFIED_CSV_DIR, episode_name + '.csv'), index=False)
+    # Save only some columns
+    csv_df = episode_df[['image_file', 'state', 'action', 'reward']]
+
+    # Change State object into tuple so it gets saved in csv properly
+    csv_df['state'] = csv_df.apply(lambda x: x['state'].as_tuple(), axis=1)
+
+    csv_df.to_csv(os.path.join(CLASSIFIED_CSV_DIR, episode_name + '.csv'), index=False)
     duration = time.time() - start_time
     print(f"Classification took {duration}s\t for '{episode_name}'")
     print("State counts:", episode_df['state'].value_counts(), sep='\n')
@@ -112,7 +118,11 @@ def load_episode_df(episode):
         print(f"No csv for episode '{episode}'")
         return None
 
-    episode_df = pd.read_csv(csv_path, converters={"state": ast.literal_eval})
+    def convert_state(x):
+        tup = ast.literal_eval(x)
+        return State(*tup)
+    episode_df = pd.read_csv(csv_path, converters={"state": convert_state})
+
     # print("State counts:\n", episode_df['state'].value_counts())
 
     return episode_df
@@ -192,8 +202,8 @@ def main():
     #dfs = load_all_classified_df()
     dfs = classify_all_csvs()
 
-    # df = classify_episode('lineA')
-    # df = load_episode_df('lineA')
+    # df = classify_episode('nascarA')
+    # df = load_episode_df('nascarA')
     # print(df)
 
     for _ in range(1):

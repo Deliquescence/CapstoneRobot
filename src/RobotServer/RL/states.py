@@ -2,27 +2,90 @@ import math
 import itertools
 from bisect import bisect_right
 
-z_thresholds = [0, 10, 17, 23, 30]
-angle_thresholds = [0, 20]
-angle_thresholds_negative = list(map(lambda x: x * -1, angle_thresholds))
-angle_thresholds_negative.remove(0)
-angle_states = angle_thresholds + angle_thresholds_negative
 
-TAG_STATES = [x for x in itertools.product(z_thresholds, angle_states)]
-UNKNOWN = 0
-TAG_STATES.insert(0, UNKNOWN)  # Unknown
+class State:
+    def __init__(self, tag_state, turning_state):
+        self.tag_state = tag_state
+        self.turning_state = turning_state
 
-TURNING_STATES = [-1, 0, 1]  # Left, Straight, Right
+    def tag_is_unknown(self):
+        return self.tag_state == UNKNOWN
 
-"""((z, angle), turning_state)"""
-STATES = [x for x in itertools.product(TAG_STATES, TURNING_STATES)]
+    def as_tuple(self):
+        return (self.tag_state, self.turning_state)
 
-n = len(STATES)
+    def __eq__(self, other):
+        return self.as_tuple() == other.as_tuple()
+
+    def __hash__(self):
+        return self.as_tuple().__hash__()
+
+    def __repr__(self):
+        return repr(self.as_tuple())
+
+    def __str__(self):
+        if self.turning_state < 0:
+            str_turning = "turning left"
+        elif self.turning_state > 0:
+            str_turning = "turning right"
+        else:
+            str_turning = "not turning"
+
+        if self.tag_is_unknown():
+            return "[unknown tag, {0: <13}]".format(str_turning)
+
+        (z, angle) = self.tag_state
+
+        z_index = z_thresholds.index(z)
+        if z_index + 1 < len(z_thresholds):
+            next_z = z_thresholds[z_index + 1]
+            str_z = "{0} <= z < {1}".format(z, next_z)
+        else:
+            str_z = "{0} <= z".format(z)
+        str_z += ','
+
+        if angle <= angle_thresholds_negative[0]:
+            angle_which = "right"
+        elif angle < angle_thresholds[1]:
+            angle_which = "center"
+        else:
+            angle_which = "left"
+
+        angle = abs(angle)
+        angle_index = angle_thresholds.index(abs(angle))
+
+        if angle_which == "center":
+            str_angle = "angle < {0} {1}".format(angle_thresholds[1], angle_which)
+        elif angle_index + 1 < len(angle_thresholds):
+            next_angle = angle_thresholds[angle_index + 1]
+            str_angle = "{0} < angle < {1} {2}".format(angle, next_angle, angle_which)
+        else:
+            str_angle = "{0} < angle ({1})".format(angle, angle_which)
+        str_angle += ','
+
+        return "[{0: <14} {1: <23} {2: <13}]".format(str_z, str_angle, str_turning)
 
 
-def tag_is_unknown(state):
-    """Check if in the given state, the tag is unknown."""
-    return state[0] == UNKNOWN
+def init():
+    global z_thresholds, angle_thresholds, angle_thresholds_negative
+    global TAG_STATES, UNKNOWN, TURNING_STATES, STATES, n
+
+    z_thresholds = [0, 10, 17, 23, 30]
+    angle_thresholds = [0, 20]
+    angle_thresholds_negative = list(map(lambda x: x * -1, angle_thresholds))
+    angle_thresholds_negative.remove(0)
+    angle_states = angle_thresholds + angle_thresholds_negative
+
+    TAG_STATES = [x for x in itertools.product(z_thresholds, angle_states)]
+    UNKNOWN = 0
+    TAG_STATES.insert(0, UNKNOWN)  # Unknown
+
+    TURNING_STATES = [-1, 0, 1]  # Left, Straight, Right
+
+    """((z, angle), turning_state)"""
+    STATES = [State(x[0], x[1]) for x in itertools.product(TAG_STATES, TURNING_STATES)]
+
+    n = len(STATES)
 
 
 def tag_state_from_pose(pose):
@@ -56,54 +119,10 @@ def tag_state_from_translation(tx, tz):
     return (z_state, angle_state)
 
 
-def to_string(state):
-    (tag_state, turning_state) = state
-
-    if turning_state < 0:
-        str_turning = "turning left"
-    elif turning_state > 0:
-        str_turning = "turning right"
-    else:
-        str_turning = "not turning"
-
-    if tag_is_unknown(state):
-        return "[unknown tag, {0: <13}]".format(str_turning)
-
-    (z, angle) = tag_state
-
-    z_index = z_thresholds.index(z)
-    if z_index + 1 < len(z_thresholds):
-        next_z = z_thresholds[z_index + 1]
-        str_z = "{0} <= z < {1}".format(z, next_z)
-    else:
-        str_z = "{0} <= z".format(z)
-    str_z += ','
-
-    if angle <= angle_thresholds_negative[0]:
-        angle_which = "right"
-    elif angle < angle_thresholds[1]:
-        angle_which = "center"
-    else:
-        angle_which = "left"
-
-    angle = abs(angle)
-    angle_index = angle_thresholds.index(abs(angle))
-
-    if angle_which == "center":
-        str_angle = "angle < {0} {1}".format(angle_thresholds[1], angle_which)
-    elif angle_index + 1 < len(angle_thresholds):
-        next_angle = angle_thresholds[angle_index + 1]
-        str_angle = "{0} < angle < {1} {2}".format(angle, next_angle, angle_which)
-    else:
-        str_angle = "{0} < angle ({1})".format(angle, angle_which)
-    str_angle += ','
-
-    return "[{0: <14} {1: <23} {2: <13}]".format(str_z, str_angle, str_turning)
-
-
+init()
 if __name__ == '__main__':
     print(STATES)
     print(n)
     for state in STATES:
-        print(state, to_string(state), sep="\t\t")
+        print(repr(state), str(state), sep="\t\t")
     print()
