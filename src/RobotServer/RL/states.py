@@ -71,7 +71,7 @@ def init():
     global TAG_STATES, UNKNOWN, TURNING_STATES, STATES, n
 
     z_thresholds = [0, 10, 17, 23, 30]
-    angle_thresholds = [0, 10]
+    angle_thresholds = [0, 20]
     angle_thresholds_negative = list(map(lambda x: x * -1, angle_thresholds))
     angle_thresholds_negative.remove(0)
     angle_states = angle_thresholds + angle_thresholds_negative
