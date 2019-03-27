@@ -18,12 +18,10 @@ def unknown_state_cache(previous_state, state):
     """If the current state is not unknown, pass it through.
     If the current state is unknown but the previous state is known, use that.
     If both are unknown, then unknown."""
-    if state.tag_is_unknown():
+    if state is not None and not state.tag_is_unknown():
         return state
-    elif previous_state.tag_is_unknown():
-        return previous_state
     else:
-        return state
+        return previous_state
 
 
 class Follower:
