@@ -38,23 +38,41 @@ class Follower:
         self.last_state = None
         self.last_tag_state = None
         self.last_action = [0, 0]
-        self.last_turn = 99999  # How many frames ago
-        self.last_turn_direction = 0  # -1 left, 0 straight, 1 right
+        self.last_self_turn = 99999  # How many frames ago
+        self.last_self_turn_direction = 0  # -1 left, 0 straight, 1 right
+        self.last_turning_state = 0  # -1 left, 0 straight, 1 right
 
     @staticmethod
-    def get_state(features, last_turn, last_turn_direction):
+    def get_state(features, last_self_turn, last_self_turn_direction, last_turning_state):
+        ry = None
+
         if features[6] == 0:  # Tag not found
             tag_state = 0
         else:
+            ry = features[1]
             tx = features[3]
             tz = IDEAL_DISTANCE - features[5]
             tag_state = states.tag_state_from_translation(tx, tz)
 
-        recently_turned = last_turn < 5
-        if recently_turned:
-            turn_state = last_turn_direction
+        # Self turning
+        # recently_turned = last_self_turn < 5
+        # if recently_turned:
+        #     turn_state = last_self_turn_direction
+        # else:
+        #     turn_state = 0
+
+        # Assume large y rotation indicates lead car turn
+        if ry is not None:
+            threshold = 0.25
+            if ry < -1 * threshold:
+                turn_state = -1
+            elif ry > threshold:
+                turn_state = 1
+            else:
+                turn_state = 0
         else:
-            turn_state = 0
+            turn_state = last_turning_state
+
         state = State(tag_state, turn_state)
 
         return state
@@ -67,7 +85,7 @@ class Follower:
         ###
         features = self.get_features(frame)
 
-        state = Follower.get_state(features, self.last_turn, self.last_turn_direction)
+        state = Follower.get_state(features, self.last_self_turn, self.last_self_turn_direction, self.last_turning_state)
         buffered_state = unknown_state_cache(self.last_state, state)
 
         action = self.learner.policy(buffered_state)
@@ -89,6 +107,7 @@ class Follower:
 
         self.last_action = [throttle, direction]
         self.last_state = state
+        self.last_turning_state = state.turning_state
 
         ###
         # PID

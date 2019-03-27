@@ -52,12 +52,15 @@ def classify_episode(episode_name):
     # State
     last_turn = 99999  # How many frames ago
     last_turn_direction = 0  # -1 left, 0 straight, 1 right
+    last_turning_state = 0  # -1 left, 0 straight, 1 right
 
     def row_to_state(row):
-        nonlocal last_turn, last_turn_direction
+        nonlocal last_turn, last_turn_direction, last_turning_state
 
         features = row['features']
         direction = row['direction']
+
+        state = Follower.get_state(features, last_turn, last_turn_direction, last_turning_state)
 
         if abs(direction) > 0.001:
             last_turn = 0
@@ -68,7 +71,9 @@ def classify_episode(episode_name):
         else:
             last_turn += 1
 
-        return Follower.get_state(features, last_turn, last_turn_direction)
+        last_turning_state = state.turning_state
+
+        return state
 
     episode_df['state'] = episode_df.apply(row_to_state, axis=1)
 
