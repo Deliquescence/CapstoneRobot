@@ -189,8 +189,8 @@ class Follower:
         scale_x = 0.1
         scale_z = 0.1
 
-        weight_tz = 0.9
-        weight_tx = 0.1
+        weight_tz = 0.8
+        weight_tx = 0.2
 
         if feature_vector[9] >= 0.35:  # Raw value 0.6
             color_reward = -5
@@ -201,15 +201,19 @@ class Follower:
             return color_reward
 
         tx = feature_vector[3]
-        tz = feature_vector[5]
+        tz = abs(feature_vector[5])
 
         # x translation should be 0
         tx_error = abs(tx) * scale_x
         tx_reward = max(0, 1 - tx_error)
 
         # follow distance should be reasonable
-        tz_error = abs(tz) * scale_z
-        tz_reward = max(0, 1 - tz_error)
+        if tz <= 5:
+            tz_reward = 1
+        elif tz <= 15:
+            tz_reward = 0.3
+        else:
+            tz_reward = 0
 
         return (tz_reward * weight_tz) + (tx_reward * weight_tx) + color_reward
 

@@ -202,7 +202,7 @@ def print_best_action(Q, state):
 def main():
     os.chdir(BASE_PATH)
 
-    learner = Q_Learner(discount_factor=0.9, alpha=0.5)
+    learner = Q_Learner(discount_factor=0.9, alpha=0.2)
 
     #dfs = load_all_classified_df()
     dfs = classify_all_csvs()
