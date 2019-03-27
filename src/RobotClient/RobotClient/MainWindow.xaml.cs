@@ -14,6 +14,7 @@ using System.Windows.Media;
 using Grpc.Core;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Collections;
 
 namespace RobotClient
 {
@@ -63,13 +64,21 @@ namespace RobotClient
             newKeybind.InputGestures.Add(new KeyGesture(Key.R, ModifierKeys.Control));
             CommandBindings.Add(new CommandBinding(newKeybind, Register_Click));
 
-            var streamKeybind = new RoutedCommand();
-            streamKeybind.InputGestures.Add(new KeyGesture(Key.S, ModifierKeys.Control));
-            CommandBindings.Add(new CommandBinding(streamKeybind, ImageSaving_Click));
             _controlMode = true;
 
             _saveStreamEnabled = false;
 
+            //Adds shortut Ctrl + S for stream saving and Ctrl + D for disabling stream saving
+            var streamKeybind = new RoutedCommand();
+            streamKeybind.InputGestures.Add(new KeyGesture(Key.S, ModifierKeys.Control));
+            CommandBindings.Add(new CommandBinding(streamKeybind, ImageSaving_Click));
+
+            var dStreamKeybind = new RoutedCommand();
+            dStreamKeybind.InputGestures.Add(new KeyGesture(Key.D, ModifierKeys.Control));
+            CommandBindings.Add(new CommandBinding(dStreamKeybind, StopSaving_Click));
+
+            
+            
             //Checks if a controller is plugged into the current OS
             _controller = new Controller(UserIndex.One);
             if (!_controller.IsConnected)
@@ -93,17 +102,21 @@ namespace RobotClient
         //sets up initia configuration for connection and log using specified .ini file
         private async void initializeUI()
         {
+            ArrayList carInfoArray = new ArrayList();
             //gets text from specified .ini file
             try
             {
                 string[] lines = File.ReadAllLines($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\\picar\\gui_config.ini");
 
+
                 string selectedIP;
                 string selectedName;
-                string[] iPandName;
-
+                string[] ipNameAndMode;
+                
+                string mode;
                 string path;
                 string session;
+
                 string[] path_and_session;
                 for (int i = 0; i < lines.Length; i++)
                 {
@@ -112,13 +125,16 @@ namespace RobotClient
                     {
                         while (lines[i + 1] != "(connect*)")
                         {
-                            iPandName = lines[i + 1].Split(',');
-                            selectedIP = iPandName[0];
-                            selectedName = iPandName[1];
+                            ipNameAndMode = lines[i + 1].Split(',');
+                            selectedIP = ipNameAndMode[0];
+                            selectedName = ipNameAndMode[1];
+                            mode = ipNameAndMode[2];
+                            carInfoArray.Add(ipNameAndMode);
                             await IPConnect(selectedIP, selectedName);
                             i = i + 1;
                         }
                     }
+                    
                     if (lines[i] == "(*stream)")
                     {
                         while (lines[i + 1] != "(stream*)")
@@ -148,6 +164,34 @@ namespace RobotClient
             }
             DeviceListMn.ItemsSource = null;
             DeviceListMn.ItemsSource = deviceListMain;
+
+            //initializes mode for each connection in .ini
+            foreach (string[] m in carInfoArray)
+            {
+                initializeMode(m[1], m[2]);
+            }
+        }
+        //automatically sets mode of cars based on .ini file
+        private void initializeMode(string name, string mode)
+        {
+            foreach(PiCarConnection car in deviceListMain)
+            {
+                if(name == car.Name)
+                {
+                    if(mode=="lead")
+                    {
+                        SetVehicleMode(car, ModeRequest.Types.Mode.Lead);
+                    }
+                    if(mode == "follow")
+                    {
+                        SetVehicleMode(car, ModeRequest.Types.Mode.Follow);
+                    }
+                    if (mode == "idle")
+                    {
+                        SetVehicleMode(car, ModeRequest.Types.Mode.Idle);
+                    }
+                }
+            }
         }
 
         //tries to connect to cars specified in .ini file
@@ -392,13 +436,14 @@ namespace RobotClient
         //stops the stream from being saved
         private void StopSaving_Click(object sender, RoutedEventArgs e)
         {
-            _saveStreamEnabled = false;
             StreamSavingHeader.IsEnabled = true;
             StopStreamSavingHeader.IsEnabled = false;
-            LogField.AppendText(DateTime.Now + ":\tStream will no longer be saved to a file\n");
-
-
-            LogField.ScrollToEnd();
+            if (_saveStreamEnabled == true)
+            {
+                LogField.AppendText(DateTime.Now + ":\tStream will no longer be saved to a file\n");
+                LogField.ScrollToEnd();
+            }
+            _saveStreamEnabled = false;
         }
 
         /**
@@ -802,6 +847,23 @@ namespace RobotClient
         private void SetVehicleMode(ModeRequest.Types.Mode mode)
         {
             var picar = (PiCarConnection)DeviceListMn.SelectedItem;
+            try
+            {
+                picar.SetMode(mode);
+                DeviceStatus.Text = picar.Mode.ToString();
+                LogField.AppendText(DateTime.Now + ":\tSetting " + picar + "to " + picar.Mode.ToString() + "\n");
+                LogField.ScrollToEnd();
+            }
+            catch (Exception e)
+            {
+                DisconnectCar();
+                Console.WriteLine(e);
+            }
+        }
+
+        private void SetVehicleMode(PiCarConnection car, ModeRequest.Types.Mode mode)
+        {
+            var picar = car;
             try
             {
                 picar.SetMode(mode);
