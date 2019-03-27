@@ -94,13 +94,13 @@ class Follower:
         reward = self.get_reward(features)
 
         if abs(direction) > 0.001:
-            self.last_turn = 0
+            self.last_self_turn = 0
             if direction < 0:
                 self.last_turn_direction = -1
             else:
                 self.last_turn_direction = 1
         else:
-            self.last_turn += 1
+            self.last_self_turn += 1
 
         if online and self.last_state is not None:
             self.learner.update(self.last_state, self.last_action, reward, buffered_state)
