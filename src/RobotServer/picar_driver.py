@@ -1,7 +1,7 @@
 import picar
 import cv2
 import time
-import picar_server
+from server import picar_server
 import picar_helper
 from queue import Queue
 import socket

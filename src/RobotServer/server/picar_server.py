@@ -5,8 +5,7 @@ from concurrent import futures
 import grpc
 import cv2
 
-import picar_pb2
-import picar_pb2_grpc
+from . import picar_pb2, picar_pb2_grpc
 
 from tag_detection.detector import decorate_frame
 
