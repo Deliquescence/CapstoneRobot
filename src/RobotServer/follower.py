@@ -229,16 +229,10 @@ class Follower:
         return f
 
 
+def main():
+    import picar_driver
+    picar_driver.main(start_mode=2)
+
+
 if __name__ == '__main__':
-    follower = Follower()
-    #image = cv2.imread("~/Pictures/mirrorB_2605.jpg")
-    camera = cv2.VideoCapture(0)
-    while True:
-        _, image = camera.read()
-        # col = process_color(image)
-        # print("Color value: %f" % col)
-        # action = follower.get_action(image)
-        # print(action[0], '\t', action[1])
-        features = follower.get_features(image)
-        reward = follower.get_reward(features)
-        print(reward)
+    main()

@@ -23,7 +23,7 @@ picar.setup()
 camera = cv2.VideoCapture(0)
 
 
-def main():
+def main(start_mode=0):
     try:
         follower = Follower.load(epsilon=0.009)
     except IOError:  # file does not exist
@@ -41,7 +41,7 @@ def main():
         print('Press Ctrl-C to quit')
 
         # start the driver
-        driver.run()
+        driver.run(start_mode=start_mode)
     finally:
         driver.follower.save()  # Save follower when done
         destroy()
@@ -76,7 +76,7 @@ class PiCarDriver(object):
     def is_streaming(self):
         return self._streaming
 
-    def run(self):
+    def run(self, start_mode=0):
         self._move(0.0, 0.0)
 
         # loop unless break occurs
