@@ -5,7 +5,6 @@ from collections import defaultdict
 import RL.states
 import RL.actions
 
-
 class ActorCritic:
 
     def __init__(self, lr, lamb, num_features):
@@ -110,7 +109,7 @@ class Q_Learner:
     # https://github.com/dennybritz/reinforcement-learning/blob/master/TD/Q-Learning%20Solution.ipynb
     # Under MIT License by Denny Britz
 
-    FILE_NAME = '../models/q.pkl'
+    FILE_NAME = 'models/q.pkl'
 
     def __init__(self, Q=None, discount_factor=0.9, alpha=0.5, epsilon=0):
         if Q is None:
@@ -121,7 +120,17 @@ class Q_Learner:
         self.alpha = alpha
 
     def policy(self, state):
-        """Return greedy best action with respect to Q"""
+        if self.epsilon == 0:
+            return self.greedy(state)
+        nA = len(RL.actions.ACTIONS)
+        A = np.ones(nA, dtype=float) * self.epsilon / nA
+        best_action = np.argmax(self.Q[state])
+        A[best_action] += (1.0 - self.epsilon)
+
+        action = np.random.choice(np.arange(len(A)), p=A)
+        return action
+
+    def greedy(self, state):
         return np.argmax(self.Q[state])
 
     def update(self, state, action, reward, next_state):

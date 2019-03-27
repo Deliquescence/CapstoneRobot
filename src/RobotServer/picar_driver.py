@@ -25,8 +25,9 @@ camera = cv2.VideoCapture(0)
 
 def main():
     try:
-        follower = Follower.load()
+        follower = Follower.load(epsilon=0.009)
     except IOError:  # file does not exist
+        print("Failed to load follower file")
         follower = Follower()
     
     driver = PiCarDriver(follower)

@@ -28,7 +28,7 @@ def unknown_state_cache(previous_state, state):
 
 class Follower:
     def __init__(self):
-        self.learner = learn.Q_Learner(epsilon=0)
+        self.learner = learn.Q_Learner(epsilon=0.09)
         # self.learner = learn.ActorCritic(np.repeat(0.02, 6), np.repeat(0.8, 5), NUM_FEATURES)
         self.age_decay = 0.9  # Todo determine good value
         # self.controller = Controller(IDEAL_DISTANCE, 0.01)
@@ -198,10 +198,11 @@ class Follower:
         self.learner.save(file_name)
 
     @staticmethod
-    def load(file_name=DEFAULT_FILE_NAME):
+    def load(file_name=DEFAULT_FILE_NAME, epsilon=0.0):
         f = Follower()
         # f.learner = learn.ActorCritic.load(file_name)
         f.learner = learn.Q_Learner.load()
+        f.learner.epsilon = epsilon
         return f
 
 

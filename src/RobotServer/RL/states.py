@@ -87,6 +87,10 @@ def init():
 
     n = len(STATES)
 
+def tag_is_unknown(state):
+    """Check if in the given state, the tag is unknown."""
+    return state == None or state[0] == UNKNOWN
+
 
 def tag_state_from_pose(pose):
     """Get representation of tag state from pose."""
