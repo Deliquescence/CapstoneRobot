@@ -20,8 +20,11 @@ def unknown_state_cache(previous_state, state):
     If both are unknown, then unknown."""
     if state is not None and not state.tag_is_unknown():
         return state
-    else:
+    elif previous_state is not None and not previous_state.tag_is_unknown():
         return previous_state
+    else:
+        # e.g. state is unknown but previous state is None
+        return state
 
 
 class Follower:
