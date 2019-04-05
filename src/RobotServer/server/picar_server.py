@@ -13,7 +13,7 @@ from tag_detection.detector import decorate_frame
 # Increment minor version for backwards-compatible protocol API additions
 # Increment patch version for backwards-compatible bug fixes
 MAJOR_VERSION = 1
-MINOR_VERSION = 1
+MINOR_VERSION = 2
 PATCH_VERSION = 0
 
 
@@ -23,6 +23,15 @@ class PiCarServicer(picar_pb2_grpc.PiCarServicer):
     def __init__(self, driver):
         self.driver = driver
         self.streaming = False
+
+    def SwitchFollowerModel(self, request, context):
+        """Changes model used in follower mode"""
+        ret = self.driver.set_model(request.version)
+        if ret:
+            print('Successfully changed model to %d' % request.version)
+        else:
+            print('Could not change to version %d because it is invalid' % request.version)
+        return picar_pb2.SwitchModelAck(success=ret)
 
     def ReceiveConnection(self, request, context):
         """Handshake between PiCar and desktop application"""

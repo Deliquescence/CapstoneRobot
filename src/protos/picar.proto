@@ -22,6 +22,17 @@ service PiCar {
 	
 	//End video/action streaming
 	rpc StopStream(StopStreaming) returns (Empty) {}
+
+	// Switch model
+	rpc SwitchFollowerModel(ModelVersion) returns (SwitchModelAck) {}
+}
+
+message ModelVersion {
+    int32 version = 1;
+}
+
+message SwitchModelAck {
+    bool success = 1;
 }
 
 //An empty message

@@ -51,29 +51,41 @@ class PiCarDriver(object):
     def __init__(self, follower):
         self.mode = 0
         self.follower = follower
-        self.next_throttle_and_dir = (0.0, 0.0)
+        self.next_throttle_and_dir = (0.0, 0.0)  # Assigned by server. Used by main() to move picar
         self._streaming = False
         self.stream_queue = Queue(maxsize=20)
-        self._prev_throttle = 0.0
-        self._prev_direction = 0.0
+        self._prev_throttle = 0.0  # Assigned when moved. Pushed to stream
+        self._prev_direction = 0.0  # Assigned when moved. Pushed to stream
 
     def set_mode(self, mode):
+        """Called from server to set mode (follower/driver)"""
         self.mode = mode
         if mode == 0:
             self.follower.reset_state()
 
+    def set_model(self, model: int):
+        """Sets model used in follower mode. Called from server.
+        Returns a bool indicating whether the supplied model version is a valid version."""
+        # TODO: Currently does nothing
+        return True
+
     def set_throttle_and_dir(self, throttle, direction):
+        """Called from server to operate in driving mode."""
         self.next_throttle_and_dir = (throttle, direction)
 
     def start_streaming(self):
+        """Called from server to start streaming."""
         self.stream_queue = Queue(maxsize=20)
         self._streaming = True
 
     def stop_streaming(self):
+        """Called from server to stop streaming."""
         self._streaming = False
         self.stream_queue = Queue(maxsize=20)
 
     def is_streaming(self):
+        """Queried from within this class and from server to
+        determine if we are streaming."""
         return self._streaming
 
     def run(self, start_mode=0):
@@ -108,6 +120,8 @@ class PiCarDriver(object):
             time.sleep(1 / 30)
 
     def _move(self, throttle, direction):
+        """Sets throttle and direction for picar. Additionally communicates this information
+        with the attached server. Call this from this class."""
         self._prev_throttle = throttle
         self._prev_direction = direction
         picar_helper.move(throttle, direction)
