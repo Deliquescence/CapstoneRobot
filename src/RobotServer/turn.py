@@ -1,5 +1,4 @@
 
-
 trans_thresh = 5.0  # Todo real values
 rotate_thresh = 5.0
 
@@ -9,14 +8,34 @@ class TurnController:
     def __init__(self):
         self.in_progress = None
 
-    def get_direction(self, state):
+    def get_direction(self, side_translation, tag_rotation, throttle):
         if self.in_progress is None:  # Decide
-            pass
-        else:  # Continue ongoing operation
-            direction = self.in_progress.get_direction()
-            if self.in_progress.is_done():
-                self.in_progress = None
-            return direction
+            if tag_rotation * -1 > rotate_thresh:  # Left?
+                if side_translation * -1 > trans_thresh:
+                    return 0  # Slightly odd case
+                elif side_translation > trans_thresh:
+                    self.in_progress = Turn(-1)
+                else:
+                    return 0
+            elif tag_rotation > rotate_thresh:  # Right?
+                if side_translation * -1 > trans_thresh:
+                    self.in_progress = Turn(1)
+                elif side_translation > trans_thresh:
+                    return 0  # Slightly odd case
+                else:
+                    return 0
+            else:
+                if side_translation * -1 > trans_thresh:
+                    self.in_progress = Slide(1)
+                elif side_translation > trans_thresh:
+                    return Slide(-1)
+                else:
+                    return 0
+        # Continue ongoing operation
+        direction = self.in_progress.get_direction(throttle)
+        if self.in_progress.is_done():
+            self.in_progress = None
+        return direction
 
 
 class Slide:
@@ -54,7 +73,7 @@ class Slide:
 
 class Turn:
 
-    def __init__self(self, direction):
+    def __init__(self, direction):
         self.direction = direction
         self.goal = 5  # Todo real value
         self.progress = 0
