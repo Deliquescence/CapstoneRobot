@@ -3,7 +3,7 @@ from PIL import Image
 import cv2
 import time
 import math
-from pid import Controller
+
 
 from RL import states, actions, learn
 from RL.states import State
@@ -32,7 +32,6 @@ class Follower:
         self.learner = learn.Q_Learner(epsilon=0.09)
         # self.learner = learn.ActorCritic(np.repeat(0.02, 6), np.repeat(0.8, 5), NUM_FEATURES)
         self.age_decay = 0.9  # Todo determine good value
-        # self.controller = Controller(IDEAL_DISTANCE, 0.01)
         self.reset_state()
 
     def reset_state(self):
@@ -109,19 +108,6 @@ class Follower:
         self.last_action = [throttle, direction]
         self.last_state = state
         self.last_turning_state = state.turning_state
-
-        ###
-        # PID
-        ###
-        # pose = estimate_pose(frame)
-        # if pose is not None:
-        #     rotation, translation, _, _ = pose
-        #     [rx, ry, rz] = rotation
-        #     [tx, ty, tz] = translation
-        #     throttle = self.controller.get_action(tz)
-        #     direction = 0  # Todo allow for turns
-        # else:  # continue on current path
-        #     throttle, direction = self.last_action
 
         ###
         # ACTOR CRITIC
