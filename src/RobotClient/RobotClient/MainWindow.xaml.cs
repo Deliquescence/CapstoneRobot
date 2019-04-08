@@ -473,10 +473,17 @@ namespace RobotClient
             }
         }
 
-        //opens up window that sets up mirroring mode
+        private void SetFollowerModelDefault_Click(object sender, RoutedEventArgs e)
+        {
+            var picar = (PiCarConnection) DeviceListMn.SelectedItem;
+            picar.SetFollowerModel(0);
+        }
 
-
-
+        private void SetFollowerModelPID_Click(object sender, RoutedEventArgs e)
+        {
+            var picar = (PiCarConnection) DeviceListMn.SelectedItem;
+            picar.SetFollowerModel(1);
+        }
 
 
         /**
