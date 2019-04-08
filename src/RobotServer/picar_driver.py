@@ -23,14 +23,16 @@ picar.setup()
 camera = cv2.VideoCapture(0)
 
 
-def main(start_mode=0):
+def default_follower():
     try:
-        follower = Follower.load(epsilon=0.009)
+        return Follower.load(epsilon=0.009)
     except IOError:  # file does not exist
         print("Failed to load follower file")
-        follower = Follower()
-    
-    driver = PiCarDriver(follower)
+        return Follower()
+
+
+def main(start_mode=0):
+    driver = PiCarDriver(default_follower())
 
     try:
         # start the server
@@ -66,7 +68,16 @@ class PiCarDriver(object):
     def set_model(self, model: int):
         """Sets model used in follower mode. Called from server.
         Returns a bool indicating whether the supplied model version is a valid version."""
-        # TODO: Currently does nothing
+        if model == 0:
+            self.follower = default_follower()
+
+        elif model == 1:
+            import legacy_follower_pid
+            self.follower = legacy_follower_pid.Follower()
+
+        else:
+            return False
+
         return True
 
     def set_throttle_and_dir(self, throttle, direction):
