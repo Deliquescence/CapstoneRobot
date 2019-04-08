@@ -122,8 +122,11 @@ namespace RobotClient
                 string session;
 
                 string[] path_and_session;
-                for (int i = 0; i < lines.Length; i++)
-                {
+                for (int i = 0; i < lines.Length; i++) {
+                    if (lines[i].StartsWith("#")) {
+                        continue;
+                    };
+
                     if (lines[i] == "(*connect)")
                     {
                         while (lines[i + 1] != "(connect*)")
