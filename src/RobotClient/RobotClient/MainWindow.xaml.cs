@@ -163,7 +163,7 @@ namespace RobotClient
             }
             catch (Exception e)
             {
-                LogField.AppendText($"{DateTime.Now}: Error when initializing configuration: {e.Message}\n");
+                LogField.AppendText($"{DateTime.Now}:\tError when initializing configuration: {e.Message}\n");
             }
             DeviceListMn.ItemsSource = null;
             DeviceListMn.ItemsSource = deviceListMain;
@@ -232,7 +232,7 @@ namespace RobotClient
                 }
                 catch (RpcException rpcE)
                 {
-                    LogField.AppendText(DateTime.Now + ":\tError! " + rpcE + "\n");
+                    LogField.AppendText(DateTime.Now + ":\tRPC error: " + rpcE.Message + "\n");
                 }
                 catch (Exception exception)
                 {
@@ -347,9 +347,9 @@ namespace RobotClient
                         streamWriter.WriteLineAsync($"train/{image_file_name},{action.Throttle},{action.Direction}");
                     }
                 }
-                catch (Exception e)
+                catch (IOException e)
                 {
-                    LogField.AppendText($"{DateTime.Now}: Error when writing stream data to disk: {e}\n");
+                    LogField.AppendText($"{DateTime.Now}:\tError writing stream data to disk: {e.Message}\n");
                 }
             }
 
@@ -381,7 +381,7 @@ namespace RobotClient
             }
             catch (Exception e)
             {
-                LogField.AppendText($"{DateTime.Now}: Error clearing stream image: {e}\n");
+                LogField.AppendText($"{DateTime.Now}:\tError clearing stream image: {e}\n");
             }
         }
 
