@@ -24,29 +24,35 @@ namespace RobotClient {
     static PicarReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "CgtwaWNhci5wcm90bxINQ2Fwc3RvbmVSb2JvdCIHCgVFbXB0eSIhCg5Db25u",
-            "ZWN0UmVxdWVzdBIPCgdtZXNzYWdlGAEgASgJIkUKCkNvbm5lY3RBY2sSDwoH",
-            "c3VjY2VzcxgBIAEoCBImCgd2ZXJzaW9uGAIgASgLMhUuQ2Fwc3RvbmVSb2Jv",
-            "dC5TZW1WZXIiNQoGU2VtVmVyEg0KBW1ham9yGAEgASgNEg0KBW1pbm9yGAIg",
-            "ASgNEg0KBXBhdGNoGAMgASgNImQKC01vZGVSZXF1ZXN0Ei0KBG1vZGUYASAB",
-            "KA4yHy5DYXBzdG9uZVJvYm90Lk1vZGVSZXF1ZXN0Lk1vZGUiJgoETW9kZRII",
-            "CgRJRExFEAASCAoETEVBRBABEgoKBkZPTExPVxACIhoKB01vZGVBY2sSDwoH",
-            "c3VjY2VzcxgBIAEoCCIwCglTZXRNb3Rpb24SEAoIdGhyb3R0bGUYASABKAES",
-            "EQoJZGlyZWN0aW9uGAIgASgBIiIKDlN0YXJ0U3RyZWFtaW5nEhAKCGRlY29y",
-            "YXRlGAEgASgIIg8KDVN0b3BTdHJlYW1pbmciRQoKU3RyZWFtRGF0YRINCgVp",
-            "bWFnZRgBIAEoDBIoCgZhY3Rpb24YAiABKAsyGC5DYXBzdG9uZVJvYm90LlNl",
-            "dE1vdGlvbjLyAgoFUGlDYXISTwoRUmVjZWl2ZUNvbm5lY3Rpb24SHS5DYXBz",
-            "dG9uZVJvYm90LkNvbm5lY3RSZXF1ZXN0GhkuQ2Fwc3RvbmVSb2JvdC5Db25u",
-            "ZWN0QWNrIgASQgoKU3dpdGNoTW9kZRIaLkNhcHN0b25lUm9ib3QuTW9kZVJl",
-            "cXVlc3QaFi5DYXBzdG9uZVJvYm90Lk1vZGVBY2siABJDCg1SZW1vdGVDb250",
-            "cm9sEhguQ2Fwc3RvbmVSb2JvdC5TZXRNb3Rpb24aFC5DYXBzdG9uZVJvYm90",
-            "LkVtcHR5IgAoARJLCgtTdGFydFN0cmVhbRIdLkNhcHN0b25lUm9ib3QuU3Rh",
-            "cnRTdHJlYW1pbmcaGS5DYXBzdG9uZVJvYm90LlN0cmVhbURhdGEiADABEkIK",
-            "ClN0b3BTdHJlYW0SHC5DYXBzdG9uZVJvYm90LlN0b3BTdHJlYW1pbmcaFC5D",
-            "YXBzdG9uZVJvYm90LkVtcHR5IgBCDqoCC1JvYm90Q2xpZW50YgZwcm90bzM="));
+            "CgtwaWNhci5wcm90bxINQ2Fwc3RvbmVSb2JvdCIfCgxNb2RlbFZlcnNpb24S",
+            "DwoHdmVyc2lvbhgBIAEoBSIhCg5Td2l0Y2hNb2RlbEFjaxIPCgdzdWNjZXNz",
+            "GAEgASgIIgcKBUVtcHR5IiEKDkNvbm5lY3RSZXF1ZXN0Eg8KB21lc3NhZ2UY",
+            "ASABKAkiRQoKQ29ubmVjdEFjaxIPCgdzdWNjZXNzGAEgASgIEiYKB3ZlcnNp",
+            "b24YAiABKAsyFS5DYXBzdG9uZVJvYm90LlNlbVZlciI1CgZTZW1WZXISDQoF",
+            "bWFqb3IYASABKA0SDQoFbWlub3IYAiABKA0SDQoFcGF0Y2gYAyABKA0iZAoL",
+            "TW9kZVJlcXVlc3QSLQoEbW9kZRgBIAEoDjIfLkNhcHN0b25lUm9ib3QuTW9k",
+            "ZVJlcXVlc3QuTW9kZSImCgRNb2RlEggKBElETEUQABIICgRMRUFEEAESCgoG",
+            "Rk9MTE9XEAIiGgoHTW9kZUFjaxIPCgdzdWNjZXNzGAEgASgIIjAKCVNldE1v",
+            "dGlvbhIQCgh0aHJvdHRsZRgBIAEoARIRCglkaXJlY3Rpb24YAiABKAEiIgoO",
+            "U3RhcnRTdHJlYW1pbmcSEAoIZGVjb3JhdGUYASABKAgiDwoNU3RvcFN0cmVh",
+            "bWluZyJFCgpTdHJlYW1EYXRhEg0KBWltYWdlGAEgASgMEigKBmFjdGlvbhgC",
+            "IAEoCzIYLkNhcHN0b25lUm9ib3QuU2V0TW90aW9uMscDCgVQaUNhchJPChFS",
+            "ZWNlaXZlQ29ubmVjdGlvbhIdLkNhcHN0b25lUm9ib3QuQ29ubmVjdFJlcXVl",
+            "c3QaGS5DYXBzdG9uZVJvYm90LkNvbm5lY3RBY2siABJCCgpTd2l0Y2hNb2Rl",
+            "EhouQ2Fwc3RvbmVSb2JvdC5Nb2RlUmVxdWVzdBoWLkNhcHN0b25lUm9ib3Qu",
+            "TW9kZUFjayIAEkMKDVJlbW90ZUNvbnRyb2wSGC5DYXBzdG9uZVJvYm90LlNl",
+            "dE1vdGlvbhoULkNhcHN0b25lUm9ib3QuRW1wdHkiACgBEksKC1N0YXJ0U3Ry",
+            "ZWFtEh0uQ2Fwc3RvbmVSb2JvdC5TdGFydFN0cmVhbWluZxoZLkNhcHN0b25l",
+            "Um9ib3QuU3RyZWFtRGF0YSIAMAESQgoKU3RvcFN0cmVhbRIcLkNhcHN0b25l",
+            "Um9ib3QuU3RvcFN0cmVhbWluZxoULkNhcHN0b25lUm9ib3QuRW1wdHkiABJT",
+            "ChNTd2l0Y2hGb2xsb3dlck1vZGVsEhsuQ2Fwc3RvbmVSb2JvdC5Nb2RlbFZl",
+            "cnNpb24aHS5DYXBzdG9uZVJvYm90LlN3aXRjaE1vZGVsQWNrIgBCDqoCC1Jv",
+            "Ym90Q2xpZW50YgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
+            new pbr::GeneratedClrTypeInfo(typeof(global::RobotClient.ModelVersion), global::RobotClient.ModelVersion.Parser, new[]{ "Version" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::RobotClient.SwitchModelAck), global::RobotClient.SwitchModelAck.Parser, new[]{ "Success" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::RobotClient.Empty), global::RobotClient.Empty.Parser, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::RobotClient.ConnectRequest), global::RobotClient.ConnectRequest.Parser, new[]{ "Message" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::RobotClient.ConnectAck), global::RobotClient.ConnectAck.Parser, new[]{ "Success", "Version" }, null, null, null),
@@ -63,6 +69,264 @@ namespace RobotClient {
 
   }
   #region Messages
+  public sealed partial class ModelVersion : pb::IMessage<ModelVersion> {
+    private static readonly pb::MessageParser<ModelVersion> _parser = new pb::MessageParser<ModelVersion>(() => new ModelVersion());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<ModelVersion> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[0]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ModelVersion() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ModelVersion(ModelVersion other) : this() {
+      version_ = other.version_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ModelVersion Clone() {
+      return new ModelVersion(this);
+    }
+
+    /// <summary>Field number for the "version" field.</summary>
+    public const int VersionFieldNumber = 1;
+    private int version_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Version {
+      get { return version_; }
+      set {
+        version_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as ModelVersion);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(ModelVersion other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Version != other.Version) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Version != 0) hash ^= Version.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Version != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(Version);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Version != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Version);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(ModelVersion other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Version != 0) {
+        Version = other.Version;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Version = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class SwitchModelAck : pb::IMessage<SwitchModelAck> {
+    private static readonly pb::MessageParser<SwitchModelAck> _parser = new pb::MessageParser<SwitchModelAck>(() => new SwitchModelAck());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<SwitchModelAck> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[1]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public SwitchModelAck() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public SwitchModelAck(SwitchModelAck other) : this() {
+      success_ = other.success_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public SwitchModelAck Clone() {
+      return new SwitchModelAck(this);
+    }
+
+    /// <summary>Field number for the "success" field.</summary>
+    public const int SuccessFieldNumber = 1;
+    private bool success_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Success {
+      get { return success_; }
+      set {
+        success_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as SwitchModelAck);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(SwitchModelAck other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Success != other.Success) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Success != false) hash ^= Success.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Success != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Success != false) {
+        size += 1 + 1;
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(SwitchModelAck other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Success != false) {
+        Success = other.Success;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
   /// <summary>
   ///An empty message
   /// </summary>
@@ -74,7 +338,7 @@ namespace RobotClient {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[0]; }
+      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[2]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -178,7 +442,7 @@ namespace RobotClient {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[1]; }
+      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[3]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -310,7 +574,7 @@ namespace RobotClient {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[2]; }
+      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[4]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -486,7 +750,7 @@ namespace RobotClient {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[3]; }
+      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[5]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -674,7 +938,7 @@ namespace RobotClient {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[4]; }
+      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[6]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -822,7 +1086,7 @@ namespace RobotClient {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[5]; }
+      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[7]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -957,7 +1221,7 @@ namespace RobotClient {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[6]; }
+      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[8]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1128,7 +1392,7 @@ namespace RobotClient {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[7]; }
+      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[9]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1263,7 +1527,7 @@ namespace RobotClient {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[8]; }
+      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[10]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1364,7 +1628,7 @@ namespace RobotClient {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[9]; }
+      get { return global::RobotClient.PicarReflection.Descriptor.MessageTypes[11]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
