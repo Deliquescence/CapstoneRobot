@@ -103,11 +103,15 @@ namespace RobotClient
         private async void initializeUI()
         {
             ArrayList carInfoArray = new ArrayList();
-            //gets text from specified .ini file
-            try
-            {
-                string[] lines = File.ReadAllLines($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\\picar\\gui_config.ini");
 
+            var file_path = $"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\\picar\\gui_config.ini";
+            if (!File.Exists(file_path)) {
+                return;
+            }
+
+            //gets text from specified .ini file
+            try {
+                string[] lines = File.ReadAllLines(file_path);
 
                 string selectedIP;
                 string selectedName;
@@ -120,7 +124,6 @@ namespace RobotClient
                 string[] path_and_session;
                 for (int i = 0; i < lines.Length; i++)
                 {
-
                     if (lines[i] == "(*connect)")
                     {
                         while (lines[i + 1] != "(connect*)")
@@ -160,7 +163,7 @@ namespace RobotClient
             }
             catch (Exception e)
             {
-                LogField.AppendText($"{DateTime.Now}: Error when initializing configuration\n");
+                LogField.AppendText($"{DateTime.Now}: Error when initializing configuration: {e.Message}\n");
             }
             DeviceListMn.ItemsSource = null;
             DeviceListMn.ItemsSource = deviceListMain;
@@ -171,6 +174,7 @@ namespace RobotClient
                 initializeMode(m[1], m[2]);
             }
         }
+
         //automatically sets mode of cars based on .ini file
         private void initializeMode(string name, string mode)
         {
