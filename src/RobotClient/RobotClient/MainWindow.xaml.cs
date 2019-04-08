@@ -847,23 +847,11 @@ namespace RobotClient
         private void SetVehicleMode(ModeRequest.Types.Mode mode)
         {
             var picar = (PiCarConnection)DeviceListMn.SelectedItem;
-            try
-            {
-                picar.SetMode(mode);
-                DeviceStatus.Text = picar.Mode.ToString();
-                LogField.AppendText(DateTime.Now + ":\tSetting " + picar + "to " + picar.Mode.ToString() + "\n");
-                LogField.ScrollToEnd();
-            }
-            catch (Exception e)
-            {
-                DisconnectCar();
-                Console.WriteLine(e);
-            }
+            SetVehicleMode(picar, mode);
         }
 
-        private void SetVehicleMode(PiCarConnection car, ModeRequest.Types.Mode mode)
+        private void SetVehicleMode(PiCarConnection picar, ModeRequest.Types.Mode mode)
         {
-            var picar = car;
             try
             {
                 picar.SetMode(mode);
