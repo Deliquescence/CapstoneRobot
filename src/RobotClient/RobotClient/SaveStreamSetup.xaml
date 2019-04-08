@@ -1,4 +1,4 @@
-﻿<Window x:Class="RobotClient.SaveStreamSetup"
+<Window x:Class="RobotClient.SaveStreamSetup"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -12,10 +12,10 @@
             <ColumnDefinition Width="83*"/>
             <ColumnDefinition Width="366*"/>
         </Grid.ColumnDefinitions>
-        <Label Content="Enter the directory you would like to save to" HorizontalAlignment="Left" Margin="34,18,0,0" VerticalAlignment="Top" Width="242" Grid.ColumnSpan="2"/>
-        <TextBox Name="DirectoryText" HorizontalAlignment="Left" Height="23" Margin="40,49,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="196" Grid.ColumnSpan="2" Text="C:\picar"/>
-        <Label Content="Enter Session Name" HorizontalAlignment="Left" Margin="40,86,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
-        <TextBox Name="SessionText" HorizontalAlignment="Left" Height="23" Margin="40,117,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="196" Grid.ColumnSpan="2" Text="mirrorA"/>
+        <Label Content="Save Directory" HorizontalAlignment="Left" Margin="34,46,0,0" VerticalAlignment="Top" Width="242" Grid.ColumnSpan="2"/>
+        <TextBox Name="DirectoryText" HorizontalAlignment="Left" Height="23" Margin="45,49,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="196" TextChanged="DirectoryText_TextChanged_1" Grid.Column="1"/>
+        <Label Content="Session Name" HorizontalAlignment="Left" Margin="34,86,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+        <TextBox Name="SessionText" HorizontalAlignment="Left" Height="23" Margin="41,86,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="196" Grid.Column="1"/>
         <Button Name ="okButton" Click="StartSaving" Content="OK" HorizontalAlignment="Left" Margin="220.333,173,0,0" VerticalAlignment="Top" Width="75" Grid.Column="1"/>
 
     </Grid>

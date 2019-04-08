@@ -14,6 +14,7 @@ using System.Windows.Media;
 using Grpc.Core;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Collections;
 
 namespace RobotClient
 {
@@ -63,13 +64,21 @@ namespace RobotClient
             newKeybind.InputGestures.Add(new KeyGesture(Key.R, ModifierKeys.Control));
             CommandBindings.Add(new CommandBinding(newKeybind, Register_Click));
 
-            var streamKeybind = new RoutedCommand();
-            streamKeybind.InputGestures.Add(new KeyGesture(Key.S, ModifierKeys.Control));
-            CommandBindings.Add(new CommandBinding(streamKeybind, ImageSaving_Click));
             _controlMode = true;
 
             _saveStreamEnabled = false;
 
+            //Adds shortut Ctrl + S for stream saving and Ctrl + D for disabling stream saving
+            var streamKeybind = new RoutedCommand();
+            streamKeybind.InputGestures.Add(new KeyGesture(Key.S, ModifierKeys.Control));
+            CommandBindings.Add(new CommandBinding(streamKeybind, ImageSaving_Click));
+
+            var dStreamKeybind = new RoutedCommand();
+            dStreamKeybind.InputGestures.Add(new KeyGesture(Key.D, ModifierKeys.Control));
+            CommandBindings.Add(new CommandBinding(dStreamKeybind, StopSaving_Click));
+
+            
+            
             //Checks if a controller is plugged into the current OS
             _controller = new Controller(UserIndex.One);
             if (!_controller.IsConnected)
@@ -93,25 +102,51 @@ namespace RobotClient
         //sets up initia configuration for connection and log using specified .ini file
         private async void initializeUI()
         {
+            ArrayList carInfoArray = new ArrayList();
+
+            var file_path = $"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\\picar\\gui_config.ini";
+            if (!File.Exists(file_path)) {
+                return;
+            }
+
             //gets text from specified .ini file
-            try
-            {
-                string[] lines = File.ReadAllLines($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\\picar\\gui_config.ini");
+            try {
+                string[] lines = File.ReadAllLines(file_path);
 
                 string selectedIP;
                 string selectedName;
-                string[] iPandName;
+                string[] ipNameAndMode;
+                
+                string mode;
+                string path;
+                string session;
+
+                string[] path_and_session;
                 for (int i = 0; i < lines.Length; i++)
                 {
-
                     if (lines[i] == "(*connect)")
                     {
                         while (lines[i + 1] != "(connect*)")
                         {
-                            iPandName = lines[i + 1].Split(',');
-                            selectedIP = iPandName[0];
-                            selectedName = iPandName[1];
+                            ipNameAndMode = lines[i + 1].Split(',');
+                            selectedIP = ipNameAndMode[0];
+                            selectedName = ipNameAndMode[1];
+                            mode = ipNameAndMode[2];
+                            carInfoArray.Add(ipNameAndMode);
                             await IPConnect(selectedIP, selectedName);
+                            i = i + 1;
+                        }
+                    }
+                    
+                    if (lines[i] == "(*stream)")
+                    {
+                        while (lines[i + 1] != "(stream*)")
+                        {
+                            path_and_session = lines[i + 1].Split(',');
+                            path = path_and_session[0];
+                            session = path_and_session[1];
+                            setPathName(path);
+                            setSessionName(session);
                             i = i + 1;
                         }
                     }
@@ -128,10 +163,39 @@ namespace RobotClient
             }
             catch (Exception e)
             {
-                LogField.AppendText($"{DateTime.Now}: Error when initializing configuration: {e}\n");
+                LogField.AppendText($"{DateTime.Now}:\tError when initializing configuration: {e.Message}\n");
             }
             DeviceListMn.ItemsSource = null;
             DeviceListMn.ItemsSource = deviceListMain;
+
+            //initializes mode for each connection in .ini
+            foreach (string[] m in carInfoArray)
+            {
+                initializeMode(m[1], m[2]);
+            }
+        }
+
+        //automatically sets mode of cars based on .ini file
+        private void initializeMode(string name, string mode)
+        {
+            foreach(PiCarConnection car in deviceListMain)
+            {
+                if(name == car.Name)
+                {
+                    if(mode=="lead")
+                    {
+                        SetVehicleMode(car, ModeRequest.Types.Mode.Lead);
+                    }
+                    if(mode == "follow")
+                    {
+                        SetVehicleMode(car, ModeRequest.Types.Mode.Follow);
+                    }
+                    if (mode == "idle")
+                    {
+                        SetVehicleMode(car, ModeRequest.Types.Mode.Idle);
+                    }
+                }
+            }
         }
 
         //tries to connect to cars specified in .ini file
@@ -168,7 +232,7 @@ namespace RobotClient
                 }
                 catch (RpcException rpcE)
                 {
-                    LogField.AppendText(DateTime.Now + ":\tError! " + rpcE + "\n");
+                    LogField.AppendText(DateTime.Now + ":\tRPC error: " + rpcE.Message + "\n");
                 }
                 catch (Exception exception)
                 {
@@ -283,9 +347,9 @@ namespace RobotClient
                         streamWriter.WriteLineAsync($"train/{image_file_name},{action.Throttle},{action.Direction}");
                     }
                 }
-                catch (Exception e)
+                catch (IOException e)
                 {
-                    LogField.AppendText($"{DateTime.Now}: Error when writing stream data to disk: {e}\n");
+                    LogField.AppendText($"{DateTime.Now}:\tError writing stream data to disk: {e.Message}\n");
                 }
             }
 
@@ -297,11 +361,15 @@ namespace RobotClient
             var session_prefix = getSessionName();
             var csv_path = $"{save_dir_path}\\{session_prefix}.csv";
 
-            if (!File.Exists(csv_path))
-            {
-                using (var streamWriter = new StreamWriter(csv_path, true))
-                {
-                    streamWriter.WriteLineAsync($"image_file,throttle,direction");
+            if (!File.Exists(csv_path)) {
+                try {
+
+                    using ( var streamWriter = new StreamWriter(csv_path, true) ) {
+                        streamWriter.WriteLineAsync($"image_file,throttle,direction");
+                    }
+                }
+                catch ( IOException e ) {
+                    LogField.AppendText($"{DateTime.Now}:\tError opening csv: {e.Message}\n");
                 }
             }
         }
@@ -317,7 +385,7 @@ namespace RobotClient
             }
             catch (Exception e)
             {
-                LogField.AppendText($"{DateTime.Now}: Error clearing stream image: {e}\n");
+                LogField.AppendText($"{DateTime.Now}:\tError clearing stream image: {e}\n");
             }
         }
 
@@ -376,13 +444,14 @@ namespace RobotClient
         //stops the stream from being saved
         private void StopSaving_Click(object sender, RoutedEventArgs e)
         {
-            _saveStreamEnabled = false;
             StreamSavingHeader.IsEnabled = true;
             StopStreamSavingHeader.IsEnabled = false;
-            LogField.AppendText(DateTime.Now + ":\tStream will no longer be saved to a file\n");
-
-
-            LogField.ScrollToEnd();
+            if (_saveStreamEnabled == true)
+            {
+                LogField.AppendText(DateTime.Now + ":\tStream will no longer be saved to a file\n");
+                LogField.ScrollToEnd();
+            }
+            _saveStreamEnabled = false;
         }
 
         /**
@@ -786,6 +855,11 @@ namespace RobotClient
         private void SetVehicleMode(ModeRequest.Types.Mode mode)
         {
             var picar = (PiCarConnection)DeviceListMn.SelectedItem;
+            SetVehicleMode(picar, mode);
+        }
+
+        private void SetVehicleMode(PiCarConnection picar, ModeRequest.Types.Mode mode)
+        {
             try
             {
                 picar.SetMode(mode);

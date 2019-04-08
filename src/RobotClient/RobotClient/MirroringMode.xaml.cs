@@ -28,6 +28,10 @@ namespace RobotClient
         {
             Picar = picar;
             InitializeComponent();
+            //pressing enter key starts mirroring
+            var submit = new RoutedCommand();
+            submit.InputGestures.Add(new KeyGesture(Key.Enter));
+            CommandBindings.Add(new CommandBinding(submit, StartMirroring_Click));
         }
 
         //starts the replays for mirroring mode
@@ -42,12 +46,14 @@ namespace RobotClient
             _mainWindow.LogField.Clear(); //Clear after load
             replay = new Replay(Picar, inputs, Convert.ToInt32(Delay.Text) * 1000);
             replay.Start();
+
         }
 
         private void StopMirroring_Click(object sender, RoutedEventArgs e)
         {
             Picar.SetMirroring(false);
             replay.Stop();
+            _mainWindow.LogField.AppendText(DateTime.Now + " Mirroring is finished.\n");
         }
 
         private void SetVehicleMode(ModeRequest.Types.Mode mode)
