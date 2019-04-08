@@ -361,11 +361,15 @@ namespace RobotClient
             var session_prefix = getSessionName();
             var csv_path = $"{save_dir_path}\\{session_prefix}.csv";
 
-            if (!File.Exists(csv_path))
-            {
-                using (var streamWriter = new StreamWriter(csv_path, true))
-                {
-                    streamWriter.WriteLineAsync($"image_file,throttle,direction");
+            if (!File.Exists(csv_path)) {
+                try {
+
+                    using ( var streamWriter = new StreamWriter(csv_path, true) ) {
+                        streamWriter.WriteLineAsync($"image_file,throttle,direction");
+                    }
+                }
+                catch ( IOException e ) {
+                    LogField.AppendText($"{DateTime.Now}:\tError opening csv: {e.Message}\n");
                 }
             }
         }
