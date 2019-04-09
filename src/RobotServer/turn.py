@@ -102,8 +102,6 @@ def test_camera(camera):
     f = follower.Follower()
     while True:
         start = time.monotonic()
-        for _ in range(5):
-            camera.grab()
         _, frame = camera.read()
         feat = f.get_features(frame)
         x_trans, y_rot = feat[3], feat[1]

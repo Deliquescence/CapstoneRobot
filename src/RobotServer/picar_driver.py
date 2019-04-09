@@ -105,9 +105,6 @@ class PiCarDriver(object):
         # loop unless break occurs
         while True:
             # get the current frame
-            # Clear buffer
-            for _ in range(5):
-                camera.grab()
             _, frame = camera.read()
 
             if self.mode == 1:
