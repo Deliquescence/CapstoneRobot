@@ -324,9 +324,6 @@ namespace RobotClient
             catch (Exception e)
             {
                 LogField.AppendText($"{DateTime.Now}: Error updating the GUI with image received from car: {e}\n");
-                var picar = SelectedPiCar();
-                if (picar is null) return;
-                DisconnectCar();
             }
 
             if (save_to_disk)
@@ -365,12 +362,11 @@ namespace RobotClient
 
             if (!File.Exists(csv_path)) {
                 try {
-
-                    using ( var streamWriter = new StreamWriter(csv_path, true) ) {
+                    using (var streamWriter = new StreamWriter(csv_path, true)) {
                         streamWriter.WriteLineAsync($"image_file,throttle,direction");
                     }
                 }
-                catch ( IOException e ) {
+                catch (IOException e) {
                     LogField.AppendText($"{DateTime.Now}:\tError opening csv: {e.Message}\n");
                 }
             }
@@ -703,6 +699,7 @@ namespace RobotClient
         {
             var picar = SelectedPiCar();
             if (picar is null) return;
+
             try
             {
                 var streamTask = picar.StartStream();
@@ -710,7 +707,7 @@ namespace RobotClient
             }
             catch (Exception exception)
             {
-                DisconnectCar();
+                DisconnectCar(picar);
                 Console.WriteLine(exception);
             }
         }
@@ -719,6 +716,7 @@ namespace RobotClient
         {
             var picar = SelectedPiCar();
             if (picar is null) return;
+
             try
             {
                 clearStreamImage();
@@ -726,7 +724,7 @@ namespace RobotClient
             }
             catch (Exception exception)
             {
-                DisconnectCar();
+                DisconnectCar(picar);
                 Console.WriteLine(exception);
             }
         }
@@ -847,7 +845,7 @@ namespace RobotClient
                     }
                     catch (Exception e)
                     {
-                        DisconnectCar();
+                        DisconnectCar(picar);
                         Console.WriteLine(e);
                     }
                 }
@@ -872,24 +870,27 @@ namespace RobotClient
             }
             catch (Exception e)
             {
-                DisconnectCar();
+                DisconnectCar(picar);
                 Console.WriteLine(e);
             }
         }
 
-        private void DisconnectCar()
-        {
-            var picar = SelectedPiCar();
-            if (picar is null) return;
-
+        private void DisconnectCar(PiCarConnection picar) {
             if (picar.GetType() == typeof(DummyConnection))
                 return;
 
-            LogField.AppendText(DateTime.Now + ":\tVehicle stopped responding, disconnecting. \n");
+            LogField.AppendText(DateTime.Now + ":\t" + picar + " stopped responding, disconnecting.\n");
             LogField.ScrollToEnd();
             deviceListMain.Remove(picar);
             DeviceListMn.ItemsSource = null;
             DeviceListMn.ItemsSource = deviceListMain;
+        }
+
+        private void DisconnectCar() {
+            var picar = SelectedPiCar();
+            if (picar is null) return;
+
+            DisconnectCar(picar);
         }
 
         public PiCarConnection SelectedPiCar()
