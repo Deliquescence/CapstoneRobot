@@ -97,15 +97,18 @@ def main():
 
 
 def test_camera(camera):
+    import time
     import follower
     f = follower.Follower()
     while True:
+        start = time.monotonic()
         for _ in range(5):
             camera.grab()
         _, frame = camera.read()
         feat = f.get_features(frame)
         x_trans, y_rot = feat[3], feat[1]
-        print("Translation: %f , Rotation: %f" % (x_trans, y_rot))
+        diff = time.monotonic() - start
+        print("Translation: %f , Rotation: %f Time %f" % (x_trans, y_rot, diff))
 
 
 def test_action():
