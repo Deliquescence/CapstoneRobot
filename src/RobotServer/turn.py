@@ -42,7 +42,7 @@ class Slide:
 
     def __init__(self, direction):
         self.direction = direction
-        self.goals = [2, 5, 2]  # Todo real values
+        self.goals = [4, 8, 11]  # Todo real values
         self.progress = 0
         self.phase = 0
 
@@ -75,7 +75,7 @@ class Turn:
 
     def __init__(self, direction):
         self.direction = direction
-        self.goal = 5  # Todo real value
+        self.goal = 11  # Tested under 0.1 sec delay for 90 deg
         self.progress = 0
 
     def get_direction(self, throttle):
@@ -91,15 +91,18 @@ class Turn:
 
 
 def main():
+    import picar_driver
     import picar_helper
+    import time
     count = 25  # Fail safe
     tc = TurnController()
-    tc.in_progress = Turn(-1)
+    tc.in_progress = Slide(1)
     for _ in range(count):
         direction = tc.get_direction(0, 0, 1)
         picar_helper.move(1, direction)
         if tc.in_progress is None:
             break
+        time.sleep(0.1)
     picar_helper.move(0, 0)
 
 
