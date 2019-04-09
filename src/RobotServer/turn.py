@@ -90,3 +90,20 @@ class Turn:
         return self.progress >= self.goal
 
 
+def main():
+    import picar_helper
+    count = 25  # Fail safe
+    tc = TurnController()
+    tc.in_progress = Turn(-1)
+    for _ in range(count):
+        direction = tc.get_direction(0, 0, 1)
+        picar_helper.move(1, direction)
+        if tc.in_progress is None:
+            break
+    picar_helper.move(0, 0)
+
+
+if __name__ == '__main__':
+    main()
+
+
