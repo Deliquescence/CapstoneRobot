@@ -92,8 +92,25 @@ class Turn:
 
 def main():
     import picar_driver
-    import picar_helper
+    cam = picar_driver.camera
+    test_camera(cam)
+
+
+def test_camera(camera):
+    import follower
+    while True:
+        for _ in range(5):
+            camera.grab()
+        _, frame = camera.read()
+        f = follower.Follower()
+        feat = f.get_features(frame)
+        x_trans, y_rot = feat[3], feat[1]
+        print("Translation: %f , Rotation: %f" % (x_trans, y_rot))
+
+
+def test_action():
     import time
+    import picar_helper
     count = 25  # Fail safe
     tc = TurnController()
     tc.in_progress = Slide(1)
@@ -104,7 +121,6 @@ def main():
             break
         time.sleep(0.1)
     picar_helper.move(0, 0)
-
 
 if __name__ == '__main__':
     main()

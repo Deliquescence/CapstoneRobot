@@ -25,7 +25,7 @@ camera = cv2.VideoCapture(0)
 
 def default_follower():
     try:
-        return Follower.load(epsilon=0.009)
+        return Follower.load(epsilon=0.0)
     except IOError:  # file does not exist
         print("Failed to load follower file")
         return Follower()
