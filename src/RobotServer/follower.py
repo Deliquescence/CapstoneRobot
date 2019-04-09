@@ -9,7 +9,7 @@ from RL import states, actions, learn
 from RL.states import State
 from tag_detection.detector import estimate_pose, process_color
 
-NUM_FEATURES = 22
+NUM_FEATURES = 11
 IDEAL_DISTANCE = 20
 DEFAULT_FILE_NAME = 'weights.npz'
 
@@ -142,7 +142,6 @@ class Follower:
         8: Straight line distance to tag
         9: Image color homogeneity
         10: Bias
-        11-20: Features of last tag state if this state is unknown
         """
         # Don't forget to update NUM_FEATURES
 
@@ -164,11 +163,6 @@ class Follower:
             features[6] = 1
             features[7] = math.atan(tz / tx)
             features[8] = IDEAL_DISTANCE - math.hypot(tz, tx)
-            self.last_tag_state = np.array(features[0:NUM_FEATURES // 2])
-            # Leave last_tag features as zeros
-        elif self.last_tag_state is not None:
-            self.last_tag_state *= math.exp(-1 * self.age_decay)
-            features[NUM_FEATURES // 2:] = self.last_tag_state
 
         return features
 
