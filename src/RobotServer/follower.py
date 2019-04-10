@@ -124,7 +124,7 @@ class Follower:
         #     self.learner.update(self.last_state, state, throttle, direction, reward)
         #
         # self.last_state = state
-        
+
         alt_dir = self.turn_controller.get_direction(features[3], features[1], 1, features[9])
         if alt_dir != 0:
             direction = alt_dir
@@ -183,18 +183,12 @@ class Follower:
 
     def get_reward(self, feature_vector):
         scale_x = 0.1
-        scale_z = 0.1
 
         weight_tz = 0.8
         weight_tx = 0.2
 
-        if feature_vector[9] >= 0.35:  # Raw value 0.6
-            color_reward = -5
-        else:
-            color_reward = 0
-
         if feature_vector[6] == 0:  # Tag not found
-            return color_reward
+            return 0
 
         tx = feature_vector[3]
         tz = abs(feature_vector[5])
