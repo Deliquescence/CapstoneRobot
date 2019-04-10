@@ -29,7 +29,7 @@ class TurnController:
                 if side_translation * -1 > trans_thresh:
                     self.in_progress = Slide(1)
                 elif side_translation > trans_thresh:
-                    return Slide(-1)
+                    self.in_progress = Slide(-1)
                 else:
                     return 0
         # Continue ongoing operation
