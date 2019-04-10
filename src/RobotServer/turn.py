@@ -1,6 +1,7 @@
 
 trans_thresh = 5.0  # Todo real values
 rotate_thresh = 5.0
+delay_subtrahend = 3
 
 
 class TurnController:
@@ -8,18 +9,18 @@ class TurnController:
     def __init__(self):
         self.in_progress = None
 
-    def get_direction(self, side_translation, tag_rotation, throttle):
+    def get_direction(self, side_translation, tag_rotation, throttle, tz):
         if self.in_progress is None:  # Decide
             if tag_rotation * -1 > rotate_thresh:  # Left?
                 if side_translation * -1 > trans_thresh:
                     return 0  # Slightly odd case
                 elif side_translation > trans_thresh:
-                    self.in_progress = Turn(-1)
+                    self.in_progress = Turn(-1, max(0, tz - delay_subtrahend))
                 else:
                     return 0
             elif tag_rotation > rotate_thresh:  # Right?
                 if side_translation * -1 > trans_thresh:
-                    self.in_progress = Turn(1)
+                    self.in_progress = Turn(1, max(tz - delay_subtrahend))
                 elif side_translation > trans_thresh:
                     return 0  # Slightly odd case
                 else:
@@ -72,13 +73,24 @@ class Slide:
 
 
 class Turn:
-
-    def __init__(self, direction):
+    def __init__(self, direction, dist_delay):
+        """
+        Init turn command with delay
+        :param direction: -1 if left, 1 if right
+        :param dist_delay: Distance delay to try and match leader turn initiation location
+        """
         self.direction = direction
         self.goal = 11  # Tested under 0.1 sec delay for 90 deg
+        self.dist_delay = dist_delay
         self.progress = 0
 
     def get_direction(self, throttle):
+        if self.dist_delay > 0:
+            if throttle == 1:
+                self.dist_delay -= 1
+            elif throttle == -1:
+                self.dist_delay += 1
+            return 0
         if throttle == 1:
             self.progress += 1
         elif throttle == -1:
