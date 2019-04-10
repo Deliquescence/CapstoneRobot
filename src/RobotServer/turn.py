@@ -128,7 +128,7 @@ def test_action():
     tc = TurnController()
     tc.in_progress = Slide(1)
     for _ in range(count):
-        direction = tc.get_direction(0, 0, 1)
+        direction = tc.get_direction(0, 0, 1, 0)
         picar_helper.move(1, direction)
         if tc.in_progress is None:
             break
