@@ -51,7 +51,7 @@ class Follower:
         else:
             ry = features[1]
             tx = features[3]
-            tz = IDEAL_DISTANCE - features[5]
+            tz = features[9]
             tag_state = states.tag_state_from_translation(tx, tz)
 
         # Self turning
@@ -140,7 +140,7 @@ class Follower:
         6: 1 if tag was detected, 0 otherwise
         7: Angle to tag
         8: Straight line distance to tag
-        9: Image color homogeneity
+        9: z axis translation
         10: Bias
         """
         # Don't forget to update NUM_FEATURES
@@ -148,7 +148,6 @@ class Follower:
         features = np.zeros(NUM_FEATURES)
 
         pose = estimate_pose(frame)
-        features[9] = max(0, process_color(frame) - 0.25)
         features[10] = 1  # Bias
         if pose is not None:
             rotation, translation, _, _ = pose
@@ -160,9 +159,10 @@ class Follower:
             features[3] = tx
             features[4] = ty
             features[5] = IDEAL_DISTANCE - tz
-            features[6] = 1
+            features[6] = 1  # Tag detection
             features[7] = math.atan(tz / tx)
             features[8] = IDEAL_DISTANCE - math.hypot(tz, tx)
+            features[9] = tz
 
         return features
 
