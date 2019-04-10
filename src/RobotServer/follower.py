@@ -8,6 +8,7 @@ import math
 from RL import states, actions, learn
 from RL.states import State
 from tag_detection.detector import estimate_pose, process_color
+import turn
 
 NUM_FEATURES = 11
 IDEAL_DISTANCE = 20
@@ -30,6 +31,7 @@ def unknown_state_cache(previous_state, state):
 class Follower:
     def __init__(self):
         self.learner = learn.Q_Learner(epsilon=0.09)
+        self.turn_controller = turn.TurnController()
         # self.learner = learn.ActorCritic(np.repeat(0.02, 6), np.repeat(0.8, 5), NUM_FEATURES)
         self.age_decay = 0.9  # Todo determine good value
         self.reset_state()
@@ -78,7 +80,6 @@ class Follower:
         return state
 
     def get_action(self, frame, online=True):
-        start_time = time.time()
 
         ###
         # Q LEARNING
@@ -121,9 +122,10 @@ class Follower:
         #     self.learner.update(self.last_state, state, throttle, direction, reward)
         #
         # self.last_state = state
-
-        duration = time.time() - start_time
-        #print(f"Prediction took {duration}")
+        
+        alt_dir = self.turn_controller.get_direction(features[3], features[1], 1, features[9])
+        if alt_dir != 0:
+            direction = alt_dir
 
         return throttle, direction
 
