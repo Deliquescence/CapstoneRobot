@@ -12,7 +12,6 @@ import turn
 
 NUM_FEATURES = 11
 IDEAL_DISTANCE = 20
-DEFAULT_FILE_NAME = 'weights.npz'
 
 
 def unknown_state_cache(previous_state, state):
@@ -207,14 +206,14 @@ class Follower:
 
         return (tz_reward * weight_tz) + (tx_reward * weight_tx) + color_reward
 
-    def save(self, file_name=DEFAULT_FILE_NAME):
+    def save(self, file_name=None):
         self.learner.save(file_name)
 
     @staticmethod
-    def load(file_name=DEFAULT_FILE_NAME, epsilon=0.0):
+    def load(file_name=None, epsilon=0.0):
         f = Follower()
         # f.learner = learn.ActorCritic.load(file_name)
-        f.learner = learn.Q_Learner.load()
+        f.learner = learn.Q_Learner.load(file_name)
         f.learner.epsilon = epsilon
         return f
 
