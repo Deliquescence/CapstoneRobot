@@ -204,7 +204,7 @@ class Follower:
         else:
             tz_reward = 0
 
-        return (tz_reward * weight_tz) + (tx_reward * weight_tx) + color_reward
+        return (tz_reward * weight_tz) + (tx_reward * weight_tx)
 
     def save(self, file_name=None):
         self.learner.save(file_name)
