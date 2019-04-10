@@ -24,6 +24,8 @@ namespace RobotClient {
     static readonly grpc::Marshaller<global::RobotClient.StartStreaming> __Marshaller_CapstoneRobot_StartStreaming = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::RobotClient.StartStreaming.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::RobotClient.StreamData> __Marshaller_CapstoneRobot_StreamData = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::RobotClient.StreamData.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::RobotClient.StopStreaming> __Marshaller_CapstoneRobot_StopStreaming = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::RobotClient.StopStreaming.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::RobotClient.ModelVersion> __Marshaller_CapstoneRobot_ModelVersion = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::RobotClient.ModelVersion.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::RobotClient.SwitchModelAck> __Marshaller_CapstoneRobot_SwitchModelAck = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::RobotClient.SwitchModelAck.Parser.ParseFrom);
 
     static readonly grpc::Method<global::RobotClient.ConnectRequest, global::RobotClient.ConnectAck> __Method_ReceiveConnection = new grpc::Method<global::RobotClient.ConnectRequest, global::RobotClient.ConnectAck>(
         grpc::MethodType.Unary,
@@ -59,6 +61,13 @@ namespace RobotClient {
         "StopStream",
         __Marshaller_CapstoneRobot_StopStreaming,
         __Marshaller_CapstoneRobot_Empty);
+
+    static readonly grpc::Method<global::RobotClient.ModelVersion, global::RobotClient.SwitchModelAck> __Method_SwitchFollowerModel = new grpc::Method<global::RobotClient.ModelVersion, global::RobotClient.SwitchModelAck>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "SwitchFollowerModel",
+        __Marshaller_CapstoneRobot_ModelVersion,
+        __Marshaller_CapstoneRobot_SwitchModelAck);
 
     /// <summary>Service descriptor</summary>
     public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
@@ -122,6 +131,17 @@ namespace RobotClient {
       /// <param name="context">The context of the server-side call handler being invoked.</param>
       /// <returns>The response to send back to the client (wrapped by a task).</returns>
       public virtual global::System.Threading.Tasks.Task<global::RobotClient.Empty> StopStream(global::RobotClient.StopStreaming request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      /// Switch model
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::RobotClient.SwitchModelAck> SwitchFollowerModel(global::RobotClient.ModelVersion request, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
@@ -329,6 +349,50 @@ namespace RobotClient {
       {
         return CallInvoker.AsyncUnaryCall(__Method_StopStream, null, options, request);
       }
+      /// <summary>
+      /// Switch model
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The response received from the server.</returns>
+      public virtual global::RobotClient.SwitchModelAck SwitchFollowerModel(global::RobotClient.ModelVersion request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return SwitchFollowerModel(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// Switch model
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The response received from the server.</returns>
+      public virtual global::RobotClient.SwitchModelAck SwitchFollowerModel(global::RobotClient.ModelVersion request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_SwitchFollowerModel, null, options, request);
+      }
+      /// <summary>
+      /// Switch model
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
+      public virtual grpc::AsyncUnaryCall<global::RobotClient.SwitchModelAck> SwitchFollowerModelAsync(global::RobotClient.ModelVersion request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return SwitchFollowerModelAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// Switch model
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      public virtual grpc::AsyncUnaryCall<global::RobotClient.SwitchModelAck> SwitchFollowerModelAsync(global::RobotClient.ModelVersion request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_SwitchFollowerModel, null, options, request);
+      }
       /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
       protected override PiCarClient NewInstance(ClientBaseConfiguration configuration)
       {
@@ -345,7 +409,8 @@ namespace RobotClient {
           .AddMethod(__Method_SwitchMode, serviceImpl.SwitchMode)
           .AddMethod(__Method_RemoteControl, serviceImpl.RemoteControl)
           .AddMethod(__Method_StartStream, serviceImpl.StartStream)
-          .AddMethod(__Method_StopStream, serviceImpl.StopStream).Build();
+          .AddMethod(__Method_StopStream, serviceImpl.StopStream)
+          .AddMethod(__Method_SwitchFollowerModel, serviceImpl.SwitchFollowerModel).Build();
     }
 
   }

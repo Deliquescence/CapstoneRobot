@@ -51,6 +51,10 @@
                 <MenuItem Header="_Enable Stream Saving" Name="StreamSavingHeader" IsEnabled="True" InputGestureText="Ctrl + S" Click="ImageSaving_Click"/>
                 <MenuItem Header="_Disable Stream Saving" Name="StopStreamSavingHeader" IsEnabled="False" InputGestureText="Ctrl + D" Click="StopSaving_Click"/>
             </MenuItem>
+            <MenuItem Header="_Follower Model" Height="31">
+                <MenuItem x:Name="MenuSetFollowerModelDefault" Header="Default" HorizontalAlignment="Left" Click="SetFollowerModelDefault_Click"/>
+                <MenuItem x:Name="MenuSetFollowerModelPID" Header="PID" HorizontalAlignment="Left" Click="SetFollowerModelPID_Click"/>
+            </MenuItem>
             <MenuItem Header="_Help" Height="31">
                 <MenuItem Header="_About" Click="About_Click" />
             </MenuItem>

@@ -122,8 +122,11 @@ namespace RobotClient
                 string session;
 
                 string[] path_and_session;
-                for (int i = 0; i < lines.Length; i++)
-                {
+                for (int i = 0; i < lines.Length; i++) {
+                    if (lines[i].StartsWith("#")) {
+                        continue;
+                    };
+
                     if (lines[i] == "(*connect)")
                     {
                         while (lines[i + 1] != "(connect*)")
@@ -321,10 +324,6 @@ namespace RobotClient
             catch (Exception e)
             {
                 LogField.AppendText($"{DateTime.Now}: Error updating the GUI with image received from car: {e}\n");
-                var picar = (PiCarConnection)DeviceListMn.SelectedItem;
-                if (picar == null)
-                    return;
-                DisconnectCar();
             }
 
             if (save_to_disk)
@@ -363,12 +362,11 @@ namespace RobotClient
 
             if (!File.Exists(csv_path)) {
                 try {
-
-                    using ( var streamWriter = new StreamWriter(csv_path, true) ) {
+                    using (var streamWriter = new StreamWriter(csv_path, true)) {
                         streamWriter.WriteLineAsync($"image_file,throttle,direction");
                     }
                 }
-                catch ( IOException e ) {
+                catch (IOException e) {
                     LogField.AppendText($"{DateTime.Now}:\tError opening csv: {e.Message}\n");
                 }
             }
@@ -470,10 +468,23 @@ namespace RobotClient
             }
         }
 
-        //opens up window that sets up mirroring mode
+        private void SetFollowerModelDefault_Click(object sender, RoutedEventArgs e)
+        {
+            var picar = SelectedPiCar();
+            if (picar is null) return;
+            LogField.AppendText(DateTime.Now + ":\tSetting " + picar + "to default follower model\n");
+            LogField.ScrollToEnd();
+            picar.SetFollowerModel(0);
+        }
 
-
-
+        private void SetFollowerModelPID_Click(object sender, RoutedEventArgs e)
+        {
+            var picar = SelectedPiCar();
+            if (picar is null) return;
+            LogField.AppendText(DateTime.Now + ":\tSetting " + picar + "to legacy PID follower model\n");
+            LogField.ScrollToEnd();
+            picar.SetFollowerModel(1);
+        }
 
 
         /**
@@ -686,8 +697,9 @@ namespace RobotClient
 
         private async void StreamToggle_Checked(object sender, RoutedEventArgs e)
         {
-            var picar = (PiCarConnection)DeviceListMn.SelectedItem;
-            if (picar == null) return;
+            var picar = SelectedPiCar();
+            if (picar is null) return;
+
             try
             {
                 var streamTask = picar.StartStream();
@@ -695,15 +707,16 @@ namespace RobotClient
             }
             catch (Exception exception)
             {
-                DisconnectCar();
+                DisconnectCar(picar);
                 Console.WriteLine(exception);
             }
         }
 
         private void StreamToggle_Unchecked(object sender, RoutedEventArgs e)
         {
-            var picar = (PiCarConnection)DeviceListMn.SelectedItem;
-            if (picar == null) return;
+            var picar = SelectedPiCar();
+            if (picar is null) return;
+
             try
             {
                 clearStreamImage();
@@ -711,7 +724,7 @@ namespace RobotClient
             }
             catch (Exception exception)
             {
-                DisconnectCar();
+                DisconnectCar(picar);
                 Console.WriteLine(exception);
             }
         }
@@ -787,9 +800,8 @@ namespace RobotClient
                 //TODO remove previous car
                 Console.WriteLine(exception);
             }
-            //Get the picar from the device List
-            var picar = (PiCarConnection)DeviceListMn.SelectedItem;
-            if (picar == null) return;
+            var picar = SelectedPiCar();
+            if (picar is null) return;
 
             StreamToggle.IsEnabled = true;
             StreamToggle.IsChecked = false;
@@ -800,36 +812,24 @@ namespace RobotClient
             DeviceStatus.Text = picar.Mode.ToString();
         }
 
-        /**
-         *
-         */
         private void SetLeader(object sender, RoutedEventArgs e)
         {
-            //Get the picar from the device List
-            var picar = (PiCarConnection)DeviceListMn.SelectedItem;
-            if (picar == null) return;
+            var picar = SelectedPiCar();
+            if (picar is null) return;
             SetVehicleMode(ModeRequest.Types.Mode.Lead);
         }
 
-        /**
-         *
-         */
         private void SetFollower(object sender, RoutedEventArgs e)
         {
-            //Get the picar from the device List
-            var picar = (PiCarConnection)DeviceListMn.SelectedItem;
-            if (picar == null) return;
+            var picar = SelectedPiCar();
+            if (picar is null) return;
             SetVehicleMode(ModeRequest.Types.Mode.Follow);
         }
 
-        /**
-         *
-         */
         private void SetDefault(object sender, RoutedEventArgs e)
         {
-            //Get the picar from the device List
-            var picar = (PiCarConnection)DeviceListMn.SelectedItem;
-            if (picar == null) return;
+            var picar = SelectedPiCar();
+            if (picar is null) return;
             SetVehicleMode(ModeRequest.Types.Mode.Idle);
         }
 
@@ -845,7 +845,7 @@ namespace RobotClient
                     }
                     catch (Exception e)
                     {
-                        DisconnectCar();
+                        DisconnectCar(picar);
                         Console.WriteLine(e);
                     }
                 }
@@ -854,7 +854,8 @@ namespace RobotClient
 
         private void SetVehicleMode(ModeRequest.Types.Mode mode)
         {
-            var picar = (PiCarConnection)DeviceListMn.SelectedItem;
+            var picar = SelectedPiCar();
+            if (picar is null) return;
             SetVehicleMode(picar, mode);
         }
 
@@ -869,22 +870,32 @@ namespace RobotClient
             }
             catch (Exception e)
             {
-                DisconnectCar();
+                DisconnectCar(picar);
                 Console.WriteLine(e);
             }
         }
 
-        private void DisconnectCar()
-        {
-            var picar = (PiCarConnection)DeviceListMn.SelectedItem;
+        private void DisconnectCar(PiCarConnection picar) {
             if (picar.GetType() == typeof(DummyConnection))
                 return;
 
-            LogField.AppendText(DateTime.Now + ":\tVehicle stopped responding, disconnecting. \n");
+            LogField.AppendText(DateTime.Now + ":\t" + picar + " stopped responding, disconnecting.\n");
             LogField.ScrollToEnd();
             deviceListMain.Remove(picar);
             DeviceListMn.ItemsSource = null;
             DeviceListMn.ItemsSource = deviceListMain;
+        }
+
+        private void DisconnectCar() {
+            var picar = SelectedPiCar();
+            if (picar is null) return;
+
+            DisconnectCar(picar);
+        }
+
+        public PiCarConnection SelectedPiCar()
+        {
+            return (PiCarConnection) DeviceListMn.SelectedItem;
         }
 
         #region Properties
@@ -934,9 +945,9 @@ namespace RobotClient
 
         private void SetMirror(object sender, RoutedEventArgs e)
         {
-            var car = (PiCarConnection)DeviceListMn.SelectedItem;
-            if (car == null) return;
-            Mirror = new MirroringMode(car);
+            var picar = SelectedPiCar();
+            if (picar is null) return;
+            Mirror = new MirroringMode(picar);
             Mirror.Show();
         }
     }

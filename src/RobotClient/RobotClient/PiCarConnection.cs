@@ -81,6 +81,21 @@ namespace RobotClient
                 }
             }
 
+            //Set the model of the follower, return success
+            public bool SetFollowerModel(int model)
+            {
+                try {
+                    var request = new ModelVersion { Version = model };
+                    var ack = _client.SwitchFollowerModel(request);
+
+                    return ack.Success;
+                }
+                catch (RpcException e) {
+                    Console.Write("RPC failed " + e);
+                    throw;
+                }
+            }
+
             //Send a signal to the PiCar telling it how to move its wheels
             public void SetMotion(double throttle, double direction)
             {
@@ -172,6 +187,7 @@ namespace RobotClient
         {
             currentlyMirroring = b;
         }
+
         public bool isMirroring()
         {
             return currentlyMirroring;
@@ -186,6 +202,11 @@ namespace RobotClient
         {
             _client.SetMode(mode);
             Mode = mode;
+        }
+
+        public virtual void SetFollowerModel(int model)
+        {
+            _client.SetFollowerModel(model);
         }
 
         public virtual void SetMotion(double throttle, double direction)
