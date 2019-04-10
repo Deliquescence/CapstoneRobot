@@ -1,6 +1,6 @@
 
-trans_thresh = 5.0  # Todo real values
-rotate_thresh = 5.0
+trans_thresh = 6.0
+rotate_thresh = 0.35
 delay_subtrahend = 3
 
 
@@ -43,7 +43,7 @@ class Slide:
 
     def __init__(self, direction):
         self.direction = direction
-        self.goals = [4, 8, 11]  # Todo real values
+        self.goals = [4, 8, 11]
         self.progress = 0
         self.phase = 0
 
