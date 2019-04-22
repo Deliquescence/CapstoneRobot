@@ -31,9 +31,6 @@ class Follower:
     def __init__(self):
         self.learner = learn.Q_Learner(epsilon=0.09)
         self.turn_controller = turn.TurnController()
-        self.last_command = 0
-        self.last_throttle = 0
-        self.last_dir = 0
         # self.learner = learn.ActorCritic(np.repeat(0.02, 6), np.repeat(0.8, 5), NUM_FEATURES)
         self.age_decay = 0.9  # Todo determine good value
         self.reset_state()
@@ -42,42 +39,19 @@ class Follower:
         self.last_state = None
         self.last_tag_state = None
         self.last_action = [0, 0]
-        self.last_self_turn = 99999  # How many frames ago
-        self.last_self_turn_direction = 0  # -1 left, 0 straight, 1 right
-        self.last_turning_state = 0  # -1 left, 0 straight, 1 right
 
     @staticmethod
-    def get_state(features, last_self_turn, last_self_turn_direction, last_turning_state):
-        ry = None
-
+    def get_state(features, last_action):
         if features[6] == 0:  # Tag not found
             tag_state = 0
         else:
-            ry = features[1]
             tx = features[3]
             tz = features[9]
             tag_state = states.tag_state_from_translation(tx, tz)
 
-        # Self turning
-        # recently_turned = last_self_turn < 5
-        # if recently_turned:
-        #     turn_state = last_self_turn_direction
-        # else:
-        #     turn_state = 0
+        reversing = last_action[0] < 0
 
-        # Assume large y rotation indicates lead car turn
-        if ry is not None:
-            threshold = 0.25
-            if ry < -1 * threshold:
-                turn_state = -1
-            elif ry > threshold:
-                turn_state = 1
-            else:
-                turn_state = 0
-        else:
-            turn_state = last_turning_state
-
-        state = State(tag_state, turn_state)
+        state = State(tag_state, reversing)
 
         return state
 
@@ -88,7 +62,7 @@ class Follower:
         ###
         features = self.get_features(frame)
 
-        state = Follower.get_state(features, self.last_self_turn, self.last_self_turn_direction, self.last_turning_state)
+        state = Follower.get_state(features, self.last_action)
         buffered_state = unknown_state_cache(self.last_state, state)
 
         action = self.learner.policy(buffered_state)
@@ -110,7 +84,6 @@ class Follower:
 
         self.last_action = [throttle, direction]
         self.last_state = state
-        self.last_turning_state = state.turning_state
 
         ###
         # ACTOR CRITIC
@@ -135,10 +108,8 @@ class Follower:
             print(alt_dir)
         else:
             direction = 0
-        self.last_throttle = throttle
         if throttle == 0:
-            return throttle, self.last_dir
-        self.last_dir = direction
+            return throttle, direction
         
         return throttle, direction
 

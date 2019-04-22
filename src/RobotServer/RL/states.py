@@ -4,15 +4,15 @@ from bisect import bisect_right
 
 
 class State:
-    def __init__(self, tag_state, turning_state):
+    def __init__(self, tag_state, reversing_state):
         self.tag_state = tag_state
-        self.turning_state = turning_state
+        self.reversing_state = reversing_state
 
     def tag_is_unknown(self):
         return self.tag_state == UNKNOWN
 
     def as_tuple(self):
-        return (self.tag_state, self.turning_state)
+        return (self.tag_state, self.reversing_state)
 
     def __eq__(self, other):
         return self.as_tuple() == other.as_tuple()
@@ -24,15 +24,13 @@ class State:
         return repr(self.as_tuple())
 
     def __str__(self):
-        if self.turning_state < 0:
-            str_turning = "turning left"
-        elif self.turning_state > 0:
-            str_turning = "turning right"
+        if self.reversing_state:
+            str_reversing = "reversing"
         else:
-            str_turning = "not turning"
+            str_reversing = "not reversing"
 
         if self.tag_is_unknown():
-            return "[unknown tag, {0: <13}]".format(str_turning)
+            return "[unknown tag, {0: <13}]".format(str_reversing)
 
         (z, angle) = self.tag_state
 
@@ -63,12 +61,12 @@ class State:
             str_angle = "{0} < angle ({1})".format(angle, angle_which)
         str_angle += ','
 
-        return "[{0: <14} {1: <23} {2: <13}]".format(str_z, str_angle, str_turning)
+        return "[{0: <14} {1: <23} {2: <13}]".format(str_z, str_angle, str_reversing)
 
 
 def init():
     global z_thresholds, angle_thresholds, angle_thresholds_negative
-    global TAG_STATES, UNKNOWN, TURNING_STATES, STATES, n
+    global TAG_STATES, UNKNOWN, STATES, n
 
     z_thresholds = [0, 10, 17, 23, 30]
     angle_thresholds = [0, 20]
@@ -80,10 +78,10 @@ def init():
     UNKNOWN = 0
     TAG_STATES.insert(0, UNKNOWN)  # Unknown
 
-    TURNING_STATES = [-1, 0, 1]  # Left, Straight, Right
+    REVERSING_STATES = [True, False]
 
-    """((z, angle), turning_state)"""
-    STATES = [State(x[0], x[1]) for x in itertools.product(TAG_STATES, TURNING_STATES)]
+    """((z, angle), reversing_state)"""
+    STATES = [State(x[0], x[1]) for x in itertools.product(TAG_STATES, REVERSING_STATES)]
 
     n = len(STATES)
 
