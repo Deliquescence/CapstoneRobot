@@ -20,16 +20,16 @@ class TurnController:
                     return 0
             elif tag_rotation > rotate_thresh:  # Right?
                 if side_translation * -1 > trans_thresh:
-                    self.in_progress = Turn(1, max(tz - delay_subtrahend))
+                    self.in_progress = Turn(1, max(0, tz - delay_subtrahend))
                 elif side_translation > trans_thresh:
                     return 0  # Slightly odd case
                 else:
                     return 0
             else:
                 if side_translation * -1 > trans_thresh:
-                    self.in_progress = Slide(1)
-                elif side_translation > trans_thresh:
                     self.in_progress = Slide(-1)
+                elif side_translation > trans_thresh:
+                    self.in_progress = Slide(1)
                 else:
                     return 0
         # Continue ongoing operation

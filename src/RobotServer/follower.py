@@ -33,6 +33,7 @@ class Follower:
         self.turn_controller = turn.TurnController()
         self.last_command = 0
         self.last_throttle = 0
+        self.last_dir = 0
         # self.learner = learn.ActorCritic(np.repeat(0.02, 6), np.repeat(0.8, 5), NUM_FEATURES)
         self.age_decay = 0.9  # Todo determine good value
         self.reset_state()
@@ -80,7 +81,7 @@ class Follower:
 
         return state
 
-    def get_action(self, frame, online=True):
+    def get_action(self, frame, online=False):
 
         ###
         # Q LEARNING
@@ -125,20 +126,20 @@ class Follower:
         # self.last_state = state
 
         alt_dir = self.turn_controller.get_direction(features[3], features[1], 1, features[9])
-        if alt_dir != 0:
+        if self.turn_controller.in_progress is not None:
+           # if features[6] == 0:
+            #    throttle = 1
+            if isinstance(self.turn_controller.in_progress, turn.Turn):
+                throttle = 1
             direction = alt_dir
             print(alt_dir)
         else:
             direction = 0
+        self.last_throttle = throttle
+        if throttle == 0:
+            return throttle, self.last_dir
+        self.last_dir = direction
         
-        t = time.monotonic()
-        if t - self.last_command > 0.4:
-            self.last_command = t
-            self.last_throttle = throttle
-        else:
-            return self.last_throttle, alt_dir
-        self.last_command = time.monotonic()
-
         return throttle, direction
 
     def get_features(self, frame):
