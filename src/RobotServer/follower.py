@@ -21,7 +21,8 @@ def unknown_state_cache(previous_state, state):
     if state is not None and not state.tag_is_unknown():
         return state
     elif previous_state is not None and not previous_state.tag_is_unknown():
-        return previous_state
+        # Cache only the tag
+        return State(previous_state.tag_state, state.reversing_state)
     else:
         # e.g. state is unknown but previous state is None
         return state
