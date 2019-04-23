@@ -32,6 +32,11 @@ class TurnController:
                     self.in_progress = Slide(1)
                 else:
                     return 0
+        
+        # Abort operation
+        if abs(tag_rotation) < rotate_thresh and abs(side_translation) < trans_thresh:
+            self.in_progress = None
+            return 0
         # Continue ongoing operation
         direction = self.in_progress.get_direction(throttle)
         if self.in_progress.is_done():
@@ -48,11 +53,7 @@ class Slide:
         self.phase = 0
 
     def get_direction(self, throttle):
-        if throttle == 1:
-            self.progress += 1
-        elif throttle == -1:
-            self.progress -= 1
-
+        self.progress += throttle
         direction = self._get_direction()
 
         if self.progress >= self.goals[self.phase]:
