@@ -90,20 +90,13 @@ class Follower:
         #
         # self.last_state = state
 
-        alt_dir = self.turn_controller.get_direction(features[3], features[1], 1, features[9])
         if self.turn_controller.in_progress is not None:
            # if features[6] == 0:
             #    throttle = 1
             if isinstance(self.turn_controller.in_progress, turn.Turn):
                 throttle = 1
-            direction = alt_dir
-            print(alt_dir)
-        else:
-            direction = 0
-        if throttle == 0:
-            return throttle, direction
-
-        return throttle, direction
+        alt_dir = self.turn_controller.get_direction(features[3], features[1], throttle, features[9])
+        return throttle, alt_dir
 
     @staticmethod
     def get_features(frame):
