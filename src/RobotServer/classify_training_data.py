@@ -37,7 +37,6 @@ def classify_episode(episode_name):
     episode_df = pd.read_csv(csv_path)
 
     # Features
-    f = Follower()
 
     def row_to_features(row):
         image_path = os.path.join(DATA_DIR, *row['image_file'].split('/'))
@@ -45,32 +44,28 @@ def classify_episode(episode_name):
         if not os.path.isfile(image_path):
             print(f"Image file '{image_path}' is missing!")
             return None
-        return f.get_features(cv2.imread(image_path))
+        return Follower.get_features(cv2.imread(image_path))
 
     episode_df['features'] = episode_df.apply(row_to_features, axis=1)
 
     # State
-    last_action = [0, 0]
+    follow = Follower()
 
-    def row_to_state(row):
-        nonlocal last_action
+    def row_to_SAR(row):
+        nonlocal follow
 
         features = row['features']
 
-        state = Follower.get_state(features, last_action)
+        state = Follower.get_state(features, follow.last_action)
+        action = [row['throttle'], row['direction']]
+        reward = Follower.get_reward(features, state, action)
 
-        last_action = [row['throttle'], row['direction']]
+        follow.last_action = action
+        follow.last_state = state
 
-        return state
+        return state, action_from_throttle_direction(*action), reward
 
-    episode_df['state'] = episode_df.apply(row_to_state, axis=1)
-
-    # Action
-    episode_df['action'] = episode_df.apply(lambda row: action_from_throttle_direction(
-        row['throttle'], row['direction']), axis=1)
-
-    # Reward
-    episode_df['reward'] = episode_df.apply(lambda row: f.get_reward(row['features']), axis=1)
+    episode_df['state'], episode_df['action'], episode_df['reward'] = zip(*episode_df.apply(row_to_SAR, axis=1))
 
     # Save only some columns
     csv_df = episode_df[['image_file', 'state', 'action', 'reward']]
@@ -192,7 +187,7 @@ def main():
 
     learner = Q_Learner(discount_factor=0.9, alpha=0.2)
 
-    #dfs = load_all_classified_df()
+    # dfs = load_all_classified_df()
     dfs = classify_all_csvs()
 
     # df = classify_episode('nascarA')

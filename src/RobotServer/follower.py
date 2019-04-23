@@ -68,16 +68,7 @@ class Follower:
         action = self.learner.policy(buffered_state)
         (throttle, direction) = actions.action_to_throttle_direction(action)
 
-        reward = self.get_reward(features)
-
-        if abs(direction) > 0.001:
-            self.last_self_turn = 0
-            if direction < 0:
-                self.last_turn_direction = -1
-            else:
-                self.last_turn_direction = 1
-        else:
-            self.last_self_turn += 1
+        reward = Follower.get_reward(features, state, action)
 
         if online and self.last_state is not None:
             self.learner.update(self.last_state, self.last_action, reward, buffered_state)
@@ -110,10 +101,11 @@ class Follower:
             direction = 0
         if throttle == 0:
             return throttle, direction
-        
+
         return throttle, direction
 
-    def get_features(self, frame):
+    @staticmethod
+    def get_features(frame):
         """
         Return numpy array of features.
         Indexes:
@@ -152,7 +144,8 @@ class Follower:
 
         return features
 
-    def get_reward(self, feature_vector):
+    @staticmethod
+    def get_reward(feature_vector, state, action):
         scale_x = 0.1
 
         weight_tz = 0.8
@@ -176,7 +169,12 @@ class Follower:
         else:
             tz_reward = 0
 
-        return (tz_reward * weight_tz) + (tx_reward * weight_tx)
+        if (not state.reversing_state) and action[0] < 0:  # Previously was not reversing, then was
+            initial_reverse_reward = -1
+        else:
+            initial_reverse_reward = 0
+
+        return (tz_reward * weight_tz) + (tx_reward * weight_tx) + initial_reverse_reward
 
     def save(self, file_name=None):
         self.learner.save(file_name)
