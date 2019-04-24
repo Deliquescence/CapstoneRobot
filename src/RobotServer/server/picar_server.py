@@ -5,14 +5,15 @@ from concurrent import futures
 import grpc
 import cv2
 
-import picar_pb2
-import picar_pb2_grpc
+from . import picar_pb2, picar_pb2_grpc
+
+from tag_detection.detector import decorate_frame
 
 # Increment major version for incompatible protocol API changes
 # Increment minor version for backwards-compatible protocol API additions
 # Increment patch version for backwards-compatible bug fixes
 MAJOR_VERSION = 1
-MINOR_VERSION = 0
+MINOR_VERSION = 2
 PATCH_VERSION = 0
 
 
@@ -22,6 +23,15 @@ class PiCarServicer(picar_pb2_grpc.PiCarServicer):
     def __init__(self, driver):
         self.driver = driver
         self.streaming = False
+
+    def SwitchFollowerModel(self, request, context):
+        """Changes model used in follower mode"""
+        ret = self.driver.set_model(request.version)
+        if ret:
+            print('Successfully changed model to %d' % request.version)
+        else:
+            print('Could not change to version %d because it is invalid' % request.version)
+        return picar_pb2.SwitchModelAck(success=ret)
 
     def ReceiveConnection(self, request, context):
         """Handshake between PiCar and desktop application"""
@@ -38,7 +48,7 @@ class PiCarServicer(picar_pb2_grpc.PiCarServicer):
         if self.driver.mode != request.mode:
             # If the request is for a different mode, send a success ack
             print('Switching mode from %s to %s' % (self.driver.mode, request.mode))
-            self.driver.mode = request.mode
+            self.driver.set_mode(request.mode)
             return picar_pb2.ModeAck(success=True)
         else:
             # If the request is for the mode already in, send a failure ack
@@ -65,8 +75,11 @@ class PiCarServicer(picar_pb2_grpc.PiCarServicer):
         print('Starting follower stream')
         while self.driver.is_streaming():
             stream_data = self.driver.stream_queue.get()
-            image = cv2.resize(stream_data.frame, (320, 240))
-            _, b = cv2.imencode('.jpg', image)
+
+            if request.decorate:
+                decorate_frame(stream_data.frame)
+
+            _, b = cv2.imencode('.jpg', stream_data.frame)
             b = b.tobytes()
 
             action = picar_pb2.SetMotion(throttle=stream_data.throttle,

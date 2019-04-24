@@ -1,73 +1,109 @@
 import picar
 import cv2
 import time
-import picar_server
+from server import picar_server
 import picar_helper
 from queue import Queue
 import socket
 import numpy as np
+from follower import Follower
 
 picar.setup()
 
 # det up our tag dictionary and parameter value
 # we use tag ids 1,2,4,8
-arDict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_6X6_50)
-parameters = cv2.aruco.DetectorParameters_create()
+
+# Error with dependencies,
+#  cv2.cv2 has no attirbute 'aruco'
+# but with ML follower we don't need this, so remove for now
+#arDict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_6X6_50)
+#parameters = cv2.aruco.DetectorParameters_create()
 
 # get a reference to the camera, default is 0
 camera = cv2.VideoCapture(0)
 
 
-def main():
-    driver = PiCarDriver()
+def default_follower():
+    try:
+        return Follower.load(epsilon=0.0)
+    except IOError:  # file does not exist
+        print("Failed to load follower file")
+        return Follower()
 
-    # start the server
-    server = picar_server.getServer(driver)
-    server.start()
 
-    print('Server Started on' + socket.gethostname() + '\n')
-    print('Press Ctrl-C to quit')
+def main(start_mode=0):
+    driver = PiCarDriver(default_follower())
 
-    # start the driver
-    driver.run()
+    try:
+        # start the server
+        server = picar_server.getServer(driver)
+        server.start()
+
+        print('Server Started on' + socket.gethostname() + '\n')
+        print('Press Ctrl-C to quit')
+
+        # start the driver
+        driver.run(start_mode=start_mode)
+    finally:
+        driver.follower.save()  # Save follower when done
+        destroy()
 
 
 class PiCarDriver(object):
-    def __init__(self):
+    def __init__(self, follower):
         self.mode = 0
-        self.next_throttle_and_dir = (0.0, 0.0)
+        self.follower = follower
+        self.next_throttle_and_dir = (0.0, 0.0)  # Assigned by server. Used by main() to move picar
         self._streaming = False
         self.stream_queue = Queue(maxsize=20)
-        self._prev_throttle = 0.0
-        self._prev_direction = 0.0
+        self._prev_throttle = 0.0  # Assigned when moved. Pushed to stream
+        self._prev_direction = 0.0  # Assigned when moved. Pushed to stream
+
+    def set_mode(self, mode):
+        """Called from server to set mode (follower/driver)"""
+        self.mode = mode
+        if mode == 0:
+            self.follower.reset_state()
+
+    def set_model(self, model: int):
+        """Sets model used in follower mode. Called from server.
+        Returns a bool indicating whether the supplied model version is a valid version."""
+        if model == 0:
+            self.follower = default_follower()
+
+        elif model == 1:
+            import legacy_follower_pid
+            self.follower = legacy_follower_pid.Follower()
+
+        else:
+            return False
+
+        return True
 
     def set_throttle_and_dir(self, throttle, direction):
+        """Called from server to operate in driving mode."""
         self.next_throttle_and_dir = (throttle, direction)
 
     def start_streaming(self):
+        """Called from server to start streaming."""
         self.stream_queue = Queue(maxsize=20)
         self._streaming = True
 
     def stop_streaming(self):
+        """Called from server to stop streaming."""
         self._streaming = False
         self.stream_queue = Queue(maxsize=20)
 
     def is_streaming(self):
+        """Queried from within this class and from server to
+        determine if we are streaming."""
         return self._streaming
 
-    def run(self):
+    def run(self, start_mode=0):
         self._move(0.0, 0.0)
 
         # loop unless break occurs
         while True:
-            # check if key pressed
-            k = cv2.waitKey(1) & 0xFF
-
-            # if q key is pressed we break loop
-            if k == ord('q'):
-                self._move(0.0, 0.0)
-                break
-
             # get the current frame
             _, frame = camera.read()
 
@@ -78,12 +114,8 @@ class PiCarDriver(object):
             elif self.mode == 2:
                 # follower mode
                 # if no base corners, get corners
-                bc = getBaseCorners(frame)
-                if bc is not None:
-                    throttle, direction = tagID(frame, bc)
-                    self._move(throttle, direction)
-                else:
-                    print("Base Tag Corners Not Detected!")
+                throttle, direction = self.follower.get_action(frame)
+                self._move(throttle, direction)
             else:
                 self._move(0.0, 0.0)
 
@@ -96,6 +128,8 @@ class PiCarDriver(object):
             time.sleep(1 / 30)
 
     def _move(self, throttle, direction):
+        """Sets throttle and direction for picar. Additionally communicates this information
+        with the attached server. Call this from this class."""
         self._prev_throttle = throttle
         self._prev_direction = direction
         picar_helper.move(throttle, direction)
@@ -213,7 +247,4 @@ def destroy():
 
 
 if __name__ == '__main__':
-    try:
-        main()
-    finally:
-        destroy()
+    main()

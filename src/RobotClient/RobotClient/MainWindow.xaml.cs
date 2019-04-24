@@ -11,6 +11,10 @@ using SharpDX.XInput;
 using System.IO;
 using System.Threading;
 using System.Windows.Media;
+using Grpc.Core;
+using System.Threading.Tasks;
+using System.Linq;
+using System.Collections;
 
 namespace RobotClient
 {
@@ -52,7 +56,7 @@ namespace RobotClient
 
             //Setup sync context
             synchronizationContext = SynchronizationContext.Current;
-            
+
             Title = "Welcome " + Environment.UserName;
 
             //Adds shortcut to open the registration window with Ctrl + R
@@ -60,13 +64,21 @@ namespace RobotClient
             newKeybind.InputGestures.Add(new KeyGesture(Key.R, ModifierKeys.Control));
             CommandBindings.Add(new CommandBinding(newKeybind, Register_Click));
 
-            var streamKeybind = new RoutedCommand();
-            streamKeybind.InputGestures.Add(new KeyGesture(Key.S, ModifierKeys.Control));
-            CommandBindings.Add(new CommandBinding(streamKeybind, ImageSaving_Click));
             _controlMode = true;
 
             _saveStreamEnabled = false;
 
+            //Adds shortut Ctrl + S for stream saving and Ctrl + D for disabling stream saving
+            var streamKeybind = new RoutedCommand();
+            streamKeybind.InputGestures.Add(new KeyGesture(Key.S, ModifierKeys.Control));
+            CommandBindings.Add(new CommandBinding(streamKeybind, ImageSaving_Click));
+
+            var dStreamKeybind = new RoutedCommand();
+            dStreamKeybind.InputGestures.Add(new KeyGesture(Key.D, ModifierKeys.Control));
+            CommandBindings.Add(new CommandBinding(dStreamKeybind, StopSaving_Click));
+
+            
+            
             //Checks if a controller is plugged into the current OS
             _controller = new Controller(UserIndex.One);
             if (!_controller.IsConnected)
@@ -77,13 +89,182 @@ namespace RobotClient
             {
                 //Uses a timer to loop a method that checks the status of the controller
                 LogField.AppendText(DateTime.Now + ":\tController detected!\n");
-                _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1/30) };
+                _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1 / 30) };
                 _timer.Tick += _timer_Tick;
                 _timer.Start();
                 _directionController = 0.0;
                 _throttleController = 0.0;
             }
+            //sets initial connection configuration specified by .ini file
+            initializeUI();
         }
+
+        //sets up initia configuration for connection and log using specified .ini file
+        private async void initializeUI()
+        {
+            ArrayList carInfoArray = new ArrayList();
+
+            var file_path = $"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\\picar\\gui_config.ini";
+            if (!File.Exists(file_path)) {
+                return;
+            }
+
+            //gets text from specified .ini file
+            try {
+                string[] lines = File.ReadAllLines(file_path);
+
+                string selectedIP;
+                string selectedName;
+                string[] ipNameAndMode;
+                
+                string mode;
+                string path;
+                string session;
+
+                string[] path_and_session;
+                for (int i = 0; i < lines.Length; i++) {
+                    if (lines[i].StartsWith("#")) {
+                        continue;
+                    };
+
+                    if (lines[i] == "(*connect)")
+                    {
+                        while (lines[i + 1] != "(connect*)")
+                        {
+                            ipNameAndMode = lines[i + 1].Split(',');
+                            selectedIP = ipNameAndMode[0];
+                            selectedName = ipNameAndMode[1];
+                            mode = ipNameAndMode[2];
+                            carInfoArray.Add(ipNameAndMode);
+                            await IPConnect(selectedIP, selectedName);
+                            i = i + 1;
+                        }
+                    }
+                    
+                    if (lines[i] == "(*stream)")
+                    {
+                        while (lines[i + 1] != "(stream*)")
+                        {
+                            path_and_session = lines[i + 1].Split(',');
+                            path = path_and_session[0];
+                            session = path_and_session[1];
+                            setPathName(path);
+                            setSessionName(session);
+                            i = i + 1;
+                        }
+                    }
+
+                    if (lines[i] == "(*log)")
+                    {
+                        while (lines[i + 1] != "(log*)")
+                        {
+                            LogField.AppendText(lines[i + 1] + "\n");
+                            i = i + 1;
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                LogField.AppendText($"{DateTime.Now}:\tError when initializing configuration: {e.Message}\n");
+            }
+            DeviceListMn.ItemsSource = null;
+            DeviceListMn.ItemsSource = deviceListMain;
+
+            //initializes mode for each connection in .ini
+            foreach (string[] m in carInfoArray)
+            {
+                initializeMode(m[1], m[2]);
+            }
+        }
+
+        //automatically sets mode of cars based on .ini file
+        private void initializeMode(string name, string mode)
+        {
+            foreach(PiCarConnection car in deviceListMain)
+            {
+                if(name == car.Name)
+                {
+                    if(mode=="lead")
+                    {
+                        SetVehicleMode(car, ModeRequest.Types.Mode.Lead);
+                    }
+                    if(mode == "follow")
+                    {
+                        SetVehicleMode(car, ModeRequest.Types.Mode.Follow);
+                    }
+                    if (mode == "idle")
+                    {
+                        SetVehicleMode(car, ModeRequest.Types.Mode.Idle);
+                    }
+                }
+            }
+        }
+
+        //tries to connect to cars specified in .ini file
+        private async Task IPConnect(string selectedIP, string selectedName)
+        {
+
+            //Handle the dummy connection
+            if (selectedIP == "DummyIP")
+            {
+                var dummyConnection = new DummyConnection(selectedName, selectedIP);
+                deviceListMain.Add(dummyConnection);
+                LogField.AppendText(DateTime.Now + ":\t" + "Added " + selectedName + " for testing\n");
+                //LogFieldReg.AppendText("Added " + selectedName + " for testing\n");
+            }
+
+            else if (!CheckIfValidIP(selectedIP))
+            {
+                //LogFieldReg.AppendText("Invalid IP used, try again!\n");
+                LogField.AppendText(DateTime.Now + ":\tInvalid IP used, try again!\n");
+            }
+
+            else
+            {
+                PiCarConnection newConnection = null;
+                var canConnect = false;
+                try
+                {
+                    newConnection = new PiCarConnection(selectedName, selectedIP);
+                    var connectResponse = newConnection.RequestConnect();
+                    Console.Write(connectResponse.Item2);
+                    //LogFieldReg.AppendText(connectResponse.Item2);
+                    LogField.AppendText(DateTime.Now + ":\t" + connectResponse.Item2);
+                    canConnect = connectResponse.Item1;
+                }
+                catch (RpcException rpcE)
+                {
+                    LogField.AppendText(DateTime.Now + ":\tRPC error: " + rpcE.Message + "\n");
+                }
+                catch (Exception exception)
+                {
+                    LogField.AppendText(DateTime.Now + ":\tError! " + exception + "\n");
+                }
+
+                if (canConnect)
+                {
+                    LogField.AppendText(DateTime.Now + ":\t" + "Connected to " + selectedName + " with IP: " + selectedIP + "\n");
+                    //LogFieldReg.AppendText("Connected to " + selectedName + " with IP: " + selectedIP + "\n");
+                    deviceListMain.Add(newConnection);
+                }
+                else
+                {
+                    LogField.AppendText(DateTime.Now + ":\t" + "Failed to connect to " + selectedName + " with IP: " + selectedIP + "\n");
+                    //LogFieldReg.AppendText("Failed to connect to " + selectedName + " with IP: " + selectedIP + "\n");
+                }
+            }
+        }
+
+        private static bool CheckIfValidIP(string localIP)
+        {
+            if (string.IsNullOrWhiteSpace(localIP))
+                return false;
+
+            var temp = localIP.Split('.');
+            return temp.Length == 4 && temp.All(r => byte.TryParse(r, out var tempForParsing));
+        }
+
         //methods for getting and setting directory name, 
         //session prefix and ability to save to disk for stream saving
         public void setPathName(string Pname)
@@ -131,7 +312,7 @@ namespace RobotClient
             var save_dir_path = getPathName();
             var session_prefix = getSessionName();
             bool save_to_disk = getSaveEnabled();
-            
+
             //Convert bytes to ImageSource type for GUI
             var imgSource = (ImageSource)new ImageSourceConverter().ConvertFrom(imageBytes);
 
@@ -143,10 +324,6 @@ namespace RobotClient
             catch (Exception e)
             {
                 LogField.AppendText($"{DateTime.Now}: Error updating the GUI with image received from car: {e}\n");
-                var picar = (PiCarConnection)DeviceListMn.SelectedItem;
-                if (picar == null)
-                    return;
-                DisconnectCar();
             }
 
             if (save_to_disk)
@@ -169,9 +346,9 @@ namespace RobotClient
                         streamWriter.WriteLineAsync($"train/{image_file_name},{action.Throttle},{action.Direction}");
                     }
                 }
-                catch (Exception e)
+                catch (IOException e)
                 {
-                    LogField.AppendText($"{DateTime.Now}: Error when writing stream data to disk: {e}\n");
+                    LogField.AppendText($"{DateTime.Now}:\tError writing stream data to disk: {e.Message}\n");
                 }
             }
 
@@ -183,11 +360,14 @@ namespace RobotClient
             var session_prefix = getSessionName();
             var csv_path = $"{save_dir_path}\\{session_prefix}.csv";
 
-            if (!File.Exists(csv_path))
-            {
-                using (var streamWriter = new StreamWriter(csv_path, true))
-                {
-                    streamWriter.WriteLineAsync($"image_file,throttle,direction");
+            if (!File.Exists(csv_path)) {
+                try {
+                    using (var streamWriter = new StreamWriter(csv_path, true)) {
+                        streamWriter.WriteLineAsync($"image_file,throttle,direction");
+                    }
+                }
+                catch (IOException e) {
+                    LogField.AppendText($"{DateTime.Now}:\tError opening csv: {e.Message}\n");
                 }
             }
         }
@@ -195,14 +375,15 @@ namespace RobotClient
         /**
          * Clear the image that was displayed by the stream
          */
-        public void clearStreamImage() {
+        public void clearStreamImage()
+        {
             try
             {
                 synchronizationContext.Post(o => StreamImage.Source = (ImageSource)o, null);
             }
             catch (Exception e)
             {
-                LogField.AppendText($"{DateTime.Now}: Error clearing stream image: {e}\n");
+                LogField.AppendText($"{DateTime.Now}:\tError clearing stream image: {e}\n");
             }
         }
 
@@ -251,7 +432,7 @@ namespace RobotClient
                 SaveStreamSetup = new SaveStreamSetup();
                 SaveStreamSetup.Show();
             }
-            else if(SaveStreamSetup != null)
+            else if (SaveStreamSetup != null)
             {
                 SaveStreamSetup.Focus();
             }
@@ -261,13 +442,14 @@ namespace RobotClient
         //stops the stream from being saved
         private void StopSaving_Click(object sender, RoutedEventArgs e)
         {
-            _saveStreamEnabled = false;
             StreamSavingHeader.IsEnabled = true;
             StopStreamSavingHeader.IsEnabled = false;
-            LogField.AppendText(DateTime.Now + ":\tStream will no longer be saved to a file\n");
-
-
-            LogField.ScrollToEnd();
+            if (_saveStreamEnabled == true)
+            {
+                LogField.AppendText(DateTime.Now + ":\tStream will no longer be saved to a file\n");
+                LogField.ScrollToEnd();
+            }
+            _saveStreamEnabled = false;
         }
 
         /**
@@ -286,10 +468,23 @@ namespace RobotClient
             }
         }
 
-        //opens up window that sets up mirroring mode
-        
+        private void SetFollowerModelDefault_Click(object sender, RoutedEventArgs e)
+        {
+            var picar = SelectedPiCar();
+            if (picar is null) return;
+            LogField.AppendText(DateTime.Now + ":\tSetting " + picar + "to default follower model\n");
+            LogField.ScrollToEnd();
+            picar.SetFollowerModel(0);
+        }
 
-
+        private void SetFollowerModelPID_Click(object sender, RoutedEventArgs e)
+        {
+            var picar = SelectedPiCar();
+            if (picar is null) return;
+            LogField.AppendText(DateTime.Now + ":\tSetting " + picar + "to legacy PID follower model\n");
+            LogField.ScrollToEnd();
+            picar.SetFollowerModel(1);
+        }
 
 
         /**
@@ -304,9 +499,9 @@ namespace RobotClient
                 var filename = "Log " + DateTime.Now.ToString("dddd, dd MMMM yyyy") + ".txt";
                 File.WriteAllText(Path.Combine(documentsLocation, filename), LogField.Text);
             }
-            catch(IOException exception)
+            catch (IOException exception)
             {
-                MessageBox.Show("Problem exporting log data " + exception.ToString(), "Error!");  
+                MessageBox.Show("Problem exporting log data " + exception.ToString(), "Error!");
             }
         }
 
@@ -323,7 +518,7 @@ namespace RobotClient
                 LogField.Text = File.ReadAllText(fileName);
                 var res = Direction.ParseLog(LogField.Text);
             }
-            catch(IOException exception)
+            catch (IOException exception)
             {
                 MessageBox.Show("Problem importing log data " + exception.ToString(), "Error!");
             }
@@ -349,7 +544,7 @@ namespace RobotClient
 
                 //_Motor1 produces either -1.0 for left or 1.0 for right motion
                 _directionController = Math.Abs((double)state.LeftThumbX) < DeadzoneValue
-                    ? 0: 
+                    ? 0 :
                     (double)state.LeftThumbX / short.MinValue * -1;
                 _directionController = Math.Round(_directionController, 3);
 
@@ -502,8 +697,9 @@ namespace RobotClient
 
         private async void StreamToggle_Checked(object sender, RoutedEventArgs e)
         {
-            var picar = (PiCarConnection)DeviceListMn.SelectedItem;
-            if (picar == null) return;
+            var picar = SelectedPiCar();
+            if (picar is null) return;
+
             try
             {
                 var streamTask = picar.StartStream();
@@ -511,15 +707,16 @@ namespace RobotClient
             }
             catch (Exception exception)
             {
-                DisconnectCar();
+                DisconnectCar(picar);
                 Console.WriteLine(exception);
             }
         }
 
         private void StreamToggle_Unchecked(object sender, RoutedEventArgs e)
         {
-            var picar = (PiCarConnection)DeviceListMn.SelectedItem;
-            if (picar == null) return;
+            var picar = SelectedPiCar();
+            if (picar is null) return;
+
             try
             {
                 clearStreamImage();
@@ -527,7 +724,7 @@ namespace RobotClient
             }
             catch (Exception exception)
             {
-                DisconnectCar();
+                DisconnectCar(picar);
                 Console.WriteLine(exception);
             }
         }
@@ -553,7 +750,7 @@ namespace RobotClient
             {
 
                 Application.Current.Shutdown();
-            }        
+            }
         }
 
         /**
@@ -573,9 +770,9 @@ namespace RobotClient
                     MoveVehicle(0.0, 0.0);
                     SetVehicleMode(ModeRequest.Types.Mode.Idle);
                 }
-                catch(Exception exception)
+                catch (Exception exception)
                 {
-                LogField.AppendText(DateTime.Now + ":\tSomething went wrong: " + exception.ToString());
+                    LogField.AppendText(DateTime.Now + ":\tSomething went wrong: " + exception.ToString());
                 }
             }
 
@@ -596,16 +793,15 @@ namespace RobotClient
                     clearStreamImage();
                 }
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 //TODO Remove vehicles that throw exceptions
                 LogField.AppendText(DateTime.Now + ":\tException found when removing an old streams!\n" + e + "\n");
                 //TODO remove previous car
                 Console.WriteLine(exception);
             }
-            //Get the picar from the device List
-            var picar = (PiCarConnection)DeviceListMn.SelectedItem;
-            if (picar == null) return;
+            var picar = SelectedPiCar();
+            if (picar is null) return;
 
             StreamToggle.IsEnabled = true;
             StreamToggle.IsChecked = false;
@@ -616,36 +812,24 @@ namespace RobotClient
             DeviceStatus.Text = picar.Mode.ToString();
         }
 
-        /**
-         *
-         */
         private void SetLeader(object sender, RoutedEventArgs e)
         {
-            //Get the picar from the device List
-            var picar = (PiCarConnection)DeviceListMn.SelectedItem;
-            if (picar == null) return;
+            var picar = SelectedPiCar();
+            if (picar is null) return;
             SetVehicleMode(ModeRequest.Types.Mode.Lead);
         }
 
-        /**
-         *
-         */
         private void SetFollower(object sender, RoutedEventArgs e)
         {
-            //Get the picar from the device List
-            var picar = (PiCarConnection)DeviceListMn.SelectedItem;
-            if (picar == null) return;
+            var picar = SelectedPiCar();
+            if (picar is null) return;
             SetVehicleMode(ModeRequest.Types.Mode.Follow);
         }
 
-        /**
-         *
-         */
         private void SetDefault(object sender, RoutedEventArgs e)
         {
-            //Get the picar from the device List
-            var picar = (PiCarConnection)DeviceListMn.SelectedItem;
-            if (picar == null) return;
+            var picar = SelectedPiCar();
+            if (picar is null) return;
             SetVehicleMode(ModeRequest.Types.Mode.Idle);
         }
 
@@ -661,7 +845,7 @@ namespace RobotClient
                     }
                     catch (Exception e)
                     {
-                        DisconnectCar();
+                        DisconnectCar(picar);
                         Console.WriteLine(e);
                     }
                 }
@@ -670,7 +854,13 @@ namespace RobotClient
 
         private void SetVehicleMode(ModeRequest.Types.Mode mode)
         {
-            var picar = (PiCarConnection)DeviceListMn.SelectedItem;
+            var picar = SelectedPiCar();
+            if (picar is null) return;
+            SetVehicleMode(picar, mode);
+        }
+
+        private void SetVehicleMode(PiCarConnection picar, ModeRequest.Types.Mode mode)
+        {
             try
             {
                 picar.SetMode(mode);
@@ -680,24 +870,34 @@ namespace RobotClient
             }
             catch (Exception e)
             {
-                DisconnectCar();
+                DisconnectCar(picar);
                 Console.WriteLine(e);
             }
         }
 
-        private void DisconnectCar()
-        {
-            var picar = (PiCarConnection)DeviceListMn.SelectedItem;
+        private void DisconnectCar(PiCarConnection picar) {
             if (picar.GetType() == typeof(DummyConnection))
                 return;
 
-            LogField.AppendText(DateTime.Now + ":\tVehicle stopped responding, disconnecting. \n");
+            LogField.AppendText(DateTime.Now + ":\t" + picar + " stopped responding, disconnecting.\n");
             LogField.ScrollToEnd();
             deviceListMain.Remove(picar);
             DeviceListMn.ItemsSource = null;
             DeviceListMn.ItemsSource = deviceListMain;
         }
-         
+
+        private void DisconnectCar() {
+            var picar = SelectedPiCar();
+            if (picar is null) return;
+
+            DisconnectCar(picar);
+        }
+
+        public PiCarConnection SelectedPiCar()
+        {
+            return (PiCarConnection) DeviceListMn.SelectedItem;
+        }
+
         #region Properties
 
         public string LeftAxis
@@ -745,9 +945,9 @@ namespace RobotClient
 
         private void SetMirror(object sender, RoutedEventArgs e)
         {
-            var car = (PiCarConnection) DeviceListMn.SelectedItem;
-            if (car == null) return;
-            Mirror = new MirroringMode(car);
+            var picar = SelectedPiCar();
+            if (picar is null) return;
+            Mirror = new MirroringMode(picar);
             Mirror.Show();
         }
     }

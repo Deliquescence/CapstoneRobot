@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='CapstoneRobot',
   syntax='proto3',
   serialized_options=_b('\252\002\013RobotClient'),
-  serialized_pb=_b('\n\x0bpicar.proto\x12\rCapstoneRobot\"\x07\n\x05\x45mpty\"!\n\x0e\x43onnectRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\"E\n\nConnectAck\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12&\n\x07version\x18\x02 \x01(\x0b\x32\x15.CapstoneRobot.SemVer\"5\n\x06SemVer\x12\r\n\x05major\x18\x01 \x01(\r\x12\r\n\x05minor\x18\x02 \x01(\r\x12\r\n\x05patch\x18\x03 \x01(\r\"d\n\x0bModeRequest\x12-\n\x04mode\x18\x01 \x01(\x0e\x32\x1f.CapstoneRobot.ModeRequest.Mode\"&\n\x04Mode\x12\x08\n\x04IDLE\x10\x00\x12\x08\n\x04LEAD\x10\x01\x12\n\n\x06\x46OLLOW\x10\x02\"\x1a\n\x07ModeAck\x12\x0f\n\x07success\x18\x01 \x01(\x08\"0\n\tSetMotion\x12\x10\n\x08throttle\x18\x01 \x01(\x01\x12\x11\n\tdirection\x18\x02 \x01(\x01\"\x10\n\x0eStartStreaming\"\x0f\n\rStopStreaming\"E\n\nStreamData\x12\r\n\x05image\x18\x01 \x01(\x0c\x12(\n\x06\x61\x63tion\x18\x02 \x01(\x0b\x32\x18.CapstoneRobot.SetMotion2\xf2\x02\n\x05PiCar\x12O\n\x11ReceiveConnection\x12\x1d.CapstoneRobot.ConnectRequest\x1a\x19.CapstoneRobot.ConnectAck\"\x00\x12\x42\n\nSwitchMode\x12\x1a.CapstoneRobot.ModeRequest\x1a\x16.CapstoneRobot.ModeAck\"\x00\x12\x43\n\rRemoteControl\x12\x18.CapstoneRobot.SetMotion\x1a\x14.CapstoneRobot.Empty\"\x00(\x01\x12K\n\x0bStartStream\x12\x1d.CapstoneRobot.StartStreaming\x1a\x19.CapstoneRobot.StreamData\"\x00\x30\x01\x12\x42\n\nStopStream\x12\x1c.CapstoneRobot.StopStreaming\x1a\x14.CapstoneRobot.Empty\"\x00\x42\x0e\xaa\x02\x0bRobotClientb\x06proto3')
+  serialized_pb=_b('\n\x0bpicar.proto\x12\rCapstoneRobot\"\x1f\n\x0cModelVersion\x12\x0f\n\x07version\x18\x01 \x01(\x05\"!\n\x0eSwitchModelAck\x12\x0f\n\x07success\x18\x01 \x01(\x08\"\x07\n\x05\x45mpty\"!\n\x0e\x43onnectRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\"E\n\nConnectAck\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12&\n\x07version\x18\x02 \x01(\x0b\x32\x15.CapstoneRobot.SemVer\"5\n\x06SemVer\x12\r\n\x05major\x18\x01 \x01(\r\x12\r\n\x05minor\x18\x02 \x01(\r\x12\r\n\x05patch\x18\x03 \x01(\r\"d\n\x0bModeRequest\x12-\n\x04mode\x18\x01 \x01(\x0e\x32\x1f.CapstoneRobot.ModeRequest.Mode\"&\n\x04Mode\x12\x08\n\x04IDLE\x10\x00\x12\x08\n\x04LEAD\x10\x01\x12\n\n\x06\x46OLLOW\x10\x02\"\x1a\n\x07ModeAck\x12\x0f\n\x07success\x18\x01 \x01(\x08\"0\n\tSetMotion\x12\x10\n\x08throttle\x18\x01 \x01(\x01\x12\x11\n\tdirection\x18\x02 \x01(\x01\"\"\n\x0eStartStreaming\x12\x10\n\x08\x64\x65\x63orate\x18\x01 \x01(\x08\"\x0f\n\rStopStreaming\"E\n\nStreamData\x12\r\n\x05image\x18\x01 \x01(\x0c\x12(\n\x06\x61\x63tion\x18\x02 \x01(\x0b\x32\x18.CapstoneRobot.SetMotion2\xc7\x03\n\x05PiCar\x12O\n\x11ReceiveConnection\x12\x1d.CapstoneRobot.ConnectRequest\x1a\x19.CapstoneRobot.ConnectAck\"\x00\x12\x42\n\nSwitchMode\x12\x1a.CapstoneRobot.ModeRequest\x1a\x16.CapstoneRobot.ModeAck\"\x00\x12\x43\n\rRemoteControl\x12\x18.CapstoneRobot.SetMotion\x1a\x14.CapstoneRobot.Empty\"\x00(\x01\x12K\n\x0bStartStream\x12\x1d.CapstoneRobot.StartStreaming\x1a\x19.CapstoneRobot.StreamData\"\x00\x30\x01\x12\x42\n\nStopStream\x12\x1c.CapstoneRobot.StopStreaming\x1a\x14.CapstoneRobot.Empty\"\x00\x12S\n\x13SwitchFollowerModel\x12\x1b.CapstoneRobot.ModelVersion\x1a\x1d.CapstoneRobot.SwitchModelAck\"\x00\x42\x0e\xaa\x02\x0bRobotClientb\x06proto3')
 )
 
 
@@ -45,10 +45,72 @@ _MODEREQUEST_MODE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=262,
-  serialized_end=300,
+  serialized_start=330,
+  serialized_end=368,
 )
 _sym_db.RegisterEnumDescriptor(_MODEREQUEST_MODE)
+
+
+_MODELVERSION = _descriptor.Descriptor(
+  name='ModelVersion',
+  full_name='CapstoneRobot.ModelVersion',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='version', full_name='CapstoneRobot.ModelVersion.version', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=30,
+  serialized_end=61,
+)
+
+
+_SWITCHMODELACK = _descriptor.Descriptor(
+  name='SwitchModelAck',
+  full_name='CapstoneRobot.SwitchModelAck',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='success', full_name='CapstoneRobot.SwitchModelAck.success', index=0,
+      number=1, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=63,
+  serialized_end=96,
+)
 
 
 _EMPTY = _descriptor.Descriptor(
@@ -70,8 +132,8 @@ _EMPTY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=30,
-  serialized_end=37,
+  serialized_start=98,
+  serialized_end=105,
 )
 
 
@@ -101,8 +163,8 @@ _CONNECTREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=39,
-  serialized_end=72,
+  serialized_start=107,
+  serialized_end=140,
 )
 
 
@@ -139,8 +201,8 @@ _CONNECTACK = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=74,
-  serialized_end=143,
+  serialized_start=142,
+  serialized_end=211,
 )
 
 
@@ -184,8 +246,8 @@ _SEMVER = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=145,
-  serialized_end=198,
+  serialized_start=213,
+  serialized_end=266,
 )
 
 
@@ -216,8 +278,8 @@ _MODEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=200,
-  serialized_end=300,
+  serialized_start=268,
+  serialized_end=368,
 )
 
 
@@ -247,8 +309,8 @@ _MODEACK = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=302,
-  serialized_end=328,
+  serialized_start=370,
+  serialized_end=396,
 )
 
 
@@ -285,8 +347,8 @@ _SETMOTION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=330,
-  serialized_end=378,
+  serialized_start=398,
+  serialized_end=446,
 )
 
 
@@ -297,6 +359,13 @@ _STARTSTREAMING = _descriptor.Descriptor(
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
+    _descriptor.FieldDescriptor(
+      name='decorate', full_name='CapstoneRobot.StartStreaming.decorate', index=0,
+      number=1, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -309,8 +378,8 @@ _STARTSTREAMING = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=380,
-  serialized_end=396,
+  serialized_start=448,
+  serialized_end=482,
 )
 
 
@@ -333,8 +402,8 @@ _STOPSTREAMING = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=398,
-  serialized_end=413,
+  serialized_start=484,
+  serialized_end=499,
 )
 
 
@@ -371,14 +440,16 @@ _STREAMDATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=415,
-  serialized_end=484,
+  serialized_start=501,
+  serialized_end=570,
 )
 
 _CONNECTACK.fields_by_name['version'].message_type = _SEMVER
 _MODEREQUEST.fields_by_name['mode'].enum_type = _MODEREQUEST_MODE
 _MODEREQUEST_MODE.containing_type = _MODEREQUEST
 _STREAMDATA.fields_by_name['action'].message_type = _SETMOTION
+DESCRIPTOR.message_types_by_name['ModelVersion'] = _MODELVERSION
+DESCRIPTOR.message_types_by_name['SwitchModelAck'] = _SWITCHMODELACK
 DESCRIPTOR.message_types_by_name['Empty'] = _EMPTY
 DESCRIPTOR.message_types_by_name['ConnectRequest'] = _CONNECTREQUEST
 DESCRIPTOR.message_types_by_name['ConnectAck'] = _CONNECTACK
@@ -390,6 +461,20 @@ DESCRIPTOR.message_types_by_name['StartStreaming'] = _STARTSTREAMING
 DESCRIPTOR.message_types_by_name['StopStreaming'] = _STOPSTREAMING
 DESCRIPTOR.message_types_by_name['StreamData'] = _STREAMDATA
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
+
+ModelVersion = _reflection.GeneratedProtocolMessageType('ModelVersion', (_message.Message,), dict(
+  DESCRIPTOR = _MODELVERSION,
+  __module__ = 'picar_pb2'
+  # @@protoc_insertion_point(class_scope:CapstoneRobot.ModelVersion)
+  ))
+_sym_db.RegisterMessage(ModelVersion)
+
+SwitchModelAck = _reflection.GeneratedProtocolMessageType('SwitchModelAck', (_message.Message,), dict(
+  DESCRIPTOR = _SWITCHMODELACK,
+  __module__ = 'picar_pb2'
+  # @@protoc_insertion_point(class_scope:CapstoneRobot.SwitchModelAck)
+  ))
+_sym_db.RegisterMessage(SwitchModelAck)
 
 Empty = _reflection.GeneratedProtocolMessageType('Empty', (_message.Message,), dict(
   DESCRIPTOR = _EMPTY,
@@ -470,8 +555,8 @@ _PICAR = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=487,
-  serialized_end=857,
+  serialized_start=573,
+  serialized_end=1028,
   methods=[
   _descriptor.MethodDescriptor(
     name='ReceiveConnection',
@@ -516,6 +601,15 @@ _PICAR = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_STOPSTREAMING,
     output_type=_EMPTY,
+    serialized_options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='SwitchFollowerModel',
+    full_name='CapstoneRobot.PiCar.SwitchFollowerModel',
+    index=5,
+    containing_service=None,
+    input_type=_MODELVERSION,
+    output_type=_SWITCHMODELACK,
     serialized_options=None,
   ),
 ])

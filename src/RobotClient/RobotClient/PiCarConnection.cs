@@ -13,6 +13,8 @@ namespace RobotClient
         //TODO figure this out
         public const double SPEED_AT_MAX_THROTTLE = 1.0;
 
+        public const int CONNECTION_TIMEOUT_SECONDS = 2;
+
         private class PiCarClient
         {
             private readonly PiCar.PiCarClient _client;
@@ -22,7 +24,7 @@ namespace RobotClient
             private readonly AsyncClientStreamingCall<SetMotion, Empty> remoteControlCall;
 
             private const uint _exactMajorVersion = 1;
-            private const uint _atLeastMinorVersion = 0;
+            private const uint _atLeastMinorVersion = 1;
 
             public PiCarClient(PiCar.PiCarClient client)
             {
@@ -36,8 +38,9 @@ namespace RobotClient
                 try
                 {
                     //Attempt connection to PiCar server
-                    var request = new ConnectRequest {Message = "Desktop App"};
-                    var ack = _client.ReceiveConnection(request);
+                    var request = new ConnectRequest { Message = "Desktop App" };
+
+                    var ack = _client.ReceiveConnection(request, new CallOptions(deadline: DateTime.UtcNow.AddSeconds(CONNECTION_TIMEOUT_SECONDS)));
                     var version = ack.Version;
                     string msg = null;
 
@@ -78,6 +81,21 @@ namespace RobotClient
                 }
             }
 
+            //Set the model of the follower, return success
+            public bool SetFollowerModel(int model)
+            {
+                try {
+                    var request = new ModelVersion { Version = model };
+                    var ack = _client.SwitchFollowerModel(request);
+
+                    return ack.Success;
+                }
+                catch (RpcException e) {
+                    Console.Write("RPC failed " + e);
+                    throw;
+                }
+            }
+
             //Send a signal to the PiCar telling it how to move its wheels
             public void SetMotion(double throttle, double direction)
             {
@@ -99,7 +117,7 @@ namespace RobotClient
             {
                 try
                 {
-                    StartStreaming request = new StartStreaming();
+                    StartStreaming request = new StartStreaming { Decorate = true };
 
                     using (var call = _client.StartStream(request))
                     {
@@ -169,6 +187,7 @@ namespace RobotClient
         {
             currentlyMirroring = b;
         }
+
         public bool isMirroring()
         {
             return currentlyMirroring;
@@ -183,6 +202,11 @@ namespace RobotClient
         {
             _client.SetMode(mode);
             Mode = mode;
+        }
+
+        public virtual void SetFollowerModel(int model)
+        {
+            _client.SetFollowerModel(model);
         }
 
         public virtual void SetMotion(double throttle, double direction)

@@ -5,7 +5,7 @@ from grpc_tools import protoc
 import os
 
 proto_path='protos'
-python_out='RobotServer'
+python_out='RobotServer/server'
 csharp_out='RobotClient/RobotClient'
 protos='protos/picar.proto'
 

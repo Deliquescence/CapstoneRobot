@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Grpc.Core;
 using System.ComponentModel;
+using System.Windows.Input;
 
 namespace RobotClient
 {
@@ -52,7 +53,10 @@ namespace RobotClient
             _backgroundWorker1.WorkerSupportsCancellation = true; //Makes the backgroundworker able to recieve cancellation requests
 
             CancelButton.IsEnabled = false;
-
+            //allows pressing enter button to try connecting
+            var submit = new RoutedCommand();
+            submit.InputGestures.Add(new KeyGesture(Key.Enter));
+            CommandBindings.Add(new CommandBinding(submit, TryConnect));
             //Finds default gateway IP
             DeviceList.ItemsSource = null;
             DeviceList.ItemsSource = deviceStringList.Select(array => array.FirstOrDefault());
