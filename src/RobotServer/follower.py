@@ -11,7 +11,7 @@ from tag_detection.detector import estimate_pose, process_color
 import turn
 
 NUM_FEATURES = 11
-IDEAL_DISTANCE = 20
+IDEAL_DISTANCE = 17
 
 
 def unknown_state_cache(previous_state, state):
@@ -166,7 +166,7 @@ class Follower:
             tz_reward = 0
 
         if (not state.reversing_state) and action[0] < 0:  # Previously was not reversing, then was
-            initial_reverse_reward = -1
+            initial_reverse_reward = 0.5
         else:
             initial_reverse_reward = 0
 
