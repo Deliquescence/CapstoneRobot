@@ -40,6 +40,7 @@ class Follower:
         self.last_state = None
         self.last_tag_state = None
         self.last_action = [0, 0]
+        self.last_reward = 0
 
     @staticmethod
     def get_state(features, last_action):
@@ -69,13 +70,14 @@ class Follower:
         action = self.learner.policy(buffered_state)
         (throttle, direction) = actions.action_to_throttle_direction(action)
 
-        reward = Follower.get_reward(features, state, (throttle, direction))
+        reward = Follower.get_reward(features, buffered_state, (throttle, direction))
 
         if online and self.last_state is not None:
-            self.learner.update(self.last_state, self.last_action, reward, buffered_state)
+            self.learner.update(self.last_state, self.last_action, self.last_reward, buffered_state)
 
-        self.last_action = [throttle, direction]
         self.last_state = state
+        self.last_action = [throttle, direction]
+        self.last_reward = reward
 
         ###
         # ACTOR CRITIC

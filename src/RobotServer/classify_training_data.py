@@ -127,20 +127,22 @@ def load_all_classified_df():
 
 def learn_episode(learner, episode_df):
     # Initial state
-    previous_state = episode_df.iloc[0]['state']
-    previous_action = episode_df.iloc[0]['action']
+    last_state = episode_df.iloc[0]['state']
+    last_action = episode_df.iloc[0]['action']
+    last_reward = episode_df.iloc[0]['reward']
 
     for index, row in episode_df.iloc[1:].iterrows():
         state = row['state']
         action = row['action']
         reward = row['reward']
 
-        buffered_state = follower.unknown_state_cache(previous_state, state)
+        buffered_state = follower.unknown_state_cache(last_state, state)
 
-        learner.update(previous_state, previous_action, reward, buffered_state)
+        learner.update(last_state, last_action, last_reward, buffered_state)
 
-        previous_action = action
-        previous_state = state
+        last_state = state
+        last_action = action
+        last_reward = reward
 
 
 def learn_episodes(learner, dfs):
