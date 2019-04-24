@@ -52,9 +52,9 @@ To build manually, it is a matter of installing Visual Studio and opening the so
 
 It is assumed that Raspbian has been installed.
 
-Install python 3.5:
+Install python 3.5 and OpenCV:
 ```bash
-sudo apt-get install python3.5
+sudo apt-get install python3.5 python-opencv
 ```
 
 Install SunFounder dependency (python 3 version) onto the picar:
