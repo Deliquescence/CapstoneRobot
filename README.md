@@ -52,6 +52,11 @@ To build manually, it is a matter of installing Visual Studio and opening the so
 
 It is assumed that Raspbian has been installed.
 
+Install python 3.5:
+```bash
+sudo apt-get install python3.5
+```
+
 Install SunFounder dependency (python 3 version) onto the picar:
 ```bash
 git clone --recursive -b python3 https://github.com/sunfounder/SunFounder_PiCar.git
@@ -70,7 +75,15 @@ Change to setup directory:
 `cd CapstoneRobot/src/Setup`
 
 Utilize install scripts:
-`./misc.sh`
-`./install-grpc.sh`
-`./install-smbus.sh`
-`./install-git-lfs.sh`
+```./misc.sh```
+```./install-grpc.sh```
+```./install-smbus.sh```
+```./install-git-lfs.sh```
+
+## Useful Resources
+
+[Sutton and Barto, Reinforcement learning: An Introduction](http://incompleteideas.net/book/RLbook2018.pdf)
+
+[SunFounder PiCar Manual](https://www.sunfounder.com/learn/download/X1BWQ19SYXNwYmVycnlfUGlfU21hcnRfVmlkZW9fQ2FyX1YyLjAucGRm/dispi)
+
+[OpenCV Aruco Documentation](https://docs.opencv.org/3.1.0/d5/dae/tutorial_aruco_detection.html)
